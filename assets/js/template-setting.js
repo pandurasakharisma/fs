@@ -3,7 +3,6 @@
 ======================*/
 const dirSwitch = document.querySelector("#dir-switch");
 const htmlDom = document.querySelector("html");
-const rtlLink = document.querySelector("#rtl-link");
 const initialCheck = localStorage.getItem("dir");
 
 if (dirSwitch) {
@@ -14,7 +13,6 @@ dirSwitch?.addEventListener("change", (e) => {
   console.log(checkbox.checked);
   if (checkbox.checked) {
     htmlDom.setAttribute("dir", "rtl");
-    rtlLink.href = "../../assets/css/vendors/bootstrap.rtl.min.css";
     localStorage.setItem(
       "rtlcss",
       "../../assets/css/vendors/bootstrap.rtl.min.css"
@@ -24,7 +22,6 @@ dirSwitch?.addEventListener("change", (e) => {
 
   if (!checkbox.checked) {
     htmlDom.setAttribute("dir", "ltr");
-    rtlLink.href = "../../assets/css/vendors/bootstrap.css";
     localStorage.setItem("rtlcss", "../../assets/css/vendors/bootstrap.css");
     localStorage.setItem("dir", "ltr");
   }
@@ -34,9 +31,6 @@ htmlDom.setAttribute(
   "dir",
   localStorage.getItem("dir") ? localStorage.getItem("dir") : "ltr"
 );
-rtlLink.href = localStorage.getItem("rtlcss")
-  ? localStorage.getItem("rtlcss")
-  : "../../assets/css/vendors/bootstrap.css";
 
 /*====================
   Dark js
