@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="taxido">
+    <meta name="keywords" content="taxido">
+    <meta name="author" content="taxido">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="assets/images/logo/favicon.png" type="image/x-icon">
+    <title>Taxido - User App </title>
+
+    <link rel="apple-touch-icon" href="assets/images/logo/favicon.png">
+    <meta name="title-color" content="#1F1F1F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="taxido">
+    <meta name="msapplication-TileImage" content="assets/images/logo/favicon.png">
+
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <link rel="stylesheet" type="text/css" href="assets/css/GTWalsheimPro.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/iconsax.css">
+    <link rel="stylesheet" id="rtl-link" type="text/css" href="assets/css/vendors/bootstrap.css">
+    <link rel="stylesheet" id="change-link" type="text/css" href="assets/css/style.css">
+</head>
+<body>
+    <header id="header" class="auth-header">
+        <div class="custom-container">
+            <div class="header-panel  pb-0">
+                <img class="img-fluid mx-auto logo user-logo" src="assets/images/logo/user/logo-utama.svg"
+                    alt="logo">
+                <img class="img-fluid mx-auto logo-dark user-logo"
+                    src="assets/images/logo/user/user-logo-dark.png" alt="logo">
+            </div>
+        </div>
+    </header>
+
+    <div class="auth-bg-image-box">
+        <div class="auth-bg-image"></div>
+        <div class="auth-content-bg auth-content-bg-bottom">
+            <div class="custom-container white-background pb-2">
+                <div class="auth-title mt-0">
+                    <div class="loader-line"></div>
+                    <h6>Hey, You have been missed !</h6>
+                </div>
+
+                <div class="auth-form mt-0">
+                    <div class="form-group">
+                        <label class="form-label mb-2" for="Inputemail">Email</label>
+                        <div class="position-relative">
+                            <input type="text" class="form-control" id="Inputemail" placeholder="Enter email">
+                            <i class="iconsax icon" data-icon="mail"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label mb-2" for="Inputpassword">Password</label>
+                        <div class="position-relative">
+                            <input type="password" class="form-control" id="Inputpassword" placeholder="Enter password">
+                            <i class="iconsax icon" data-icon="lock-2"></i>
+                        </div>
+                        <div class="show-hide toggler">
+                            <i class="iconsax eye-icon icon-eye" data-icon="eye"></i>
+                            <i class="iconsax eye-icon icon-eye-splash" data-icon="eye-slash"></i>
+                        </div>
+                    </div>
+
+                    <button id="cekl" type="submit" class="btn theme-btn w-100 auth-btn mt-3">Login</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/iconsax.js"></script>
+    <script src="assets/js/password-show.js"></script>
+    <script src="assets/js/sticky-header.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/template-setting.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script>
+        let handleLogin = (e) => {
+            if (e) {e.preventDefault();}
+            const username = document.getElementById('Inputemail').value;
+            const password = document.getElementById('Inputpassword').value;
+            fetch('ceklogin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username,
+                    password
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.status === 'success' ? `Login berhasil! Selamat datang, ${data.data.User_ID}` : `Login gagal: ${data.message}`);
+                data.status === 'success' && (window.location.href = 'location.html');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mencoba login. Silakan coba lagi.');
+            });
+        };
+    
+        document.querySelector('#cekl').onclick = handleLogin;
+        document.querySelector('body').onkeypress = (e) => {
+            console.log(e.key);
+            if (e.key === 'Enter') {handleLogin(e);}
+        };
+    </script>
+</body>
+</html>
