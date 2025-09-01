@@ -2674,7 +2674,7 @@ body.dark .auth-header .logo-dark {
   display: block;
   height: 34px;
   left: 50%;
-  top: 34px;
+  top: 0;
   transform: translateX(-50%);
 }
 @media (max-width: 600px) {
@@ -2699,7 +2699,7 @@ body.dark .auth-header .logo {
   display: block;
   height: 34px;
   left: 50%;
-  top: 34px;
+  top: 0;
   transform: translateX(-50%);
 }
 
