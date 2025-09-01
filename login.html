@@ -84,11 +84,12 @@
     <script src="./assets/js/template-setting.js"></script>
     <script src="./assets/js/script.js"></script>
     <script>
+        let urlbe = "https://app2.pkserve.com/jobe/";
         let handleLogin = (e) => {
             if (e) {e.preventDefault();}
             const username = document.getElementById('Inputemail').value;
             const password = document.getElementById('Inputpassword').value;
-            fetch('ceklogin', {
+            fetch(urlbe+'ceklogin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
