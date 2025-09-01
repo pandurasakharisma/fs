@@ -11,12 +11,12 @@
   "theme_color": "#c53f3f",
   "icons": [
     {
-      "src": "./images/logopk.png",
+      "src": "./assets/images/logopk.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "./images/logopk.png",
+      "src": "./assets/images/logopk.png",
       "sizes": "512x512",
       "type": "image/png"
     }
