@@ -8001,6 +8001,14 @@ body.dark .vehicle-content .content-title .members {
   opacity: 1;
   transform: translateX(0);
 }
+
+.skeleton-card { background:#f0f0f0; border-radius:8px; padding:12px; margin-bottom:10px; animation:pulse 1.5s infinite; }
+.skeleton-line { background:#e0e0e0; border-radius:4px; margin-bottom:8px; }
+.skeleton-line.title { width:60%; height:18px; }
+.skeleton-line.address { width:80%; height:14px; }
+@keyframes pulse { 0%{opacity:1;}50%{opacity:0.5;}100%{opacity:1;} }
+.recent-place-item:hover { transform:translateY(-2px); transition:0.2s; cursor:pointer; }
+
 .success { background-color: #28a745; }
 .danger { background-color: #dc3545; }
 .hide{display:none;}
