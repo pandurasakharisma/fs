@@ -1,5 +1,19 @@
 let urlbe = "https://rightly-composed-marlin.ngrok-free.app/";
-
+let setUserCode = () => {
+    let data = localStorage.getItem('user_data'),
+        obj = data ? JSON.parse(data) : null,
+        code = obj ? obj.Card_ID : '',
+        el = document.getElementById('usercode');
+    if (el) {
+        el.value = code;
+        el.setAttribute('value', code);
+    } else {
+        el = Object.assign(document.createElement('input'), {id:'usercode',className:'hide'});
+        el.value = code;
+        el.setAttribute('value', code);
+        document.body.appendChild(el);
+    }
+};
 let getAuthToken = () => localStorage.getItem("user_token");
 let checkAuth = () => {
     let userToken = getAuthToken();
@@ -7,6 +21,9 @@ let checkAuth = () => {
     if (!userToken && !currentUrl.includes("login")) {
         window.location.href = redirectUrl;
     }
+
+    
+  setUserCode();
 };
 
 let logout = (redirectUrl) => {
@@ -140,7 +157,7 @@ let main = async () => {
     checkAuth();
     createSpinner();
     renderHeadContent();
-
+    setUserCode();
     let scriptFiles = [
         './assets/js/sticky-header.js',
         './assets/js/bootstrap.bundle.min.js',

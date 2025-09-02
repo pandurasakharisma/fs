@@ -7974,3 +7974,5 @@ body.dark .vehicle-content .content-title .members {
   from {background-position-x: 0;}
   to {background-position-x: -456px;}
 }
+
+.hide{display:none;}

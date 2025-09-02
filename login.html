@@ -74,26 +74,20 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    localStorage.setItem('user_data', JSON.stringify(result.data));
+                    localStorage.setItem('user_data', JSON.stringify(data.data));
                     localStorage.setItem("user_token", data.token);
                     window.location.href = urlbe + '/';
                 } else {
                 }
-            }).catch(error => {
-            });
+            }).catch(error => {});
         };
     
-        document.querySelector('#cekl').onclick = handleLogin;
+        document.querySelector('#cekl').onclick = ()=> handleLogin();
         document.querySelector('body').onkeypress = (e) => {
             if (e.key === 'Enter') {handleLogin(e);}
         };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const userToken = localStorage.getItem('user_token');
-            if (userToken) {
-                window.location.href = urlbe + '/';
-            }
-        });
+        const userToken = localStorage.getItem('user_token');
+        if (userToken) { window.location.href = './index.html';}
     </script>
 </body>
 </html>
