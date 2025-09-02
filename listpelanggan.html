@@ -96,28 +96,7 @@
             background: #fff;
             max-width: 450px;
         }
-        .skeleton-loader {
-            background: #f0f0f0;
-            border-radius: 6px;
-            overflow: hidden;
-            position: relative;
-            margin-bottom: 10px;
-            padding: 10px;
-        }
-
-        .skeleton-loader-line {
-            height: 14px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            border-radius: 4px;
-            animation: shimmer 1.5s infinite;
-            margin: 6px 0;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
+        
         .e404{ width: 100%; margin: 10px 0 20px; height: 100vh; position: fixed; background: #fff; left: 0; top: 0; }
     </style>
 </head>
@@ -128,7 +107,6 @@
             <div class="header-panel">
             <div class="flex-spacing gap-2 w-100" style="align-items: center; display: flex;">
                 
-                <!-- Tombol Back -->
                 <a href="index.html" class="back-btn">
                 <i class="iconsax icon-btn" data-icon="chevron-left" height="40" width="40" style="border: none;margin-left: -10px;">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -137,7 +115,6 @@
                 </i>
                 </a>
 
-                <!-- Input Search (DITARUH DI TENGAH) -->
                 <div class="location-box flex-grow-1" style="
                     background-color: rgba(var(--box-bg), 1);
                     display: flex;
@@ -235,6 +212,7 @@
         let currentSearch = '';
         let searchTimeout = null;
         
+        
         const addToJadwal = async (store) => {
             const now = new Date();
             const minggu = String(getMingguKe(now));
@@ -285,9 +263,9 @@
             let formData = new FormData(form);
             let data = {};
             let kosong = false;
-            formData.forEach((value,key)=>{
+            formData.forEach((value, key) => {
                 data[key] = value.trim();
-                if(!value.trim()) kosong = true;
+                if (!value.trim()) kosong = true;
             });
             let userCode = document.getElementById("usercode")?.value || "";
             data["usercode"] = userCode;
@@ -299,13 +277,13 @@
                 return;
             }
         
-            try{
-                let response = await fetch(urlbe+"addpelanggan",{
-                    method:"POST",
-                    headers:{"Content-Type":"application/json"},
-                    body:JSON.stringify(data)
+            try {
+                let response = await fetch(urlbe + "addpelanggan", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
                 });
-                if(response.ok){
+                if (response.ok) {
                     showToast("Data pelanggan berhasil disimpan.", "success");
                     form.reset();
                     window.location.href = './index.html';
@@ -325,17 +303,18 @@
             isLoading = true;
         
             if (reset) {
+                // Hapus semua data dan tampilkan skeleton saat reset
                 placeList.innerHTML = '';
-                placeList.appendChild(templateItem.cloneNode(true));
+                showSkeleton(placeList, limit); 
                 currentPage = 1;
                 hasMore = true;
+            } else {
+                // Jika tidak reset, tambahkan skeleton di akhir daftar
+                showSkeleton(placeList, limit);
             }
         
-            // Tampilkan skeleton loader
-            showSkeleton(placeList, limit);
-        
             try {
-                const response = await fetch(urlbe+'caripelanggan', {
+                const response = await fetch(urlbe + 'caripelanggan', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ search: currentSearch, page: currentPage, limit })
@@ -378,14 +357,14 @@
         let searchInput = document.getElementById("searchInput"),
             clearBtn = document.getElementById("clearBtn");
         
-        searchInput.onkeyup = (el)=>{
-            if(el.key =='Backspace' && el.target.value ==''){
+        searchInput.onkeyup = (el) => {
+            if (el.key == 'Backspace' && el.target.value == '') {
                 clearBtn.click();
             }
             clearBtn.style.display = el.target.value !== '' ? "block" : "none";
         };
         
-        clearBtn.onclick = ()=>{
+        clearBtn.onclick = () => {
             searchInput.value = "";
             clearBtn.style.display = "none";
             currentSearch = "";
@@ -394,16 +373,32 @@
             fetchAndRenderStores(true);
         };
         
-        document.getElementById('addform').onclick = ()=> openPopup();
-        document.getElementById('olay').onclick = ()=> closePopup();
+        document.getElementById('addform').onclick = () => openPopup();
+        document.getElementById('olay').onclick = () => closePopup();
         
         searchInput.oninput = handleSearch;
         
-        window.onscroll = () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {fetchAndRenderStores()}
-        }
-        fetchAndRenderStores();
-        </script>
+        const throttle = (func, limit) => {
+            let inThrottle;
+            return function () {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => (inThrottle = false), limit);
+                }
+            };
+        };
         
+        window.onscroll = throttle(() => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+                fetchAndRenderStores();
+            }
+        }, 500); 
+        
+        // Panggil fetch pertama kali
+        fetchAndRenderStores();
+    </script> 
 </body>
 </html>
