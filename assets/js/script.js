@@ -35,6 +35,19 @@ let logout = (redirectUrl) => {
     window.location.href = redirectUrl;
 };
 
+let showToast = (message, type = 'success') => {
+    let container = document.getElementById('toast-container');
+    let toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 100);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => container.removeChild(toast), 500);
+    }, 3000);
+};
+
 let renderHeadContent = () => {
     let head = document.head;
     let path = window.location.pathname.split("/").filter(Boolean);

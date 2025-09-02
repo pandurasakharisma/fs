@@ -224,22 +224,19 @@
 
     <section class="panel-space"></section>
     <script src="./assets/js/script.js"></script>
-    <script src="./assets/js/sweetalert.js"></script>
     <script>
-        
-
         let openPopup = ()=>document.getElementById('modpop').classList.add('show');
         let closePopup = ()=>document.getElementById('modpop').classList.remove('show');
-
-        let currentPage = 1
-        let isLoading = false
-        let hasMore = true
-        const limit = 10
-        let currentSearch = ''
-        let searchTimeout = null 
-
+    
+        let currentPage = 1;
+        let isLoading = false;
+        let hasMore = true;
+        const limit = 10;
+        let currentSearch = '';
+        let searchTimeout = null;
+    
         const showSkeleton = count => {
-            const placeList = document.getElementById('placeList')
+            const placeList = document.getElementById('placeList');
             placeList.insertAdjacentHTML('beforeend',
                 Array.from({ length: count }).map(() => `
                     <li class="recent-place-item skeleton-loader" style="display:block;">
@@ -247,13 +244,13 @@
                         <div class="address skeleton-loader-line" style="height:15px;width:80%;margin-top:5px;"></div>
                     </li>
                 `).join('')
-            )
-        }
-
+            );
+        };
+    
         const removeSkeleton = () => {
-            document.querySelectorAll('.skeleton-loader').forEach(el => el.remove())
-        }
-
+            document.querySelectorAll('.skeleton-loader').forEach(el => el.remove());
+        };
+    
         const getHariMon1 = (d) => ((d.getDay() + 6) % 7) + 1;
         const getMingguKe = (d) => {
             const first = new Date(d.getFullYear(), d.getMonth(), 1);
@@ -265,7 +262,7 @@
             const pad = (n) => String(n).padStart(2, '0');
             return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
         };
-
+    
         const addToJadwal = async (store) => {
             const now = new Date();
             const minggu = String(getMingguKe(now));
@@ -293,16 +290,16 @@
                     body: JSON.stringify(payload)
                 });
                 if (response.ok) {
-                    Swal.fire({icon:"success",title:"Ditambahkan!",text:`${store.CardName} ditambahkan ke jadwal.`,confirmButtonColor:"#3085d6",confirmButtonText:"OK"});
+                    showToast(`${store.CardName} ditambahkan ke jadwal.`, "success");
                 } else {
-                    Swal.fire({icon:"error",title:"Gagal!",text:"Tidak bisa menambahkan ke jadwal."});
+                    showToast("Tidak bisa menambahkan ke jadwal.", "danger");
                 }
             } catch (e) {
                 console.error("Error addToJadwal:", e);
-                Swal.fire({icon:"error",title:"Error!",text:"Tidak dapat terhubung ke server."});
+                showToast("Tidak dapat terhubung ke server.", "danger");
             }
         };
-
+    
         const renderStores = (stores, placeList, templateItem) => {
             stores.forEach(store => {
                 const li = templateItem.cloneNode(true);
@@ -313,124 +310,107 @@
                 placeList.appendChild(li);
             });
         };
-
-
-        let simpancust = document.querySelector(".simpancust")
+    
+        let simpancust = document.querySelector(".simpancust");
         simpancust.onclick = async function() {
-            
-            let form = document.querySelector(".theme-form")
-            let formData = new FormData(form)
-            let data = {}
-            let kosong = false
+            let form = document.querySelector(".theme-form");
+            let formData = new FormData(form);
+            let data = {};
+            let kosong = false;
             formData.forEach(function(value,key){
-                data[key] = value.trim()
-                if(!value.trim()) kosong = true
-            })
-            let userCode = document.getElementById("usercode") ? document.getElementById("usercode").value : ""
-            data["usercode"] = userCode
-            
+                data[key] = value.trim();
+                if(!value.trim()) kosong = true;
+            });
+            let userCode = document.getElementById("usercode") ? document.getElementById("usercode").value : "";
+            data["usercode"] = userCode;
+    
             closePopup();
             if (kosong) {
-                Swal.fire({
-                    icon: "warning",
-                    title: "Perhatian!",
-                    text: "Semua field harus diisi.",
-                    confirmButtonColor: "#f39c12",
-                    confirmButtonText: "OK"
-                }).then(() => {
-                    openPopup();
-                });
+                showToast("Semua field harus diisi.", "danger");
+                openPopup();
                 return;
             }
-
+    
             try{
                 let response = await fetch(urlbe+"addpelanggan",{
                     method:"POST",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(data)
-                })
+                });
                 if(response.ok){
-                    Swal.fire({icon:"success",title:"Berhasil!",text:"Data pelanggan berhasil disimpan.",confirmButtonColor:"#3085d6",confirmButtonText:"OK"})
+                    showToast("Data pelanggan berhasil disimpan.", "success");
                     form.reset();
                     window.location.href = './index.html';
                 }else{
-                    Swal.fire({icon:"error",title:"Gagal!",text:"Terjadi kesalahan saat menyimpan data."})
+                    showToast("Terjadi kesalahan saat menyimpan data.", "danger");
                 }
             }catch{
-                Swal.fire({icon:"error",title:"Error!",text:"Tidak dapat terhubung ke server."})
+                showToast("Tidak dapat terhubung ke server.", "danger");
             }
-        }
-
-
-        const placeList = document.getElementById('placeList')
-        const templateItem = document.querySelector('.recent-place-item')
-
+        };
+    
+        const placeList = document.getElementById('placeList');
+        const templateItem = document.querySelector('.recent-place-item');
+    
         const fetchAndRenderStores = async (reset = false) => {
-            if (isLoading || !hasMore) return
-            isLoading = true
-
+            if (isLoading || !hasMore) return;
+            isLoading = true;
+    
             if (reset) {
-                placeList.innerHTML = ''
-                placeList.appendChild(templateItem.cloneNode(true)) // biar selalu ada template
-                currentPage = 1
-                hasMore = true
+                placeList.innerHTML = '';
+                placeList.appendChild(templateItem.cloneNode(true));
+                currentPage = 1;
+                hasMore = true;
             }
-
-            showSkeleton(limit)
+    
+            showSkeleton(limit);
             try {
                 const response = await fetch(urlbe+'caripelanggan', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ search: currentSearch, page: currentPage, limit })
-                })
-                const result = await response.json()
-
-                removeSkeleton()
+                });
+                const result = await response.json();
+    
+                removeSkeleton();
                 if (response.ok && result.status === 'success' && result.data?.length > 0) {
-                    renderStores(result.data, placeList, templateItem)
-                    currentPage++
-                    hasMore = result.pagination?.hasMore ?? false
+                    renderStores(result.data, placeList, templateItem);
+                    currentPage++;
+                    hasMore = result.pagination?.hasMore ?? false;
                 } else {
-                    hasMore = false
+                    hasMore = false;
                     if (currentPage === 1) {
-                        placeList.innerHTML = '<li><img class="e404" src="./assets/images/kosong.svg" alt="Not Found"/><p>Tidak ada data ditemukan.</p></li>'
+                        placeList.innerHTML = '<li><img class="e404" src="./assets/images/kosong.svg" alt="Not Found"/><p>Tidak ada data ditemukan.</p></li>';
                     }
                 }
             } catch (e) {
-                console.error('Error fetching store data:', e)
-                removeSkeleton()
+                console.error('Error fetching store data:', e);
+                removeSkeleton();
                 if (currentPage === 1) {
-                    placeList.innerHTML = '<li><img class="e404" src="./assets/images/kosong.svg" alt="Not Found"/><p>Terjadi kesalahan saat memuat data.</p></li>'
+                    placeList.innerHTML = '<li><img class="e404" src="./assets/images/kosong.svg" alt="Not Found"/><p>Terjadi kesalahan saat memuat data.</p></li>';
                 }
+                showToast("Terjadi kesalahan saat memuat data.", "danger");
             }
-            isLoading = false
-        }
-
-        const handleSearch = e => {
-            currentSearch = e.target.value.trim()
-            clearTimeout(searchTimeout)
-            searchTimeout = setTimeout(() => {
-                fetchAndRenderStores(true)
-            }, 800) 
-        }
-
-        let searchInput = document.getElementById("searchInput"),
-        clearBtn = document.getElementById("clearBtn");
-        searchInput.onkeyup = (el)=>{
-            console.log(el);
-            if(el.key =='Backspace'){
-                if(el.target.value ==''){
-                    clearBtn.click();
-                }
-            }
-            
-            if (el.target.value !=  '') {
-                clearBtn.style.display = "block";
-            } else {
-                clearBtn.style.display = "none";
-            }
+            isLoading = false;
         };
-
+    
+        const handleSearch = e => {
+            currentSearch = e.target.value.trim();
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                fetchAndRenderStores(true);
+            }, 800);
+        };
+    
+        let searchInput = document.getElementById("searchInput"),
+            clearBtn = document.getElementById("clearBtn");
+        searchInput.onkeyup = (el)=>{
+            if(el.key =='Backspace' && el.target.value ==''){
+                clearBtn.click();
+            }
+            clearBtn.style.display = el.target.value !== '' ? "block" : "none";
+        };
+    
         clearBtn.onclick = ()=>{
             searchInput.value = "";
             clearBtn.style.display = "none";
@@ -439,17 +419,19 @@
             hasMore = true;
             fetchAndRenderStores(true);
         };
-
+    
         document.getElementById('addform').onclick =()=> openPopup();
         document.getElementById('olay').onclick =()=> closePopup();
-
-        searchInput.oninput = handleSearch
+    
+        searchInput.oninput = handleSearch;
         window.onscroll = () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {fetchAndRenderStores()}
-        }
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+                fetchAndRenderStores();
+            }
+        };
         fetchAndRenderStores();
     </script>
-
+    
 
 </body>
 </html>
