@@ -182,8 +182,11 @@ section,
 
 .title-color {
   color: rgba(var(--title-color), 1) !important;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 13px;
 }
-
 .success-color {
   color: rgba(var(--success-color), 1) !important;
 }

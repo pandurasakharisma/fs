@@ -8,7 +8,7 @@
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
-  "theme_color": "#c53f3f",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "./assets/images/logopk.png",

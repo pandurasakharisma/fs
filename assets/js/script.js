@@ -1,33 +1,37 @@
 let urlbe = "https://rightly-composed-marlin.ngrok-free.app/";
+
 let setUserCode = () => {
-    let data = localStorage.getItem('user_data'),
-        obj = data ? JSON.parse(data) : null,
-        code = obj ? obj.Card_ID : '',
-        el = document.getElementById('usercode');
-    if (el) {
-        el.value = code;
-        el.setAttribute('value', code);
-    } else {
-        el = Object.assign(document.createElement('input'), {id:'usercode',className:'hide'});
-        el.value = code;
-        el.setAttribute('value', code);
-        document.body.appendChild(el);
-    }
+  let data = localStorage.getItem('user_data'),
+      obj = data ? JSON.parse(data) : null,
+      cardId = obj && obj.Card_ID ? String(obj.Card_ID) : '',
+      code = cardId.includes(',') ? cardId.split(',')[0].trim() : cardId,
+      el = document.getElementById('usercode');
+
+  if (el) {
+      el.value = code;
+      el.setAttribute('value', code);
+  } else {
+      el = Object.assign(document.createElement('input'), {id:'usercode',className:'hide'});
+      el.value = code;
+      el.setAttribute('value', code);
+      document.body.appendChild(el);
+  }
 };
+
+
 let getAuthToken = () => localStorage.getItem("user_token");
 let checkAuth = () => {
     let userToken = getAuthToken();
     const currentUrl = window.location.href.toLowerCase(); 
     if (!userToken && !currentUrl.includes("login")) {
-        window.location.href = './login.html';
+        window.location.href = redirectUrl;
     }
-
-    
-  setUserCode();
+    setUserCode();
 };
 
 let logout = (redirectUrl) => {
     localStorage.removeItem("user_token");
+    localStorage.removeItem("user_data");
     window.location.href = redirectUrl;
 };
 
@@ -54,6 +58,7 @@ let renderHeadContent = () => {
         { tag: "meta", attributes: { name: "msapplication-TileImage", content: "./assets/images/logo/favicon.png" } },
         { tag: "meta", attributes: { name: "msapplication-TileColor", content: "#c53f3f" } },
         { tag: "meta", attributes: { "http-equiv": "X-UA-Compatible", content: "IE=edge" } },
+        { tag: "link", attributes: { rel: "stylesheet", type: "text/css", href: "./assets/css/vendors/iconsax.css" } },
         { tag: "link", attributes: { rel: "stylesheet", type: "text/css", href: "./assets/css/GTWalsheimPro.css" } },
         { tag: "link", attributes: { rel: "stylesheet", type: "text/css", href: "./assets/css/vendors/bootstrap.css" } },
         { tag: "link", attributes: { rel: "stylesheet", type: "text/css", href: "./assets/css/style.css" } },
@@ -157,7 +162,7 @@ let main = async () => {
     checkAuth();
     createSpinner();
     renderHeadContent();
-    setUserCode();
+
     let scriptFiles = [
         './assets/js/sticky-header.js',
         './assets/js/bootstrap.bundle.min.js',
