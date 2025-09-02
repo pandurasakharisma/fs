@@ -112,49 +112,6 @@ let handleServiceWorker = () => {
     }
 };
 
-let handleBodyScripts = () => {
-    let handleLogin = (e) => {
-        if (e) e.preventDefault();
-
-        let usernameEl = document.getElementById("Inputemail");
-        let passwordEl = document.getElementById("Inputpassword");
-
-        if (!usernameEl || !passwordEl) {
-            alert("Form login tidak ditemukan.");
-            return;
-        }
-
-        let username = usernameEl.value;
-        let password = passwordEl.value;
-
-        fetch(urlbe + "ceklogin", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password }),
-        }).then(response => response.json())
-        .then(data => {
-          if (data.status === "success") {
-            localStorage.setItem("user_token", data.token);
-            window.location.href = "./index.html";
-          } else {
-            alert(`Login gagal: ${data.message}`);
-          }
-        }).catch(() => {
-          alert("Terjadi kesalahan saat mencoba login. Silakan coba lagi.");
-        });
-    };
-
-    let ceklButton = document.querySelector("#cekl");
-    if (ceklButton) {
-        ceklButton.onclick = handleLogin;
-    }
-
-    let form = document.querySelector("#loginForm");
-    if (form) {
-        form.addEventListener("submit", handleLogin);
-    }
-};
-
 let createSpinner = () => {
     let spinner = document.createElement('div');
     spinner.id = 'spinner-loader';
@@ -195,7 +152,6 @@ let main = async () => {
         init_iconsax();
         initRatioJS();
         handleServiceWorker();
-        handleBodyScripts();
         removeSpinner();
     } catch (error) {
         console.error("Kesalahan saat memuat skrip:", error);

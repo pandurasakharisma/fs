@@ -74,7 +74,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    localStorage.setItem('user_token', data.token);
+                    localStorage.setItem('user_data', JSON.stringify(result.data));
+                    localStorage.setItem("user_token", data.token);
                     window.location.href = urlbe + '/';
                 } else {
                 }
