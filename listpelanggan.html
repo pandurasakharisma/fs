@@ -235,22 +235,6 @@
         let currentSearch = '';
         let searchTimeout = null;
     
-        const showSkeleton = count => {
-            const placeList = document.getElementById('placeList');
-            placeList.insertAdjacentHTML('beforeend',
-                Array.from({ length: count }).map(() => `
-                    <li class="recent-place-item skeleton-loader" style="display:block;">
-                        <div class="card-name skeleton-loader-line" style="height:20px;width:60%;"></div>
-                        <div class="address skeleton-loader-line" style="height:15px;width:80%;margin-top:5px;"></div>
-                    </li>
-                `).join('')
-            );
-        };
-    
-        const removeSkeleton = () => {
-            document.querySelectorAll('.skeleton-loader').forEach(el => el.remove());
-        };
-    
         const getHariMon1 = (d) => ((d.getDay() + 6) % 7) + 1;
         const getMingguKe = (d) => {
             const first = new Date(d.getFullYear(), d.getMonth(), 1);
