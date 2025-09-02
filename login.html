@@ -76,7 +76,7 @@
                 if (data.status === 'success') {
                     localStorage.setItem('user_data', JSON.stringify(data.data));
                     localStorage.setItem("user_token", data.token);
-                    window.location.href = urlbe + '/';
+                    window.location.href = './index.html';
                 } else {
                 }
             }).catch(error => {});
