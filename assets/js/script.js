@@ -24,7 +24,7 @@ let checkAuth = () => {
     let userToken = getAuthToken();
     const currentUrl = window.location.href.toLowerCase(); 
     if (!userToken && !currentUrl.includes("login")) {
-        window.location.href = redirectUrl;
+        window.location.href = './login.html';
     }
     setUserCode();
 };
