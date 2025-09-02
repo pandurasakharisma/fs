@@ -1,4 +1,4 @@
-let urlbe = "https://app2.pkserve.com/fs/";
+let urlbe = "https://rightly-composed-marlin.ngrok-free.app/";
 
 let getAuthToken = () => localStorage.getItem("user_token");
 let checkAuth = (redirectUrl) => {
