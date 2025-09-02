@@ -1,30 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="taxido">
-    <meta name="keywords" content="taxido">
-    <meta name="author" content="taxido">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="./assets/images/logopk.png" type="image/x-icon">
-    <title>FS CRM</title>
-
-    <link rel="apple-touch-icon" href="./assets/images/logo/favicon.png">
-    <meta name="title-color" content="#1F1F1F">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="taxido">
-    <meta name="msapplication-TileImage" content="./assets/images/logo/favicon.png">
-
-    <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
-    <link rel="stylesheet" type="text/css" href="./assets/css/GTWalsheimPro.css">
-    <link rel="stylesheet" type="text/css" href="./assets/css/vendors/iconsax.css">
-    <link rel="stylesheet" type="text/css" href="./assets/css/vendors/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+    <title>FS CRM - <?= strtoupper($path) ?></title>
     <style>
         .auth-bg-image-box .auth-bg-image{background-size: cover;height: calc(100vh - 360px);}
     </style>
@@ -32,11 +9,9 @@
 <body>
     <header id="header" class="auth-header">
         <div class="custom-container">
-            <div class="header-panel  pb-0">
+            <div class="header-panel pb-0">
                 <img class="img-fluid mx-auto logo user-logo" src="./assets/images/logo/user/logo-utama.svg"
                     alt="logo">
-                <img class="img-fluid mx-auto logo-dark user-logo"
-                    src="./assets/images/logo/user/user-logo-dark.png" alt="logo">
             </div>
         </div>
     </header>
@@ -77,14 +52,11 @@
             </div>
         </div>
     </div>
-    <script src="./assets/js/iconsax.js"></script>
-    <script src="./assets/js/password-show.js"></script>
-    <script src="./assets/js/sticky-header.js"></script>
-    <script src="./assets/js/bootstrap.bundle.min.js"></script>
-    <script src="./assets/js/template-setting.js"></script>
+
     <script src="./assets/js/script.js"></script>
+    <script src="./assets/js/password-show.js"></script>
     <script>
-        let urlbe = "https://albacore-direct-neatly.ngrok-free.app/taxido/";
+        
         let handleLogin = (e) => {
             if (e) {e.preventDefault();}
             const username = document.getElementById('Inputemail').value;
@@ -101,20 +73,26 @@
             })
             .then(response => response.json())
             .then(data => {
-                alert(data.status === 'success' ? `Login berhasil! Selamat datang, ${data.data.User_ID}` : `Login gagal: ${data.message}`);
-                data.status === 'success' && (window.location.href = 'location.html');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat mencoba login. Silakan coba lagi.');
+                if (data.status === 'success') {
+                    localStorage.setItem('user_token', data.token);
+                    window.location.href = urlbe + '/';
+                } else {
+                }
+            }).catch(error => {
             });
         };
     
         document.querySelector('#cekl').onclick = handleLogin;
         document.querySelector('body').onkeypress = (e) => {
-            console.log(e.key);
             if (e.key === 'Enter') {handleLogin(e);}
         };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userToken = localStorage.getItem('user_token');
+            if (userToken) {
+                window.location.href = urlbe + '/';
+            }
+        });
     </script>
 </body>
 </html>
