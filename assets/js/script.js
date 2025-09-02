@@ -103,21 +103,6 @@ let removeSpinner = () => {
     if(spinner){spinner.style.opacity='0'; setTimeout(()=>spinner.remove(),500);}
 };
 
-// ---------- SKELETON LOADER ----------
-let showSkeleton = (container, count=6) => {
-    container.innerHTML = '';
-    for(let i=0;i<count;i++){
-        let li = document.createElement('li');
-        li.className = 'recent-place-item skeleton';
-        li.innerHTML = `<div class="skeleton-card"><div class="skeleton-line title"></div><div class="skeleton-line address"></div></div>`;
-        container.appendChild(li);
-    }
-};
-
-let removeSkeleton = (container) => {
-    container.querySelectorAll('.skeleton').forEach(el => el.remove());
-};
-
 
 let formatDateIndo = dateStr => {
     if (!dateStr) return ''

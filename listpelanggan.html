@@ -96,7 +96,28 @@
             background: #fff;
             max-width: 450px;
         }
-        
+        .skeleton-loader {
+            background: #f0f0f0;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+
+        .skeleton-loader-line {
+            height: 14px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            border-radius: 4px;
+            animation: shimmer 1.5s infinite;
+            margin: 6px 0;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
         .e404{ width: 100%; margin: 10px 0 20px; height: 100vh; position: fixed; background: #fff; left: 0; top: 0; }
     </style>
 </head>
@@ -107,6 +128,7 @@
             <div class="header-panel">
             <div class="flex-spacing gap-2 w-100" style="align-items: center; display: flex;">
                 
+                <!-- Tombol Back -->
                 <a href="index.html" class="back-btn">
                 <i class="iconsax icon-btn" data-icon="chevron-left" height="40" width="40" style="border: none;margin-left: -10px;">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -115,6 +137,7 @@
                 </i>
                 </a>
 
+                <!-- Input Search (DITARUH DI TENGAH) -->
                 <div class="location-box flex-grow-1" style="
                     background-color: rgba(var(--box-bg), 1);
                     display: flex;
@@ -202,22 +225,39 @@
     <section class="panel-space"></section>
     <script src="./assets/js/script.js"></script>
     <script>
-        let openPopup = () => document.getElementById('modpop').classList.add('show');
-        let closePopup = () => document.getElementById('modpop').classList.remove('show');
         
-        let currentPage = 1;
-        let isLoading = false;
-        let hasMore = true;
-        const limit = 10;
-        let currentSearch = '';
-        let searchTimeout = null;
-        
-        
+
+        let openPopup = ()=>document.getElementById('modpop').classList.add('show');
+        let closePopup = ()=>document.getElementById('modpop').classList.remove('show');
+
+        let currentPage = 1
+        let isLoading = false
+        let hasMore = true
+        const limit = 10
+        let currentSearch = ''
+        let searchTimeout = null 
+
+        const showSkeleton = count => {
+            const placeList = document.getElementById('placeList')
+            placeList.insertAdjacentHTML('beforeend',
+                Array.from({ length: count }).map(() => `
+                    <li class="recent-place-item skeleton-loader" style="display:block;">
+                        <div class="card-name skeleton-loader-line" style="height:20px;width:60%;"></div>
+                        <div class="address skeleton-loader-line" style="height:15px;width:80%;margin-top:5px;"></div>
+                    </li>
+                `).join('')
+            )
+        }
+
+        const removeSkeleton = () => {
+            document.querySelectorAll('.skeleton-loader').forEach(el => el.remove())
+        }
+
         const addToJadwal = async (store) => {
             const now = new Date();
             const minggu = String(getMingguKe(now));
             const hari = String(getHariMon1(now));
-            const userCode = document.getElementById("usercode")?.value || "";
+            const userCode = document.getElementById("usercode") ? document.getElementById("usercode").value : "";
             const payload = {
                 carcode: store.CardCode,
                 cardname: store.CardName,
@@ -239,14 +279,17 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
-                if (response.ok) showToast(`${store.CardName} ditambahkan ke jadwal.`, "success");
-                else showToast("Tidak bisa menambahkan ke jadwal.", "danger");
+                if (response.ok) {
+                    Swal.fire({icon:"success",title:"Ditambahkan!",text:`${store.CardName} ditambahkan ke jadwal.`,confirmButtonColor:"#3085d6",confirmButtonText:"OK"});
+                } else {
+                    Swal.fire({icon:"error",title:"Gagal!",text:"Tidak bisa menambahkan ke jadwal."});
+                }
             } catch (e) {
                 console.error("Error addToJadwal:", e);
-                showToast("Tidak dapat terhubung ke server.", "danger");
+                Swal.fire({icon:"error",title:"Error!",text:"Tidak dapat terhubung ke server."});
             }
         };
-        
+
         const renderStores = (stores, placeList, templateItem) => {
             stores.forEach(store => {
                 const li = templateItem.cloneNode(true);
@@ -257,114 +300,125 @@
                 placeList.appendChild(li);
             });
         };
-        
-        document.querySelector(".simpancust").onclick = async function() {
-            let form = document.querySelector(".theme-form");
-            let formData = new FormData(form);
-            let data = {};
-            let kosong = false;
-            formData.forEach((value, key) => {
-                data[key] = value.trim();
-                if (!value.trim()) kosong = true;
-            });
-            let userCode = document.getElementById("usercode")?.value || "";
-            data["usercode"] = userCode;
-        
+
+
+        let simpancust = document.querySelector(".simpancust")
+        simpancust.onclick = async function() {
+            
+            let form = document.querySelector(".theme-form")
+            let formData = new FormData(form)
+            let data = {}
+            let kosong = false
+            formData.forEach(function(value,key){
+                data[key] = value.trim()
+                if(!value.trim()) kosong = true
+            })
+            let userCode = document.getElementById("usercode") ? document.getElementById("usercode").value : ""
+            data["usercode"] = userCode
+            
             closePopup();
             if (kosong) {
-                showToast("Semua field harus diisi.", "danger");
-                openPopup();
+                Swal.fire({
+                    icon: "warning",
+                    title: "Perhatian!",
+                    text: "Semua field harus diisi.",
+                    confirmButtonColor: "#f39c12",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    openPopup();
+                });
                 return;
             }
-        
-            try {
-                let response = await fetch(urlbe + "addpelanggan", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
-                });
-                if (response.ok) {
-                    showToast("Data pelanggan berhasil disimpan.", "success");
+
+            try{
+                let response = await fetch(urlbe+"addpelanggan",{
+                    method:"POST",
+                    headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify(data)
+                })
+                if(response.ok){
+                    Swal.fire({icon:"success",title:"Berhasil!",text:"Data pelanggan berhasil disimpan.",confirmButtonColor:"#3085d6",confirmButtonText:"OK"})
                     form.reset();
                     window.location.href = './index.html';
-                } else {
-                    showToast("Terjadi kesalahan saat menyimpan data.", "danger");
+                }else{
+                    Swal.fire({icon:"error",title:"Gagal!",text:"Terjadi kesalahan saat menyimpan data."})
                 }
-            } catch {
-                showToast("Tidak dapat terhubung ke server.", "danger");
+            }catch{
+                Swal.fire({icon:"error",title:"Error!",text:"Tidak dapat terhubung ke server."})
             }
-        };
-        
-        const placeList = document.getElementById('placeList');
-        const templateItem = document.querySelector('.recent-place-item');
-        
+        }
+
+
+        const placeList = document.getElementById('placeList')
+        const templateItem = document.querySelector('.recent-place-item')
+
         const fetchAndRenderStores = async (reset = false) => {
-            if (isLoading || !hasMore) return;
-            isLoading = true;
-        
+            if (isLoading || !hasMore) return
+            isLoading = true
+
             if (reset) {
-                // Hapus semua data dan tampilkan skeleton saat reset
-                placeList.innerHTML = '';
-                showSkeleton(placeList, limit); 
-                currentPage = 1;
-                hasMore = true;
-            } else {
-                // Jika tidak reset, tambahkan skeleton di akhir daftar
-                showSkeleton(placeList, limit);
+                placeList.innerHTML = ''
+                placeList.appendChild(templateItem.cloneNode(true)) // biar selalu ada template
+                currentPage = 1
+                hasMore = true
             }
-        
+
+            showSkeleton(limit)
             try {
-                const response = await fetch(urlbe + 'caripelanggan', {
+                const response = await fetch(urlbe+'caripelanggan', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ search: currentSearch, page: currentPage, limit })
-                });
-                const result = await response.json();
-        
-                removeSkeleton(placeList);
-        
+                })
+                const result = await response.json()
+
+                removeSkeleton()
                 if (response.ok && result.status === 'success' && result.data?.length > 0) {
-                    renderStores(result.data, placeList, templateItem);
-                    currentPage++;
-                    hasMore = result.pagination?.hasMore ?? false;
+                    renderStores(result.data, placeList, templateItem)
+                    currentPage++
+                    hasMore = result.pagination?.hasMore ?? false
                 } else {
-                    hasMore = false;
+                    hasMore = false
                     if (currentPage === 1) {
-                        placeList.innerHTML = '<li><img class="e404" src="./assets/images/kosong.svg" alt="Not Found"/><p>Tidak ada data ditemukan.</p></li>';
+                        placeList.innerHTML = '<li><img class="e404" src="./assets/images/kosong.svg" alt="Not Found"/><p>Tidak ada data ditemukan.</p></li>'
                     }
                 }
             } catch (e) {
-                console.error('Error fetching store data:', e);
-                removeSkeleton(placeList);
+                console.error('Error fetching store data:', e)
+                removeSkeleton()
                 if (currentPage === 1) {
-                    placeList.innerHTML = '<li><img class="e404" src="./assets/images/kosong.svg" alt="Not Found"/><p>Terjadi kesalahan saat memuat data.</p></li>';
+                    placeList.innerHTML = '<li><img class="e404" src="./assets/images/kosong.svg" alt="Not Found"/><p>Terjadi kesalahan saat memuat data.</p></li>'
                 }
-                showToast("Terjadi kesalahan saat memuat data.", "danger");
             }
-        
-            isLoading = false;
-        };
-        
-        // Search handling
+            isLoading = false
+        }
+
         const handleSearch = e => {
-            currentSearch = e.target.value.trim();
-            clearTimeout(searchTimeout);
+            currentSearch = e.target.value.trim()
+            clearTimeout(searchTimeout)
             searchTimeout = setTimeout(() => {
-                fetchAndRenderStores(true);
-            }, 800);
-        };
-        
+                fetchAndRenderStores(true)
+            }, 800) 
+        }
+
         let searchInput = document.getElementById("searchInput"),
-            clearBtn = document.getElementById("clearBtn");
-        
-        searchInput.onkeyup = (el) => {
-            if (el.key == 'Backspace' && el.target.value == '') {
-                clearBtn.click();
+        clearBtn = document.getElementById("clearBtn");
+        searchInput.onkeyup = (el)=>{
+            console.log(el);
+            if(el.key =='Backspace'){
+                if(el.target.value ==''){
+                    clearBtn.click();
+                }
             }
-            clearBtn.style.display = el.target.value !== '' ? "block" : "none";
+            
+            if (el.target.value !=  '') {
+                clearBtn.style.display = "block";
+            } else {
+                clearBtn.style.display = "none";
+            }
         };
-        
-        clearBtn.onclick = () => {
+
+        clearBtn.onclick = ()=>{
             searchInput.value = "";
             clearBtn.style.display = "none";
             currentSearch = "";
@@ -372,33 +426,17 @@
             hasMore = true;
             fetchAndRenderStores(true);
         };
-        
-        document.getElementById('addform').onclick = () => openPopup();
-        document.getElementById('olay').onclick = () => closePopup();
-        
-        searchInput.oninput = handleSearch;
-        
-        const throttle = (func, limit) => {
-            let inThrottle;
-            return function () {
-                const args = arguments;
-                const context = this;
-                if (!inThrottle) {
-                    func.apply(context, args);
-                    inThrottle = true;
-                    setTimeout(() => (inThrottle = false), limit);
-                }
-            };
-        };
-        
-        window.onscroll = throttle(() => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-                fetchAndRenderStores();
-            }
-        }, 500); 
-        
-        // Panggil fetch pertama kali
+
+        document.getElementById('addform').onclick =()=> openPopup();
+        document.getElementById('olay').onclick =()=> closePopup();
+
+        searchInput.oninput = handleSearch
+        window.onscroll = () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {fetchAndRenderStores()}
+        }
         fetchAndRenderStores();
-    </script> 
+    </script>
+
+
 </body>
 </html>
