@@ -129,24 +129,6 @@ let removeSkeleton = (container) => {
     container.querySelectorAll('.skeleton').forEach(el => el.remove());
 };
 
-// ---------- FETCH DATA DENGAN SKELETON ----------
-let fetchAndRenderStores = async (container, url, payload, renderFn) => {
-    showSkeleton(container, 6);
-    try {
-        const res = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
-        const data = await res.json();
-        removeSkeleton(container);
-        if(res.ok && data.status==='success' && data.data?.length>0){
-            renderFn(data.data);
-        }else{
-            container.innerHTML = '<li class="notfound">Data tidak ditemukan</li>';
-        }
-    }catch(e){
-        console.error(e);
-        removeSkeleton(container);
-        container.innerHTML = '<li class="notfound">Terjadi kesalahan memuat data</li>';
-    }
-};
 
 // ---------- MAIN ----------
 let main = async () => {
