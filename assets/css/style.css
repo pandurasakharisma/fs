@@ -4631,6 +4631,8 @@ body.dark .auth-bg-image-box .auth-bg-image {
   line-height: 1.2;
   font-weight: 300;
   color: rgba(var(--content-color), 1);
+  max-height: 30px;
+  overflow: hidden;
 }
 
 .contact-list li {

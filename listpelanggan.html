@@ -129,7 +129,7 @@
             <div class="flex-spacing gap-2 w-100" style="align-items: center; display: flex;">
                 
                 <!-- Tombol Back -->
-                <a href="home.html" class="back-btn">
+                <a href="index.html" class="back-btn">
                 <i class="iconsax icon-btn" data-icon="chevron-left" height="40" width="40" style="border: none;margin-left: -10px;">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M15.0013 20.6695C14.8113 20.6695 14.6213 20.5995 14.4713 20.4495L7.95125 13.9295C6.89125 12.8695 6.89125 11.1295 7.95125 10.0695L14.4713 3.54953C14.7613 3.25953 15.2413 3.25953 15.5312 3.54953C15.8212 3.83953 15.8212 4.31953 15.5312 4.60953L9.01125 11.1295C8.53125 11.6095 8.53125 12.3895 9.01125 12.8695L15.5312 19.3895C15.8212 19.6795 15.8212 20.1595 15.5312 20.4495C15.3813 20.5895 15.1912 20.6695 15.0013 20.6695Z" fill="#292D32"></path>
@@ -182,32 +182,32 @@
                 <form class="theme-form" style="margin-bottom:100px;">
                     <div class="form-group">
                         <label class="form-label mb-2" for="CardName">Nama Pelanggan</label>
-                        <input type="text" class="form-control" id="CardName" name="CardName" placeholder="Masukkan nama pelanggan">
+                        <input type="text" class="form-control" id="CardName" name="CardName" placeholder="Masukkan nama pelanggan" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label mb-2" for="Address">Alamat</label>
-                        <input type="text" class="form-control" id="Address" name="Address" placeholder="Masukkan alamat">
+                        <input type="text" class="form-control" id="Address" name="Address" placeholder="Masukkan alamat" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label mb-2" for="City">Kota</label>
-                        <input type="text" class="form-control" id="City" name="City" placeholder="Masukkan kota">
+                        <input type="text" class="form-control" id="City" name="City" placeholder="Masukkan kota" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label mb-2" for="Province">Provinsi</label>
-                        <input type="text" class="form-control" id="Province" name="Province" placeholder="Masukkan provinsi">
+                        <input type="text" class="form-control" id="Province" name="Province" placeholder="Masukkan provinsi" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label mb-2" for="Phone">No. Telepon</label>
-                        <input type="text" class="form-control" id="Phone" name="Phone" placeholder="Masukkan nomor telepon">
+                        <input type="text" class="form-control" id="Phone" name="Phone" placeholder="Masukkan nomor telepon" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label mb-2" for="PIC">Penanggung Jawab (PIC)</label>
-                        <input type="text" class="form-control" id="PIC" name="PIC" placeholder="Masukkan nama penanggung jawab">
+                        <input type="text" class="form-control" id="PIC" name="PIC" placeholder="Masukkan nama penanggung jawab" required>
                     </div>
 
                     <div class="order-type"></div>
@@ -226,6 +226,7 @@
     <script src="./assets/js/script.js"></script>
     <script src="./assets/js/sweetalert.js"></script>
     <script>
+        
         let currentPage = 1
         let isLoading = false
         let hasMore = true
@@ -233,8 +234,10 @@
         let currentSearch = ''
         let searchTimeout = null 
 
+        const placeList = document.getElementById('placeList')
+        const savedTemplateItem = placeList.querySelector('.recent-place-item') ? placeList.querySelector('.recent-place-item').cloneNode(true) : null
+
         const showSkeleton = count => {
-            const placeList = document.getElementById('placeList')
             placeList.insertAdjacentHTML('beforeend',
                 Array.from({ length: count }).map(() => `
                     <li class="recent-place-item skeleton-loader" style="display:block;">
@@ -271,13 +274,11 @@
             })
             let userCode = document.getElementById("usercode") ? document.getElementById("usercode").value : ""
             data["usercode"] = userCode
+            closePopup();
             if(kosong){
                 Swal.fire({icon:"warning",title:"Perhatian!",text:"Semua field harus diisi.",confirmButtonColor:"#f39c12",confirmButtonText:"OK"})
                 return
             }
-            
-            closePopup();
-
             try{
                 let response = await fetch(urlbe+"addpelanggan",{
                     method:"POST",
@@ -287,6 +288,7 @@
                 if(response.ok){
                     Swal.fire({icon:"success",title:"Berhasil!",text:"Data pelanggan berhasil disimpan.",confirmButtonColor:"#3085d6",confirmButtonText:"OK"})
                     form.reset();
+                    window.location.href = './index.html';
                 }else{
                     Swal.fire({icon:"error",title:"Gagal!",text:"Terjadi kesalahan saat menyimpan data."})
                 }
@@ -295,20 +297,62 @@
             }
         }
 
+        const addToJadwal = async (store) => {
+            let userCode = document.getElementById("usercode") ? document.getElementById("usercode").value : ""
+            const payload = {
+                carcode: store.CardCode,
+                cardname: store.CardName,
+                usercode: userCode,
+                foto: null,
+                lat: null,
+                lon: null,
+                start_kunjungan: null,
+                end_kunjungan: null,
+                created_by: userCode,
+                minggu: null,
+                hari: null,
+                result: null,
+                created_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+            }
+            try {
+                const response = await fetch(urlbe + "addtojadwal", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                })
+                if (response.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Ditambahkan!",
+                        text: `${store.CardName} berhasil ditambahkan ke jadwal.`,
+                        confirmButtonColor: "#3085d6",
+                        confirmButtonText: "OK"
+                    })
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal!",
+                        text: "Tidak bisa menambahkan ke jadwal."
+                    })
+                }
+            } catch (err) {
+                console.error("Error addToJadwal:", err)
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Tidak dapat terhubung ke server."
+                })
+            }
+        }
 
         const fetchAndRenderStores = async (reset = false) => {
             if (isLoading || !hasMore) return
             isLoading = true
-
-            const placeList = document.getElementById('placeList')
-            const templateItem = document.querySelector('.recent-place-item')
-
             if (reset) {
                 placeList.innerHTML = ''  
                 currentPage = 1
                 hasMore = true
             }
-
             showSkeleton(limit)
             try {
                 const response = await fetch(urlbe+'caripelanggan', {
@@ -317,10 +361,9 @@
                     body: JSON.stringify({ search: currentSearch, page: currentPage, limit })
                 })
                 const result = await response.json()
-
                 removeSkeleton()
                 if (response.ok && result.status === 'success' && result.data?.length > 0) {
-                    renderStores(result.data, placeList, templateItem)
+                    renderStores(result.data, placeList, savedTemplateItem)
                     currentPage++
                     hasMore = result.pagination?.hasMore ?? false
                 } else {
@@ -356,7 +399,6 @@
                 clearBtn.style.display = "none";
             }
         };
-
         clearBtn.onclick = ()=>{
             searchInput.value = "";
             clearBtn.style.display = "none";
@@ -365,7 +407,6 @@
             hasMore = true;
             fetchAndRenderStores(true);
         };
-
 
         let openPopup = ()=>document.getElementById('modpop').classList.add('show');
         let closePopup = ()=>document.getElementById('modpop').classList.remove('show');
@@ -377,7 +418,8 @@
         window.onscroll = () => {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {fetchAndRenderStores()}
         }
-        fetchAndRenderStores();
+        fetchAndRenderStores()
+
     </script>
 
 
