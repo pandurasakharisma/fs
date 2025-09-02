@@ -130,6 +130,48 @@ let removeSkeleton = (container) => {
 };
 
 
+let formatDateIndo = dateStr => {
+    if (!dateStr) return ''
+    let bulan = [
+        'Januari','Februari','Maret','April','Mei','Juni',
+        'Juli','Agustus','September','Oktober','November','Desember'
+    ]
+    let [y, m, d] = dateStr.split('-')
+    return `${parseInt(d)} ${bulan[parseInt(m)-1]} ${y}`
+}
+
+let formatTime = timeStr => {
+    if (!timeStr) return ''
+    let parts = timeStr.split(':')
+    return parts.length >= 2 ? `${parts[0]}:${parts[1]}${parts[2] ? ':'+parts[2] : ''}` : timeStr
+}
+
+
+const getHariMon1 = (d) => ((d.getDay() + 6) % 7) + 1;
+const getMingguKe = (d) => {
+    const first = new Date(d.getFullYear(), d.getMonth(), 1);
+    const firstDowMon1 = getHariMon1(first);
+    const offset = firstDowMon1 - 1;
+    return Math.floor((offset + d.getDate() - 1) / 7) + 1;
+};
+
+let getMingguHari = () => {
+    let now = new Date()
+    let tanggal = now.getDate()
+    let hari = now.getDay() // 0=minggu, 1=senin, ...
+    hari = hari === 0 ? 7 : hari // bikin senin=1 ... minggu=7
+
+    let minggu = Math.ceil(tanggal / 7) // minggu ke berapa di bulan
+    return { minggu, hari }
+}
+
+
+const fmtDateTime = (d) => {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+};
+
+
 // ---------- MAIN ----------
 let main = async () => {
     checkAuth();

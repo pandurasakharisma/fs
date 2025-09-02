@@ -233,33 +233,6 @@
             }
         }, 500)
 
-        let formatDateIndo = dateStr => {
-            if (!dateStr) return ''
-            let bulan = [
-                'Januari','Februari','Maret','April','Mei','Juni',
-                'Juli','Agustus','September','Oktober','November','Desember'
-            ]
-            let [y, m, d] = dateStr.split('-')
-            return `${parseInt(d)} ${bulan[parseInt(m)-1]} ${y}`
-        }
-
-        let formatTime = timeStr => {
-            if (!timeStr) return ''
-            let parts = timeStr.split(':')
-            return parts.length >= 2 ? `${parts[0]}:${parts[1]}${parts[2] ? ':'+parts[2] : ''}` : timeStr
-        }
-
-        // Hitung minggu dan hari saat ini
-        let getMingguHari = () => {
-            let now = new Date()
-            let tanggal = now.getDate()
-            let hari = now.getDay() // 0=minggu, 1=senin, ...
-            hari = hari === 0 ? 7 : hari // bikin senin=1 ... minggu=7
-
-            let minggu = Math.ceil(tanggal / 7) // minggu ke berapa di bulan
-            return { minggu, hari }
-        }
-
         let loadJadwal = usercode => {
             let { minggu, hari } = getMingguHari()
 

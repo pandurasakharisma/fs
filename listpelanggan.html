@@ -225,33 +225,21 @@
     <section class="panel-space"></section>
     <script src="./assets/js/script.js"></script>
     <script>
-        let openPopup = ()=>document.getElementById('modpop').classList.add('show');
-        let closePopup = ()=>document.getElementById('modpop').classList.remove('show');
-    
+        let openPopup = () => document.getElementById('modpop').classList.add('show');
+        let closePopup = () => document.getElementById('modpop').classList.remove('show');
+        
         let currentPage = 1;
         let isLoading = false;
         let hasMore = true;
         const limit = 10;
         let currentSearch = '';
         let searchTimeout = null;
-    
-        const getHariMon1 = (d) => ((d.getDay() + 6) % 7) + 1;
-        const getMingguKe = (d) => {
-            const first = new Date(d.getFullYear(), d.getMonth(), 1);
-            const firstDowMon1 = getHariMon1(first);
-            const offset = firstDowMon1 - 1;
-            return Math.floor((offset + d.getDate() - 1) / 7) + 1;
-        };
-        const fmtDateTime = (d) => {
-            const pad = (n) => String(n).padStart(2, '0');
-            return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-        };
-    
+        
         const addToJadwal = async (store) => {
             const now = new Date();
             const minggu = String(getMingguKe(now));
             const hari = String(getHariMon1(now));
-            const userCode = document.getElementById("usercode") ? document.getElementById("usercode").value : "";
+            const userCode = document.getElementById("usercode")?.value || "";
             const payload = {
                 carcode: store.CardCode,
                 cardname: store.CardName,
@@ -273,17 +261,14 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
-                if (response.ok) {
-                    showToast(`${store.CardName} ditambahkan ke jadwal.`, "success");
-                } else {
-                    showToast("Tidak bisa menambahkan ke jadwal.", "danger");
-                }
+                if (response.ok) showToast(`${store.CardName} ditambahkan ke jadwal.`, "success");
+                else showToast("Tidak bisa menambahkan ke jadwal.", "danger");
             } catch (e) {
                 console.error("Error addToJadwal:", e);
                 showToast("Tidak dapat terhubung ke server.", "danger");
             }
         };
-    
+        
         const renderStores = (stores, placeList, templateItem) => {
             stores.forEach(store => {
                 const li = templateItem.cloneNode(true);
@@ -294,27 +279,26 @@
                 placeList.appendChild(li);
             });
         };
-    
-        let simpancust = document.querySelector(".simpancust");
-        simpancust.onclick = async function() {
+        
+        document.querySelector(".simpancust").onclick = async function() {
             let form = document.querySelector(".theme-form");
             let formData = new FormData(form);
             let data = {};
             let kosong = false;
-            formData.forEach(function(value,key){
+            formData.forEach((value,key)=>{
                 data[key] = value.trim();
                 if(!value.trim()) kosong = true;
             });
-            let userCode = document.getElementById("usercode") ? document.getElementById("usercode").value : "";
+            let userCode = document.getElementById("usercode")?.value || "";
             data["usercode"] = userCode;
-    
+        
             closePopup();
             if (kosong) {
                 showToast("Semua field harus diisi.", "danger");
                 openPopup();
                 return;
             }
-    
+        
             try{
                 let response = await fetch(urlbe+"addpelanggan",{
                     method:"POST",
@@ -325,29 +309,31 @@
                     showToast("Data pelanggan berhasil disimpan.", "success");
                     form.reset();
                     window.location.href = './index.html';
-                }else{
+                } else {
                     showToast("Terjadi kesalahan saat menyimpan data.", "danger");
                 }
-            }catch{
+            } catch {
                 showToast("Tidak dapat terhubung ke server.", "danger");
             }
         };
-    
+        
         const placeList = document.getElementById('placeList');
         const templateItem = document.querySelector('.recent-place-item');
-    
+        
         const fetchAndRenderStores = async (reset = false) => {
             if (isLoading || !hasMore) return;
             isLoading = true;
-    
+        
             if (reset) {
                 placeList.innerHTML = '';
                 placeList.appendChild(templateItem.cloneNode(true));
                 currentPage = 1;
                 hasMore = true;
             }
-    
-            showSkeleton(limit);
+        
+            // Tampilkan skeleton loader
+            showSkeleton(placeList, limit);
+        
             try {
                 const response = await fetch(urlbe+'caripelanggan', {
                     method: 'POST',
@@ -355,8 +341,9 @@
                     body: JSON.stringify({ search: currentSearch, page: currentPage, limit })
                 });
                 const result = await response.json();
-    
-                removeSkeleton();
+        
+                removeSkeleton(placeList);
+        
                 if (response.ok && result.status === 'success' && result.data?.length > 0) {
                     renderStores(result.data, placeList, templateItem);
                     currentPage++;
@@ -369,15 +356,17 @@
                 }
             } catch (e) {
                 console.error('Error fetching store data:', e);
-                removeSkeleton();
+                removeSkeleton(placeList);
                 if (currentPage === 1) {
                     placeList.innerHTML = '<li><img class="e404" src="./assets/images/kosong.svg" alt="Not Found"/><p>Terjadi kesalahan saat memuat data.</p></li>';
                 }
                 showToast("Terjadi kesalahan saat memuat data.", "danger");
             }
+        
             isLoading = false;
         };
-    
+        
+        // Search handling
         const handleSearch = e => {
             currentSearch = e.target.value.trim();
             clearTimeout(searchTimeout);
@@ -385,16 +374,17 @@
                 fetchAndRenderStores(true);
             }, 800);
         };
-    
+        
         let searchInput = document.getElementById("searchInput"),
             clearBtn = document.getElementById("clearBtn");
+        
         searchInput.onkeyup = (el)=>{
             if(el.key =='Backspace' && el.target.value ==''){
                 clearBtn.click();
             }
             clearBtn.style.display = el.target.value !== '' ? "block" : "none";
         };
-    
+        
         clearBtn.onclick = ()=>{
             searchInput.value = "";
             clearBtn.style.display = "none";
@@ -403,19 +393,22 @@
             hasMore = true;
             fetchAndRenderStores(true);
         };
-    
-        document.getElementById('addform').onclick =()=> openPopup();
-        document.getElementById('olay').onclick =()=> closePopup();
-    
+        
+        document.getElementById('addform').onclick = ()=> openPopup();
+        document.getElementById('olay').onclick = ()=> closePopup();
+        
         searchInput.oninput = handleSearch;
+        
+        // Infinite scroll
         window.onscroll = () => {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
                 fetchAndRenderStores();
             }
         };
+        
+        // Load data awal
         fetchAndRenderStores();
-    </script>
-    
-
+        </script>
+        
 </body>
 </html>
