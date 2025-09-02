@@ -1,12 +1,14 @@
 let urlbe = "https://rightly-composed-marlin.ngrok-free.app/";
 
 let getAuthToken = () => localStorage.getItem("user_token");
-let checkAuth = (redirectUrl) => {
+let checkAuth = () => {
     let userToken = getAuthToken();
-    if (!userToken) {
+    const currentUrl = window.location.href.toLowerCase(); 
+    if (!userToken && !currentUrl.includes("login")) {
         window.location.href = redirectUrl;
     }
 };
+
 let logout = (redirectUrl) => {
     localStorage.removeItem("user_token");
     window.location.href = redirectUrl;
@@ -129,19 +131,17 @@ let handleBodyScripts = () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    localStorage.setItem("user_token", data.token);
-                    window.location.href = urlbe + "index.html";
-                } else {
-                    alert(`Login gagal: ${data.message}`);
-                }
-            })
-            .catch(() => {
-                alert("Terjadi kesalahan saat mencoba login. Silakan coba lagi.");
-            });
+        }).then(response => response.json())
+        .then(data => {
+          if (data.status === "success") {
+            localStorage.setItem("user_token", data.token);
+            window.location.href = "./index.html";
+          } else {
+            alert(`Login gagal: ${data.message}`);
+          }
+        }).catch(() => {
+          alert("Terjadi kesalahan saat mencoba login. Silakan coba lagi.");
+        });
     };
 
     let ceklButton = document.querySelector("#cekl");
@@ -179,6 +179,8 @@ let removeSpinner = () => {
 };
 
 let main = async () => {
+  
+    checkAuth();
     createSpinner();
     renderHeadContent();
 
