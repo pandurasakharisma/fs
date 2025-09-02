@@ -36,26 +36,6 @@ let logout = (redirectUrl) => {
     window.location.href = redirectUrl;
 };
 
-// ---------- HEAD & STYLING ----------
-let renderHeadContent = () => {
-    let head = document.head;
-    let path = window.location.pathname.split("/").filter(Boolean);
-    let pageTitle = path.length ? path[path.length - 1].replace(/-/g, " ").toUpperCase() : "FS CRM";
-    document.title = pageTitle;
-
-    let metaLinks = [
-        { tag: "meta", attributes: { "http-equiv": "Content-Type", content: "text/html; charset=UTF-8" } },
-        { tag: "meta", attributes: { "http-equiv": "X-UA-Compatible", content: "IE=edge" } },
-        { tag: "meta", attributes: { name: "viewport", content: "width=device-width, initial-scale=1.0" } },
-        { tag: "link", attributes: { rel: "stylesheet", type: "text/css", href: "./assets/css/vendors/iconsax.css" } },
-        { tag: "link", attributes: { rel: "stylesheet", type: "text/css", href: "./assets/css/style.css" } },
-    ];
-    metaLinks.forEach(item => {
-        let element = document.createElement(item.tag);
-        for (let key in item.attributes) element.setAttribute(key, item.attributes[key]);
-        head.appendChild(element);
-    });
-};
 
 // ---------- LOAD SCRIPT ----------
 let loadScript = (src) => new Promise((resolve, reject) => {
@@ -80,15 +60,24 @@ let init_iconsax = () => {
 // ---------- RATIO JS ----------
 let initRatioJS = () => {
     document.querySelectorAll(".bg-img").forEach(bgImgEl => {
-        if(bgImgEl.classList.contains("blur-up")) bgImgEl.parentNode.classList.add("blur-up", "lazyload");
-        if(bgImgEl.classList.contains("bg_size_content")) bgImgEl.parentNode.classList.add("b_size_content");
-        bgImgEl.parentNode.classList.add("bg-size");
+        let parentNode = bgImgEl.parentNode;
+
+        // Tambahkan kembali logika posisi gambar yang hilang
+        if (bgImgEl.classList.contains("bg-top")) parentNode.classList.add("b-top");
+        else if (bgImgEl.classList.contains("bg-bottom")) parentNode.classList.add("b-bottom");
+        else if (bgImgEl.classList.contains("bg-center")) parentNode.classList.add("b-center");
+        else if (bgImgEl.classList.contains("bg-left")) parentNode.classList.add("b-left");
+        else if (bgImgEl.classList.contains("bg-right")) parentNode.classList.add("b-right");
+
+        if (bgImgEl.classList.contains("blur-up")) parentNode.classList.add("blur-up", "lazyload");
+        if (bgImgEl.classList.contains("bg_size_content")) parentNode.classList.add("b_size_content");
+
+        parentNode.classList.add("bg-size");
         let bgSrc = bgImgEl.src;
         bgImgEl.style.display = "none";
-        bgImgEl.parentNode.style.cssText += `background-image: url(${bgSrc}); background-size:cover; background-position: center; background-repeat: no-repeat; display:block;`;
+        parentNode.style.cssText += `background-image: url(${bgSrc}); background-size:cover; background-position: center; background-repeat: no-repeat; display:block;`;
     });
 };
-
 // ---------- SERVICE WORKER ----------
 let handleServiceWorker = () => {
     if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
@@ -169,6 +158,44 @@ let getMingguHari = () => {
 const fmtDateTime = (d) => {
     const pad = (n) => String(n).padStart(2, '0');
     return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+};
+
+let renderHeadContent = () => {
+    let head = document.head;
+    let path = window.location.pathname.split("/").filter(Boolean);
+    let pageTitle = path.length ? path[path.length - 1].replace(/-/g, " ").toUpperCase() : "FS CRM";
+    document.title = pageTitle;
+
+    let metaLinks = [
+        { tag: "meta", attributes: { "http-equiv": "Content-Type", content: "text/html; charset=UTF-8" } },
+        { tag: "meta", attributes: { "http-equiv": "X-UA-Compatible", content: "IE=edge" } },
+        { tag: "meta", attributes: { name: "viewport", content: "width=device-width, initial-scale=1.0" } },
+
+        // Tambahkan kembali meta tag yang hilang
+        { tag: "meta", attributes: { name: "description", content: "FS-CRM" } },
+        { tag: "meta", attributes: { name: "keywords", content: "FS-CRM" } },
+        { tag: "meta", attributes: { name: "author", content: "FS-CRM" } },
+        { tag: "link", attributes: { rel: "manifest", href: "manifest.json" } },
+        { tag: "link", attributes: { rel: "icon", href: "./assets/images/logopk.png", type: "image/x-icon" } },
+        { tag: "link", attributes: { rel: "apple-touch-icon", href: "./assets/images/logo/favicon.png" } },
+        { tag: "meta", attributes: { name: "title-color", content: "#c53f3f" } },
+        { tag: "meta", attributes: { name: "mobile-web-app-capable", content: "yes" } },
+        { tag: "meta", attributes: { name: "apple-mobile-web-app-status-bar-style", content: "red" } },
+        { tag: "meta", attributes: { name: "apple-mobile-web-app-title", content: "FS-CRM" } },
+        { tag: "meta", attributes: { name: "msapplication-TileImage", content: "./assets/images/logo/favicon.png" } },
+        { tag: "meta", attributes: { name: "msapplication-TileColor", content: "#c53f3f" } },
+
+        // Tambahkan kembali link stylesheet yang hilang
+        { tag: "link", attributes: { rel: "stylesheet", type: "text/css", href: "./assets/css/vendors/iconsax.css" } },
+        { tag: "link", attributes: { rel: "stylesheet", type: "text/css", href: "./assets/css/GTWalsheimPro.css" } },
+        { tag: "link", attributes: { rel: "stylesheet", type: "text/css", href: "./assets/css/vendors/bootstrap.css" } },
+        { tag: "link", attributes: { rel: "stylesheet", type: "text/css", href: "./assets/css/style.css" } },
+    ];
+    metaLinks.forEach(item => {
+        let element = document.createElement(item.tag);
+        for (let key in item.attributes) element.setAttribute(key, item.attributes[key]);
+        head.appendChild(element);
+    });
 };
 
 
