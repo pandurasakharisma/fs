@@ -399,14 +399,9 @@
         
         searchInput.oninput = handleSearch;
         
-        // Infinite scroll
         window.onscroll = () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-                fetchAndRenderStores();
-            }
-        };
-        
-        // Load data awal
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {fetchAndRenderStores()}
+        }
         fetchAndRenderStores();
         </script>
         
