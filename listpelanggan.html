@@ -225,9 +225,9 @@
         let currentPage = 1;
         let isLoading = false;
         let hasMore = true;
-        const limit = 10;
+        const limit = 20;
         let currentSearch = '';
-        let searchTimeout = null;
+        let searchTimeout = null, usercode = null;
         
         const addToJadwal = async (store) => {
             const now = new Date();
@@ -314,11 +314,25 @@
         const placeList = document.getElementById('placeList');
         const templateItem = document.querySelector('.recent-place-item');
         
+
         showSkeleton(placeList, limit); 
         const fetchAndRenderStores = async (reset = false) => {
+            
+
+            let { minggu, hari } = getMingguHari();
+            if (!usercode) {
+                console.log("Usercode belum tersedia.");
+                return;
+            }
+
             if (isLoading || !hasMore) return;
             isLoading = true;
-        
+
+            currentSearch = document.getElementById("searchInput").value.trim();
+            usercode = document.getElementById("usercode").value.trim();
+            console.log(currentSearch);
+            console.log(usercode);
+
             if (reset) {
                 // Hapus semua data dan tampilkan skeleton saat reset
                 placeList.innerHTML = '';
@@ -329,12 +343,12 @@
                 // Jika tidak reset, tambahkan skeleton di akhir daftar
                 showSkeleton(placeList, limit);
             }
-        
+            
             try {
                 const response = await fetch(urlbe + 'caripelanggan', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ search: currentSearch, page: currentPage, limit })
+                    body: JSON.stringify({usercode:usercode, minggu, hari, search: currentSearch, page: currentPage, limit })
                 });
                 const result = await response.json();
         
@@ -367,6 +381,7 @@
             currentSearch = e.target.value.trim();
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
+                hasMore = true;
                 fetchAndRenderStores(true);
             }, 800);
         };
@@ -403,7 +418,17 @@
             }
         }; 
         
-        fetchAndRenderStores();
+        let waitUsercode = setInterval(() => {
+            let el = document.getElementById("usercode");
+            if (el && el.value) {
+                clearInterval(waitUsercode);
+                usercode = el.value;
+                setTimeout(() => {
+                    hasMore = true;
+                    fetchAndRenderStores(); 
+                }, 60);
+            }
+        }, 60);
     </script>
 
 </body>

@@ -1,221 +1,276 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
-  <meta charset="UTF-8">
-  <title>FS CRM</title>
-  <style>
-    .addcust svg {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 48px;
-      height: 48px;
-      cursor: pointer;
-      z-index: 9999;
-      border-radius: 50%;
-      background: #c53f3f;
-      padding: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      animation: pulse 1.5s infinite;
-      transition: transform 0.2s ease-in-out;
-    }
-    .addcust svg path { stroke: #fff !important; }
-    .addcust svg:hover { transform: scale(1.15); }
-    @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(197, 63, 63, 0.4); }
-      70% { transform: scale(1.1); box-shadow: 0 0 0 20px rgba(197, 63, 63, 0); }
-      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(197, 63, 63, 0); }
-    }
-    #headerx .header, #headerx .search-bar{
-        padding: 8px 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-    }
-    #headerx svg{stroke:#c53f3f;}
-    .header-title img { height: 30px; }
-    .header-icons { display: flex; align-items: center; gap: 15px; }
-    #headerx .search-bar {
-      display: none;
-      align-items: center;
-      width: 100%;
-      position: relative;
-      padding: 3px 0;
-    }
-    .search-input-wrapper {
-        position: relative;
-        width: 100%;
-        display: flex;
-        margin: 0 8px;
-        background: #f5f5f5;
-        border-radius: 8px;
-    }
-    .search-input-wrapper input {
-        width: 100%;
-        padding: 8px 35px 5px 40px;
-        border: none;
-        outline: none;
-        background: none;
-        color: #c53f3f;
-        text-transform: capitalize;
-    }
-    .search-input-wrapper input::placeholder {color: #c53f3f;opacity: 0.7; }
-    .search-input-wrapper .search-icon {
-        position: absolute;
-        top: 5px;
-        left: 8px;
-    }
-    .dropdown-menu-custom {
-        position: absolute;
-        top: 40px;
-        right: 0px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        display: none;
-        min-width: 150px;
-        z-index: +3;
-        overflow:hidden;
-    }
-    .dropdown-menu-custom a {
-      display: block;
-      padding: 10px;
-      color: black;
-      text-decoration: none;
-    }
-    .dropdown-menu-custom a:hover { background-color: #f1f1f1; }
-    .my-ride-details .icon {
-        height: 30px;
-        width: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba(var(--box-bg), 1);
-        --Iconsax-Color: rgba(var(--title-color), 1);
-        --Iconsax-Size: 16px;
-        border-radius: 100%;
-    }
-    .my-ride-details .icon.error-icon {
-        background-color: rgba(var(--error-color), 0.1);
-        --Iconsax-Color: rgba(var(--error-color), 1);
-        --Iconsax-Size: 16px;
-    }
+    <meta charset="UTF-8">
+    <title>FS CRM</title>
+    <style>
+        .addcust svg {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            z-index: 9999;
+            border-radius: 50%;
+            background: #c53f3f;
+            padding: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: pulse 1.5s infinite;
+            transition: transform 0.2s ease-in-out;
+        }
 
-    #absenkeluar > div:first-child{
-        background: #c53f3f;
-        padding: 40px 20px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-        position:relative;
-        overflow: hidden;
-    }
-    .seclist{
-        background: #fff;
-        border-radius: 18px;
-        overflow: hidden;
-        margin-top: -20px;
-        z-index: +1;
-        position: absolute;
-        width: 100%;
-        box-shadow: 1px -7px 10px rgba(0, 0, 0, 0.08);
-    }
-    #absenkeluar > div:first-child:before {
-        content: " ";
-        width: calc(100% + 15rem);
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        background-image: url(./assets/images/bgbca.svg);
-        background-position: -10rem -17rem;
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
+        .addcust svg path {
+            stroke: #fff !important;
+        }
 
-    .bg-pattern .card::before {
-        background: linear-gradient(135deg, #f8f9fa 25%, #e8f5e9 100%);
-        background-image: url(./assets/images/bg2.svg);
-        background-size: cover;
-        border: none;
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-    }
+        .addcust svg:hover {
+            transform: scale(1.15);
+        }
 
-    .card-absen {
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(197, 63, 63, 0.4);
+            }
 
-    .clock-time {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #212529;
-        margin: 0;
-        line-height: 1;
-    }
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 20px rgba(197, 63, 63, 0);
+            }
 
-    .btn-clock {
-      padding: 10px 25px;
-      font-size: 1rem;
-      border-radius: 10px;
-      width: 100%;
-    }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(197, 63, 63, 0);
+            }
+        }
 
-    .status-dot {
-      height: 10px;
-      width: 10px;
-      background-color: #28a745;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 5px;
-    }
+        #headerx .header,
+        #headerx .search-bar {
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
 
-    .user-info h5 {
-      margin: 0;
-      font-weight: 600;
-    }
+        #headerx svg {
+            stroke: #c53f3f;
+        }
 
-    .location {
-      font-size: 0.9rem;
-      color: #6c757d;
-    }
+        .header-title img {
+            height: 30px;
+        }
 
-    .left-box {
-      border-right: 1px solid #dee2e6;
-      padding-right: 15px;
-    }
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-    @media (max-width: 576px) {
-      .left-box {
-        padding-bottom: 0;
-      }
-    }
-  </style>
+        #headerx .search-bar {
+            display: none;
+            align-items: center;
+            width: 100%;
+            position: relative;
+            padding: 3px 0;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            margin: 0 8px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .search-input-wrapper input {
+            width: 100%;
+            padding: 8px 35px 5px 40px;
+            border: none;
+            outline: none;
+            background: none;
+            color: #c53f3f;
+            text-transform: capitalize;
+        }
+
+        .search-input-wrapper input::placeholder {
+            color: #c53f3f;
+            opacity: 0.7;
+        }
+
+        .search-input-wrapper .search-icon {
+            position: absolute;
+            top: 5px;
+            left: 8px;
+        }
+
+        .dropdown-menu-custom {
+            position: absolute;
+            top: 40px;
+            right: 0px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            display: none;
+            min-width: 150px;
+            z-index: +3;
+            overflow: hidden;
+        }
+
+        .dropdown-menu-custom a {
+            display: block;
+            padding: 10px;
+            color: black;
+            text-decoration: none;
+        }
+
+        .dropdown-menu-custom a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .my-ride-details .icon {
+            height: 30px;
+            width: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(var(--box-bg), 1);
+            --Iconsax-Color: rgba(var(--title-color), 1);
+            --Iconsax-Size: 16px;
+            border-radius: 100%;
+        }
+
+        .my-ride-details .icon.error-icon {
+            background-color: rgba(var(--error-color), 0.1);
+            --Iconsax-Color: rgba(var(--error-color), 1);
+            --Iconsax-Size: 16px;
+        }
+
+        #absenkeluar>div:first-child {
+            background: #c53f3f;
+            padding: 40px 20px 60px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .seclist {
+            background: #fff;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            overflow: hidden;
+            margin-top: -20px;
+            z-index: +1;
+            position: absolute;
+            border: none;
+            width: 100%;
+            min-height: calc(100vh - 240px);
+        }
+
+        #absenkeluar>div:first-child:before {
+            content: " ";
+            width: calc(100% + 15rem);
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-image: url(./assets/images/bgbca.svg);
+            background-position: -10rem -14rem;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .bg-pattern .card::before {
+            background: linear-gradient(135deg, #f8f9fa 25%, #e8f5e9 100%);
+            background-image: url(./assets/images/bg2.svg);
+            background-size: cover;
+            border: none;
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .card-absen {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .clock-time {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #212529;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .btn-clock {
+            padding: 10px 25px;
+            font-size: 1rem;
+            border-radius: 10px;
+            width: 100%;
+        }
+
+        .status-dot {
+            height: 10px;
+            width: 10px;
+            background-color: #28a745;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .user-info h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .location {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .left-box {
+            border-right: 1px solid #dee2e6;
+            padding-right: 15px;
+        }
+
+        @media (max-width: 576px) {
+            .left-box {
+                padding-bottom: 0;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <header id="header" class="main-header" style="background:#fff;padding:10px 0;">
+    <header id="header" class="main-header"
+        style="background:#fff;padding:10px 0;box-shadow: 3px -2px 10px rgb(0 0 0 / 47%);">
         <div class="custom-container">
-        <div id="headerx"></div>
+            <div id="headerx"></div>
         </div>
     </header>
 
     <div id="absenkeluar"></div>
 
     <section class="seclist">
-        <div class="custom-container"><ul class="my-ride-list" style="margin-top: 0;"></ul></div>
+        <div class="custom-container">
+            <ul class="my-ride-list" style="margin-top: 0;"></ul>
+        </div>
     </section>
 
     <section class="panel-space"></section>
 
     <a href="./listpelanggan.html" class="iconsax addcust" data-icon="add" id="addform">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M6 12H18" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M12 18V6" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 12H18" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M12 18V6" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
     </a>
 
@@ -240,19 +295,25 @@
                 `;
                 leftCol.innerHTML = leftColHtml;
 
+                let data = localStorage.getItem('user_absen'),
+                    obj = data ? JSON.parse(data) : null,
+                    jam = obj && obj.jam ? String(obj.jam) : '';
+
+
                 let rightCol = document.createElement('div');
                 rightCol.className = 'col-6 text-center';
                 let rightColHtml = `
                     <p class="mb-2">
                         <span class="status-dot"></span>
-                        <span id="clockInTime">In - 08:40 AM</span>
+                        <span id="clockInTime">Check In : ${jam} WIB</span>
                     </p>
                     <button onclick='logout()' class="btn btn-clock mb-2" id="btnClock" style="background: #c53f3f;color: #fff;border: none;">
                         Keluar Akun
                     </button>
                 `;
                 rightCol.innerHTML = rightColHtml;
-                
+
+
                 row.appendChild(leftCol);
                 row.appendChild(rightCol);
                 cardAbsen.appendChild(row);
@@ -260,20 +321,21 @@
                 document.querySelector('#absenkeluar').appendChild(bgPatternDiv);
             };
 
+
             let updateClock = () => {
                 let now = new Date();
-                
-                let options = { 
-                    timeZone: 'Asia/Jakarta', 
-                    hour: '2-digit', 
+
+                let options = {
+                    timeZone: 'Asia/Jakarta',
+                    hour: '2-digit',
                     minute: '2-digit'
                 };
                 let timeString = now.toLocaleTimeString('id-ID', options);
                 document.getElementById('currentTime').innerText = timeString;
 
-                let dateOptions = { 
-                    weekday: 'long', 
-                    day: '2-digit', 
+                let dateOptions = {
+                    weekday: 'long',
+                    day: '2-digit',
                     month: 'long'
                 };
                 let dateString = now.toLocaleDateString('id-ID', dateOptions);
@@ -309,7 +371,7 @@
                 <div class="dropdown-menu-custom" id="dropdownMenu">
                     <a href="#">History Input</a>
                     <a href="#">Schedule</a>
-                    <a href="#">Logout</a>
+                    <a onclick='logout()'>Logout</a>
                 </div>
                 </div>
                 <div class="search-bar" id="searchBar">
@@ -363,7 +425,7 @@
             };
             document.onclick = e => {
                 if (!menuIcon.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                dropdownMenu.style.display = 'none';
+                    dropdownMenu.style.display = 'none';
                 }
             };
 
@@ -380,94 +442,95 @@
         }, 60);
 
         let loadJadwal = usercode => {
-        let { minggu, hari } = getMingguHari();
-        fetch(urlbe + "listjadwal", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ usercode, minggu, hari })
-        })
-        .then(r => r.json())
-        .then(res => {
-            let list = document.querySelector(".my-ride-list");
-            let data = res.data || [];
-            let mapCust = {};
-            data.forEach(d => {
-            let key = d.cust_name || '-';
-            if (!mapCust[key] || new Date(d.created_at) > new Date(mapCust[key].created_at)) {
-                mapCust[key] = d;
-            }
-            });
-            let distinctData = Object.values(mapCust);
-            list.innerHTML = distinctData.map(d => {
-            let status = d.end_kunjungan ? "done" : "waiting";
-            let tanggal = d.created_at ? formatDateIndo(d.created_at.split('T')[0]) : '';
-            let start = formatTime(d.start_kunjungan);
-            let end = formatTime(d.end_kunjungan);
-            let jam = (start && end) ? `${start} - ${end}` : '';
-            let jamClass = jam ? '' : 'hide';
-            return `
-                <li>
-                <div class="my-ride-box">
-                    <div class="my-ride-head">
-                    <div class="my-ride-content flex-column" style="width:100%;margin:0 5px 0;">
-                        <div class="flex-spacing">
-                        <a href="#"><h6 class="title-color fw-medium">${d.cust_name || '-'}</h6></a>
-                        <span class="status accent-color fw-normal">${status}</span>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="my-ride-details">
-                        <div class="ride-info" style="flex-direction:unset;width:100%;margin:5px 5px 0;">
-                            ${d.Full_Name ? `
-                            <div class="ride-info-content">
-                                <div class="d-flex align-content-center gap-2 lh-base">
-                                <h5 class="fw-normal title-color">${d.Full_Name}</h5>
+            let { minggu, hari } = getMingguHari();
+            fetch(urlbe + "listjadwal", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ usercode, minggu, hari })
+            })
+                .then(r => r.json())
+                .then(res => {
+                    let list = document.querySelector(".my-ride-list");
+                    let data = res.data || [];
+                    let mapCust = {};
+                    data.forEach(d => {
+                        let key = d.cust_name || '-';
+                        if (!mapCust[key] || new Date(d.created_at) > new Date(mapCust[key].created_at)) {
+                            mapCust[key] = d;
+                        }
+                    });
+                    let distinctData = Object.values(mapCust);
+                    list.innerHTML = distinctData.map(d => {
+                        let status = d.end_kunjungan ? "done" : "waiting";
+                        let tanggal = d.created_at ? formatDateIndo(d.created_at.split('T')[0]) : '';
+                        let start = formatTime(d.start_kunjungan);
+                        let end = formatTime(d.end_kunjungan);
+                        let jam = (start && end) ? `${start} - ${end}` : '';
+                        let jamClass = jam ? '' : 'hide';
+                        return `
+                            <li>
+                            <div class="my-ride-box">
+                                <div class="my-ride-head">
+                                <div class="my-ride-content flex-column" style="width:100%;margin:0 5px 0;">
+                                    <div class="flex-spacing">
+                                    <a href="#"><h6 class="title-color fw-medium">${d.cust_name || '-'}</h6></a>
+                                    <span class="status accent-color fw-normal">${status}</span>
+                                    </div>
                                 </div>
-                                <h6 class="fw-normal content-color mt-1">${d.Job_Position || ''}</h6>
-                            </div>` : ''}
-                            <div class=" flex-align-center gap-2">
-                                <a href="edit-offer.html">
-                                    <i class="iconsax icon" data-icon="edit-2">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M5.53999 19.5196C4.92999 19.5196 4.35999 19.3096 3.94999 18.9196C3.42999 18.4296 3.17999 17.6896 3.26999 16.8896L3.63999 13.6496C3.70999 13.0396 4.07999 12.2296 4.50999 11.7896L12.72 3.09956C14.77 0.929561 16.91 0.869561 19.08 2.91956C21.25 4.96956 21.31 7.10956 19.26 9.27956L11.05 17.9696C10.63 18.4196 9.84999 18.8396 9.23999 18.9396L6.01999 19.4896C5.84999 19.4996 5.69999 19.5196 5.53999 19.5196ZM15.93 2.90956C15.16 2.90956 14.49 3.38956 13.81 4.10956L5.59999 12.8096C5.39999 13.0196 5.16999 13.5196 5.12999 13.8096L4.75999 17.0496C4.71999 17.3796 4.79999 17.6496 4.97999 17.8196C5.15999 17.9896 5.42999 18.0496 5.75999 17.9996L8.97999 17.4496C9.26999 17.3996 9.74999 17.1396 9.94999 16.9296L18.16 8.23956C19.4 6.91956 19.85 5.69956 18.04 3.99956C17.24 3.22956 16.55 2.90956 15.93 2.90956Z" fill="#292D32"/>
-                                            <path d="M17.3404 10.9489C17.3204 10.9489 17.2904 10.9489 17.2704 10.9489C14.1504 10.6389 11.6404 8.26887 11.1604 5.16887C11.1004 4.75887 11.3804 4.37887 11.7904 4.30887C12.2004 4.24887 12.5804 4.52887 12.6504 4.93887C13.0304 7.35887 14.9904 9.21887 17.4304 9.45887C17.8404 9.49887 18.1404 9.86887 18.1004 10.2789C18.0504 10.6589 17.7204 10.9489 17.3404 10.9489Z" fill="#292D32"/>
-                                            <path d="M21 22.75H3C2.59 22.75 2.25 22.41 2.25 22C2.25 21.59 2.59 21.25 3 21.25H21C21.41 21.25 21.75 21.59 21.75 22C21.75 22.41 21.41 22.75 21 22.75Z" fill="#292D32"/>
-                                        </svg>
-                                    </i>
-                                </a>
-                                <a href="#">
-                                    <i class="iconsax icon error-icon" data-icon="trash">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M21 5.97998C17.67 5.64998 14.32 5.47998 10.98 5.47998C9 5.47998 7.02 5.57998 5.04 5.77998L3 5.97998" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M8.5 4.97L8.72 3.66C8.88 2.71 9 2 10.69 2H13.31C15 2 15.13 2.75 15.28 3.67L15.5 4.97" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M18.85 9.14001L18.2 19.21C18.09 20.78 18 22 15.21 22H8.79002C6.00002 22 5.91002 20.78 5.80002 19.21L5.15002 9.14001" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M10.33 16.5H13.66" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M9.5 12.5H14.5" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
-                                    </i>
-                                </a>
+                                </div>
+                                <div class="my-ride-details">
+                                    <div class="ride-info" style="flex-direction:unset;width:100%;margin:5px 5px 0;">
+                                        ${d.Full_Name ? `
+                                        <div class="ride-info-content">
+                                            <div class="d-flex align-content-center gap-2 lh-base">
+                                            <h5 class="fw-normal title-color">${d.Full_Name}</h5>
+                                            </div>
+                                            <h6 class="fw-normal content-color mt-1">${d.Job_Position || ''}</h6>
+                                        </div>` : ''}
+                                        <div class=" flex-align-center gap-2">
+                                            <a href="edit-offer.html">
+                                                <i class="iconsax icon" data-icon="edit-2">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M5.53999 19.5196C4.92999 19.5196 4.35999 19.3096 3.94999 18.9196C3.42999 18.4296 3.17999 17.6896 3.26999 16.8896L3.63999 13.6496C3.70999 13.0396 4.07999 12.2296 4.50999 11.7896L12.72 3.09956C14.77 0.929561 16.91 0.869561 19.08 2.91956C21.25 4.96956 21.31 7.10956 19.26 9.27956L11.05 17.9696C10.63 18.4196 9.84999 18.8396 9.23999 18.9396L6.01999 19.4896C5.84999 19.4996 5.69999 19.5196 5.53999 19.5196ZM15.93 2.90956C15.16 2.90956 14.49 3.38956 13.81 4.10956L5.59999 12.8096C5.39999 13.0196 5.16999 13.5196 5.12999 13.8096L4.75999 17.0496C4.71999 17.3796 4.79999 17.6496 4.97999 17.8196C5.15999 17.9896 5.42999 18.0496 5.75999 17.9996L8.97999 17.4496C9.26999 17.3996 9.74999 17.1396 9.94999 16.9296L18.16 8.23956C19.4 6.91956 19.85 5.69956 18.04 3.99956C17.24 3.22956 16.55 2.90956 15.93 2.90956Z" fill="#292D32"/>
+                                                        <path d="M17.3404 10.9489C17.3204 10.9489 17.2904 10.9489 17.2704 10.9489C14.1504 10.6389 11.6404 8.26887 11.1604 5.16887C11.1004 4.75887 11.3804 4.37887 11.7904 4.30887C12.2004 4.24887 12.5804 4.52887 12.6504 4.93887C13.0304 7.35887 14.9904 9.21887 17.4304 9.45887C17.8404 9.49887 18.1404 9.86887 18.1004 10.2789C18.0504 10.6589 17.7204 10.9489 17.3404 10.9489Z" fill="#292D32"/>
+                                                        <path d="M21 22.75H3C2.59 22.75 2.25 22.41 2.25 22C2.25 21.59 2.59 21.25 3 21.25H21C21.41 21.25 21.75 21.59 21.75 22C21.75 22.41 21.41 22.75 21 22.75Z" fill="#292D32"/>
+                                                    </svg>
+                                                </i>
+                                            </a>
+                                            <a href="#">
+                                                <i class="iconsax icon error-icon" data-icon="trash">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M21 5.97998C17.67 5.64998 14.32 5.47998 10.98 5.47998C9 5.47998 7.02 5.57998 5.04 5.77998L3 5.97998" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M8.5 4.97L8.72 3.66C8.88 2.71 9 2 10.69 2H13.31C15 2 15.13 2.75 15.28 3.67L15.5 4.97" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M18.85 9.14001L18.2 19.21C18.09 20.78 18 22 15.21 22H8.79002C6.00002 22 5.91002 20.78 5.80002 19.21L5.15002 9.14001" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M10.33 16.5H13.66" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        <path d="M9.5 12.5H14.5" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                </i>
+                                            </a>
+                                        </div>
+                                </div>
+                                <ul class="ride-location-listing mt-3">
+                                    <li class="location-box">
+                                    <img class="icon" src="./assets/images/svg/location-fill.svg" alt="location">
+                                    <h5 class="fw-light title-color">${d.Address || ''}</h5>
+                                    </li>
+                                    <li class="location-box ${(!tanggal && !jam) ? 'hide' : ''}">
+                                    <img class="icon" src="./assets/images/svg/gps.svg" alt="gps">
+                                    <div class="flex-spacing" style="width:100%;">
+                                        <span class="fw-light title-color border-0">${tanggal}</span>
+                                        <span class="fw-light title-color border-0 ml-auto ${jamClass}">${jam}</span>
+                                    </div>
+                                    </li>
+                                </ul>
+                                </div>
                             </div>
-                    </div>
-                    <ul class="ride-location-listing mt-3">
-                        <li class="location-box">
-                        <img class="icon" src="./assets/images/svg/location-fill.svg" alt="location">
-                        <h5 class="fw-light title-color">${d.Address || ''}</h5>
-                        </li>
-                        <li class="location-box ${(!tanggal && !jam) ? 'hide' : ''}">
-                        <img class="icon" src="./assets/images/svg/gps.svg" alt="gps">
-                        <div class="flex-spacing" style="width:100%;">
-                            <span class="fw-light title-color border-0">${tanggal}</span>
-                            <span class="fw-light title-color border-0 ml-auto ${jamClass}">${jam}</span>
-                        </div>
-                        </li>
-                    </ul>
-                    </div>
-                </div>
-                </li>
-            `;
-            }).join('');
-        });
+                            </li>
+                        `;
+                    }).join('');
+                });
         };
     </script>
 </body>
+
 </html>

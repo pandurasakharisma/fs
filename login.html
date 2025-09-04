@@ -22,14 +22,14 @@
             <div class="custom-container white-background pb-2">
                 <div class="auth-title mt-0">
                     <div class="loader-line"></div>
-                    <h6>Hey, You have been missed !</h6>
+                    <h6>Hey, Silahkan masukkan data!</h6>
                 </div>
 
                 <div class="auth-form mt-0">
                     <div class="form-group">
                         <label class="form-label mb-2" for="Inputemail">Email</label>
                         <div class="position-relative">
-                            <input type="text" class="form-control" id="Inputemail" placeholder="Enter email">
+                            <input type="text" class="form-control" id="Inputemail" placeholder="Silahkan masukkan Username">
                             <i class="iconsax icon" data-icon="mail"></i>
                         </div>
                     </div>
@@ -75,6 +75,7 @@
             .then(data => {
                 if (data.status === 'success') {
                     localStorage.setItem('user_data', JSON.stringify(data.data));
+                    localStorage.setItem('user_absen', JSON.stringify(data.absensi));
                     localStorage.setItem("user_token", data.token);
                     window.location.href = './index.html';
                 } else {

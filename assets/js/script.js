@@ -33,6 +33,7 @@ let checkAuth = () => {
 let logout = (url =null) => {
     localStorage.removeItem("user_token");
     localStorage.removeItem("user_data");
+    localStorage.removeItem("user_absen");
     window.location.href = url ?? './login.html';
 };
 
