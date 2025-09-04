@@ -3,20 +3,20 @@
   "short_name": "FS CRM",
   "description": "Aplikasi manajemen relasi pelanggan untuk bisnis.",
   "lang": "id-ID",
-  "start_url": "/index.html",
-  "scope": "/",
+  "start_url": "./fs/",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "icons": [
     {
-      "src": "./assets/images/logopk.png",
+      "src": "./assets/images/pandurasa_kharisma_pt.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "./assets/images/logopk.png",
+      "src": "./assets/images/pandurasa_kharisma_pt.png",
       "sizes": "512x512",
       "type": "image/png"
     }
