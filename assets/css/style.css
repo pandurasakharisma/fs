@@ -4611,10 +4611,11 @@ body.dark .auth-bg-image-box .auth-bg-image {
 .recent-place-list li {
   width: 100%;
 }
+.recent-place-list li + li.ready {border-bottom: 2px solid #4CAF50;}
 .recent-place-list li + li {
-  padding-top: 8px;
-  margin-top: 8px;
-  border-top: 1px solid rgba(var(--line-color), 1);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(var(--line-color), 1);
 }
 .recent-place-list li .recent-box {
   display: flex;

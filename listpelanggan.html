@@ -91,6 +91,17 @@
             background: #fff;
             max-width: 450px;
         }
+
+        .tbf2{
+            position: fixed;
+            bottom: 0;
+            margin: 0 auto;
+            z-index: +2;
+            width: calc(100% - 20px);
+            background: #fff;
+            max-width: calc(600px);
+            padding: 20px 10px 9px;
+        }
         .skeleton-loader {
             background: #f0f0f0;
             border-radius: 6px;
@@ -169,6 +180,11 @@
                     <path d="M12 18V6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
             </i>
+            
+            <div class="offcanvas-footer tbf2 flex-align-center flex-nowrap gap-3 border-0 pt-3 " style='border-bottom:1px solid rgba(var(--line-color), 1);'>
+                <span class="btn theme-btn w-100 mt-0 addcustx">Simpan</span>
+                <a class="btn white-btn title-color w-100 mt-0" href="./index.html">Cancel</a>
+            </div>
         </section>
         <div id="modpop">
             <div id="olay"></div>
@@ -221,14 +237,14 @@
     <script>
         let openPopup = () => document.getElementById('modpop').classList.add('show');
         let closePopup = () => document.getElementById('modpop').classList.remove('show');
-        
+    
         let currentPage = 1;
         let isLoading = false;
         let hasMore = true;
         const limit = 20;
         let currentSearch = '';
         let searchTimeout = null, usercode = null;
-        
+    
         const addToJadwal = async (store) => {
             const now = new Date();
             const minggu = String(getMingguKe(now));
@@ -255,26 +271,78 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
-                if (response.ok) showToast(`${store.CardName} ditambahkan ke jadwal.`, "success");
-                else showToast("Tidak bisa menambahkan ke jadwal.", "danger");
+                if (response.ok) {
+                    showToast(`${store.CardName} ditambahkan ke jadwal.`, "success");
+                } else {
+                    showToast("Tidak bisa menambahkan ke jadwal.", "danger");
+                }
             } catch (e) {
-                console.error("Error addToJadwal:", e);
                 showToast("Tidak dapat terhubung ke server.", "danger");
             }
         };
-        
+
+        let updateTbf2Visibility = () => {
+            const readyItems = document.querySelectorAll('#placeList li[data-ready="1"]');
+            const tbf2 = document.querySelector('.tbf2');
+            if (tbf2) {
+                if (readyItems.length > 0) {tbf2.classList.remove('hide'); } 
+                else {tbf2.classList.add('hide');}
+            }
+        };
         const renderStores = (stores, placeList, templateItem) => {
             stores.forEach(store => {
                 const li = templateItem.cloneNode(true);
                 li.style.display = 'block';
                 li.querySelector('.card-name').textContent = store.CardName;
                 li.querySelector('.address').textContent = `${store.Address} - ${store.City}`;
-                li.onclick = () => addToJadwal(store);
+    
+                const icon = li.querySelector('.icon-status'); 
+                li.dataset.ready = "0"; 
+                li.dataset.store = JSON.stringify(store);
+    
+                li.onclick = () => {
+                    if (li.dataset.ready === "0") {
+                        li.dataset.ready = "1";
+                        li.classList.add('ready');
+                        li.querySelector('.icon').setAttribute('src','./assets/images/svg/oke.svg');
+                        li.querySelector('.icon').src= "./assets/images/svg/oke.svg";
+                    } else {
+                        li.dataset.ready = "0";
+                        li.classList.remove('ready');
+                        li.querySelector('.icon').setAttribute('src','./assets/images/svg/location-fill.svg');
+                        li.querySelector('.icon').src= "./assets/images/svg/location-fill.svg";
+                    }
+                    updateTbf2Visibility();
+                };
+    
                 placeList.appendChild(li);
             });
         };
-        
-        document.querySelector(".simpancust").onclick = async function() {
+    
+        document.querySelector(".addcustx").onclick = async () => {
+            const selectedItems = document.querySelectorAll('#placeList li[data-ready="1"]');
+            if (selectedItems.length === 0) {
+                showToast("Tidak ada pelanggan yang dipilih.", "danger");
+                return;
+            }
+
+            for (const li of selectedItems) {
+                const store = JSON.parse(li.dataset.store);
+                await addToJadwal(store);
+                li.dataset.ready = "0";
+                li.classList.remove('ready');
+                const icon = li.querySelector('.icon-status');
+                if (icon) icon.src = "./assets/images/svg/location-fill.svg";
+            }
+
+            showToast(`${selectedItems.length} pelanggan berhasil ditambahkan ke jadwal.`, "success");
+
+            setTimeout(() => {
+                window.location.href = './index.html';
+            }, 800);
+        };
+
+        document.querySelector(".simpancust").onclick = async function () {
             let form = document.querySelector(".theme-form");
             let formData = new FormData(form);
             let data = {};
@@ -285,14 +353,14 @@
             });
             let userCode = document.getElementById("usercode")?.value || "";
             data["usercode"] = userCode;
-        
+    
             closePopup();
             if (kosong) {
                 showToast("Semua field harus diisi.", "danger");
                 openPopup();
                 return;
             }
-        
+    
             try {
                 let response = await fetch(urlbe + "addpelanggan", {
                     method: "POST",
@@ -310,50 +378,44 @@
                 showToast("Tidak dapat terhubung ke server.", "danger");
             }
         };
-        
+    
         const placeList = document.getElementById('placeList');
         const templateItem = document.querySelector('.recent-place-item');
-        
-
-        showSkeleton(placeList, limit); 
+    
+        showSkeleton(placeList, limit);
+    
         const fetchAndRenderStores = async (reset = false) => {
-            
-
             let { minggu, hari } = getMingguHari();
             if (!usercode) {
                 console.log("Usercode belum tersedia.");
                 return;
             }
-
+    
             if (isLoading || !hasMore) return;
             isLoading = true;
-
+    
             currentSearch = document.getElementById("searchInput").value.trim();
             usercode = document.getElementById("usercode").value.trim();
-            console.log(currentSearch);
-            console.log(usercode);
-
+    
             if (reset) {
-                // Hapus semua data dan tampilkan skeleton saat reset
                 placeList.innerHTML = '';
-                showSkeleton(placeList, limit); 
+                showSkeleton(placeList, limit);
                 currentPage = 1;
                 hasMore = true;
             } else {
-                // Jika tidak reset, tambahkan skeleton di akhir daftar
                 showSkeleton(placeList, limit);
             }
-            
+    
             try {
                 const response = await fetch(urlbe + 'caripelanggan', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({usercode:usercode, minggu, hari, search: currentSearch, page: currentPage, limit })
+                    body: JSON.stringify({ usercode: usercode, minggu, hari, search: currentSearch, page: currentPage, limit })
                 });
                 const result = await response.json();
-        
+    
                 removeSkeleton(placeList);
-        
+    
                 if (response.ok && result.status === 'success' && result.data?.length > 0) {
                     renderStores(result.data, placeList, templateItem);
                     currentPage++;
@@ -372,11 +434,10 @@
                 }
                 showToast("Terjadi kesalahan saat memuat data.", "danger");
             }
-        
+    
             isLoading = false;
         };
-        
-        // Search handling
+    
         const handleSearch = e => {
             currentSearch = e.target.value.trim();
             clearTimeout(searchTimeout);
@@ -385,17 +446,17 @@
                 fetchAndRenderStores(true);
             }, 800);
         };
-        
+    
         let searchInput = document.getElementById("searchInput"),
             clearBtn = document.getElementById("clearBtn");
-        
+    
         searchInput.onkeyup = (el) => {
             if (el.key == 'Backspace' && el.target.value == '') {
                 clearBtn.click();
             }
             clearBtn.style.display = el.target.value !== '' ? "block" : "none";
         };
-        
+    
         clearBtn.onclick = () => {
             searchInput.value = "";
             clearBtn.style.display = "none";
@@ -404,20 +465,20 @@
             hasMore = true;
             fetchAndRenderStores(true);
         };
-        
+    
         document.getElementById('addform').onclick = () => openPopup();
         document.getElementById('olay').onclick = () => closePopup();
-        
+    
         searchInput.oninput = handleSearch;
         let xscr = 0;
         window.onscroll = () => {
             let totalHeightOfContent = document.body.scrollHeight;
-            if (window.innerHeight + window.scrollY >= (totalHeightOfContent)){
+            if (window.innerHeight + window.scrollY >= totalHeightOfContent) {
                 fetchAndRenderStores();
                 xscr++;
             }
-        }; 
-        
+        };
+    
         let waitUsercode = setInterval(() => {
             let el = document.getElementById("usercode");
             if (el && el.value) {
@@ -425,11 +486,11 @@
                 usercode = el.value;
                 setTimeout(() => {
                     hasMore = true;
-                    fetchAndRenderStores(); 
+                    fetchAndRenderStores();
                 }, 60);
             }
         }, 60);
     </script>
-
+    
 </body>
 </html>
