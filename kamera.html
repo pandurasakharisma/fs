@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
 <title>Kamera dengan Lokasi</title>
 <style>
 .kameradiv{
@@ -42,8 +41,15 @@
     width: 30px; height: 30px;
     animation: spin 1s linear infinite;
 }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); } 70% { box-shadow: 0 0 0 20px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+    70% { box-shadow: 0 0 0 20px rgba(255,255,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+}
 </style>
 </head>
 <body>
@@ -56,96 +62,96 @@
         <p>Anda harus mengizinkan akses lokasi dan kamera untuk menggunakan fitur ini.</p>
     </div>
     <div id="captureButton" onclick="capturePhoto()">
-        <div style="width:40px;height:40px;background:white;border-radius:50%;"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 32 32"><path d="M16 13a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm3 6a1 1 0 0 1-1-1 2 2 0 0 0-2-2 1 1 0 1 1 0-2 4 4 0 0 1 4 4 1 1 0 0 1-1 1zm2.5-12L21 4.8a1 1 0 0 0-1-.8h-8a1 1 0 0 0-1 .8L10.5 7z" data-original="#000000"/><path d="M28 8H4a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h24a3 3 0 0 0 3-3V11a3 3 0 0 0-3-3zM6 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm10 11a7 7 0 1 1 0-14 7 7 0 0 1 0 14z" data-original="#000000"/></svg>
     </div>
 </div>
 
+<script src="./assets/js/script.js"></script>
 <script>
-let video = document.getElementById('videoElement')
-let canvas = document.getElementById('canvasElement')
-let context = canvas.getContext('2d')
-let captureButton = document.getElementById('captureButton')
-let permissionMessage = document.getElementById('permissionMessage')
-let messageText = document.getElementById('messageText')
-let uplfEndpoint = urlbe+'uplf' // sesuaikan URL backend
-let isCapturing = false
-
-let showMessage = msg => {
-    video.style.display = 'none'
-    captureButton.style.display = 'none'
-    permissionMessage.style.display = 'block'
-    messageText.textContent = msg
-}
-
-// permisi kamera & lokasi
-let requestGeolocationPermission = () => new Promise((res, rej) => {
-    if (!navigator.geolocation) return rej('Geolocation tidak didukung browser ini.')
-    navigator.geolocation.getCurrentPosition(() => res(), () => rej('Akses lokasi ditolak.'), { enableHighAccuracy:true, timeout:5000, maximumAge:0 })
-})
-
-let requestCameraPermission = () => new Promise((res, rej) => {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return rej('API getUserMedia tidak didukung browser ini.')
-    navigator.mediaDevices.getUserMedia({ video: { facingMode:"user" } })
-        .then(stream => { stream.getTracks().forEach(t=>t.stop()); res() })
-        .catch(()=>rej('Akses kamera ditolak.'))
-})
-
-let startCameraStream = async () => {
-    try{
-        let stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:"user" } })
-        video.srcObject = stream
-        video.style.display = 'block'
-        captureButton.style.display = 'flex'
-        permissionMessage.style.display = 'none'
-    } catch(err){ console.error(err); showMessage('Terjadi kesalahan saat memulai kamera.') }
-}
-
-let init = async () => {
-    try{
-        await requestGeolocationPermission()
-        await requestCameraPermission()
-        startCameraStream()
-    }catch(err){ showMessage(err); console.error(err) }
-}
-init()
-
-// capture
-let capturePhoto = () => {
-    if(isCapturing) return
-    isCapturing = true
-    captureButton.innerHTML = '<div class="spinner"></div>'
-    captureButton.style.animation = 'none'
-
-    navigator.geolocation.getCurrentPosition(
-        pos => sendCapture(pos.coords.latitude, pos.coords.longitude),
-        () => sendCapture(null, null)
-    )
-}
-
-// send capture (binary compatible Multer)
-let sendCapture = (lat, lon) => {
-    canvas.width = video.videoWidth
-    canvas.height = video.videoHeight
-    context.drawImage(video, 0, 0, canvas.width, canvas.height)
+    let video = document.getElementById('videoElement')
+    let canvas = document.getElementById('canvasElement')
+    let context = canvas.getContext('2d')
+    let captureButton = document.getElementById('captureButton')
+    let permissionMessage = document.getElementById('permissionMessage')
+    let messageText = document.getElementById('messageText')
+    let uplfEndpoint = urlbe+'uplf' // ganti sesuai backend
+    let isCapturing = false
     
-    canvas.toBlob(blob => {
-        let formData = new FormData()
-        formData.append('foto', blob, `img_${Date.now()}.jpg`) // wajib sama nama field dengan upload.single('foto')
-        formData.append('latitude', lat)
-        formData.append('longitude', lon)
-        formData.append('id', '123') // contoh ID, sesuaikan
-
-        fetch(uplfEndpoint, { method:'POST', body: formData })
-            .then(r => r.json())
-            .then(r => alert(r.message))
-            .catch(()=> alert('Gagal mengirim foto dan lokasi.'))
-            .finally(()=>{
-                captureButton.innerHTML = '<div style="width:40px;height:40px;background:white;border-radius:50%;"></div>'
-                captureButton.style.animation = 'pulse 2s infinite'
-                isCapturing = false
-            })
-    }, 'image/jpeg', 0.8)
-}
+    let showMessage = msg => {
+        video.style.display = 'none'
+        captureButton.style.display = 'none'
+        permissionMessage.style.display = 'block'
+        messageText.textContent = msg
+    }
+    
+    let requestGeolocationPermission = () => new Promise((res, rej) => {
+        if (!navigator.geolocation) return rej('Geolocation tidak didukung browser ini.')
+        navigator.geolocation.getCurrentPosition(() => res(), () => rej('Akses lokasi ditolak.'), { enableHighAccuracy:true, timeout:5000, maximumAge:0 })
+    })
+    
+    let requestCameraPermission = () => new Promise((res, rej) => {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return rej('API getUserMedia tidak didukung browser ini.')
+        navigator.mediaDevices.getUserMedia({ video: { facingMode:"user" } })
+            .then(stream => { stream.getTracks().forEach(t=>t.stop()); res() })
+            .catch(()=>rej('Akses kamera ditolak.'))
+    })
+    
+    let startCameraStream = async () => {
+        try{
+            let stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:"user" } })
+            video.srcObject = stream
+            video.style.display = 'block'
+            captureButton.style.display = 'flex'
+            permissionMessage.style.display = 'none'
+        } catch(err){ console.error(err); showMessage('Terjadi kesalahan saat memulai kamera.') }
+    }
+    
+    let init = async () => {
+        try{
+            await requestGeolocationPermission()
+            await requestCameraPermission()
+            startCameraStream()
+        }catch(err){ showMessage(err); console.error(err) }
+    }
+    init()
+    
+    let capturePhoto = () => {
+        if(isCapturing) return
+        isCapturing = true
+        captureButton.innerHTML = '<div class="spinner"></div>'
+        captureButton.style.animation = 'none'
+    
+        navigator.geolocation.getCurrentPosition(
+            pos => sendCapture(pos.coords.latitude, pos.coords.longitude),
+            () => sendCapture(null, null)
+        )
+    }
+    
+    // Kirim foto binary ke backend Multer
+    let sendCapture = (lat, lon) => {
+        canvas.width = video.videoWidth
+        canvas.height = video.videoHeight
+        context.drawImage(video, 0, 0, canvas.width, canvas.height)
+        
+        canvas.toBlob(blob => {
+            let formData = new FormData()
+            formData.append('foto', blob, `img_${Date.now()}.jpg`) // nama field harus 'foto'
+            formData.append('latitude', lat)
+            formData.append('longitude', lon)
+            formData.append('id', '123') // ganti sesuai ID user
+    
+            fetch(uplfEndpoint, { method:'POST', body: formData })
+                .then(r => r.json())
+                .then(r => alert(r.message))
+                .catch(()=> alert('Gagal mengirim foto dan lokasi.'))
+                .finally(()=>{
+                    captureButton.innerHTML = '<div style="width:40px;height:40px;background:white;border-radius:50%;"></div>'
+                    captureButton.style.animation = 'pulse 2s infinite'
+                    isCapturing = false
+                })
+        }, 'image/jpeg', 0.8)
+    }
 </script>
+    
 </body>
 </html>
