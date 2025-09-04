@@ -3,7 +3,7 @@
   "short_name": "FS CRM",
   "description": "Aplikasi manajemen relasi pelanggan untuk bisnis.",
   "lang": "id-ID",
-  "start_url": "/login",
+  "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
