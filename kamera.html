@@ -62,7 +62,7 @@
         <p>Anda harus mengizinkan akses lokasi dan kamera untuk menggunakan fitur ini.</p>
     </div>
     <div id="captureButton" onclick="capturePhoto()">
-        <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 32 32"><path d="M16 13a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm3 6a1 1 0 0 1-1-1 2 2 0 0 0-2-2 1 1 0 1 1 0-2 4 4 0 0 1 4 4 1 1 0 0 1-1 1zm2.5-12L21 4.8a1 1 0 0 0-1-.8h-8a1 1 0 0 0-1 .8L10.5 7z" data-original="#000000"/><path d="M28 8H4a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h24a3 3 0 0 0 3-3V11a3 3 0 0 0-3-3zM6 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm10 11a7 7 0 1 1 0-14 7 7 0 0 1 0 14z" data-original="#000000"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 512 512"><path d="m415 55.6-133.4 97L505 315a255.8 255.8 0 0 0 6.9-58.9c0-81.1-38-153.5-97-200.5zm-26-18.2A254.5 254.5 0 0 0 256 .1C203.7.1 155 16 114.4 43l51 157zM89 62.1A255.5 255.5 0 0 0 9.4 325h165.1zM19.8 355a256.5 256.5 0 0 0 225.4 157l51-157zM277 511.3a256.6 256.6 0 0 0 219-165.9l-133.6-97z"/></svg>
     </div>
 </div>
 
@@ -142,10 +142,10 @@
     
             fetch(uplfEndpoint, { method:'POST', body: formData })
                 .then(r => r.json())
-                .then(r => alert(r.message))
-                .catch(()=> alert('Gagal mengirim foto dan lokasi.'))
+                .then(r => showToast(r.message, 'success'))
+                .catch(()=>  showToast('Gagal Mengirim Foto', 'danger'))
                 .finally(()=>{
-                    captureButton.innerHTML = '<div style="width:40px;height:40px;background:white;border-radius:50%;"></div>'
+                    captureButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 512 512"><path d="m415 55.6-133.4 97L505 315a255.8 255.8 0 0 0 6.9-58.9c0-81.1-38-153.5-97-200.5zm-26-18.2A254.5 254.5 0 0 0 256 .1C203.7.1 155 16 114.4 43l51 157zM89 62.1A255.5 255.5 0 0 0 9.4 325h165.1zM19.8 355a256.5 256.5 0 0 0 225.4 157l51-157zM277 511.3a256.6 256.6 0 0 0 219-165.9l-133.6-97z"/></svg>';
                     captureButton.style.animation = 'pulse 2s infinite'
                     isCapturing = false
                 })
