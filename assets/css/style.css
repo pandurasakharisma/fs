@@ -127,13 +127,9 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
   -webkit-appearance: none;
 }
 
-.custom-container {
-  padding: 0 20px;
-}
+.custom-container {padding: 0 8px;}
 @media (max-width: 600px) {
-  .custom-container {
-    padding: 0 calc(15px + 5 * (100vw - 320px) / 280);
-  }
+  .custom-container {padding: 0 calc(8px + 5 * (100vw - 320px) / 280);}
 }
 
 section,
@@ -4616,8 +4612,8 @@ body.dark .auth-bg-image-box .auth-bg-image {
   width: 100%;
 }
 .recent-place-list li + li {
-  padding-top: 15px;
-  margin-top: 15px;
+  padding-top: 8px;
+  margin-top: 8px;
   border-top: 1px solid rgba(var(--line-color), 1);
 }
 .recent-place-list li .recent-box {
@@ -7988,7 +7984,7 @@ body.dark .vehicle-content .content-title .members {
 .toast {
   min-width: 250px;
   margin-bottom: 10px;
-  padding: 12px 20px;
+  padding: 8px 12px;
   color: white;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
@@ -8009,16 +8005,31 @@ body.dark .vehicle-content .content-title .members {
     100% {transform: scale(1);box-shadow: 0 0 0 0 rgba(197, 63, 63, 0);}
 }
 
+.e404{
+  width: 100%;
+  margin: 0px auto 20px;
+  height: 100vh;
+  position: fixed;
+  background: #fafcff;
+  top: 0;
+  left: 0;
+}
 .recent-place-item:hover { transform:translateY(-2px); transition:0.2s; cursor:pointer; }
 .skeleton-card {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 12px;
-  background-color: #f5f5f5;
-  width: 300px;
+  padding: 5px 0;
+  width: 100%;
 }
-
+.skellr {
+  width: 40px;
+  height: 40px;
+  background: #e0e0e0;
+  margin: 5px;
+  margin-right: 10px;
+  border-radius: 4px;
+}
 .skeleton-line {
   height: 16px;
   border-radius: 4px;
@@ -8027,6 +8038,13 @@ body.dark .vehicle-content .content-title .members {
   overflow: hidden;
 }
 
+.skellr::after{
+  content: '';
+  position: absolute;
+  top: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 1s infinite;
+}
 .skeleton-line::after {
   content: '';
   position: absolute;
@@ -8043,9 +8061,9 @@ body.dark .vehicle-content .content-title .members {
   100% { transform: translateX(100%); }
 }
 
-.skeleton-line[width="70%"] { width: 70%; }
+.skeleton-line[width="85%"] { width: 85%; }
 .skeleton-line[width="100%"] { width: 100%; }
 
 .success { background-color: #28a745; }
 .danger { background-color: #dc3545; }
-.hide{display:none;}
+#headerx .search-bar, .hide{display:none;}

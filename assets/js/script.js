@@ -30,14 +30,13 @@ let checkAuth = () => {
     setUserCode();
 };
 
-let logout = (redirectUrl) => {
+let logout = (url =null) => {
     localStorage.removeItem("user_token");
     localStorage.removeItem("user_data");
-    window.location.href = redirectUrl;
+    window.location.href = url ?? './login.html';
 };
 
 
-// ---------- LOAD SCRIPT ----------
 let loadScript = (src) => new Promise((resolve, reject) => {
     let script = document.createElement('script');
     script.src = src;
@@ -46,7 +45,6 @@ let loadScript = (src) => new Promise((resolve, reject) => {
     document.body.appendChild(script);
 });
 
-// ---------- ICONSAX ----------
 let init_iconsax = () => {
     document.querySelectorAll(".iconsax").forEach(iconsax => {
         let TuT = iconsax.getAttribute("data-icon").toLowerCase().trim();
@@ -57,12 +55,9 @@ let init_iconsax = () => {
     });
 };
 
-// ---------- RATIO JS ----------
 let initRatioJS = () => {
     document.querySelectorAll(".bg-img").forEach(bgImgEl => {
         let parentNode = bgImgEl.parentNode;
-
-        // Tambahkan kembali logika posisi gambar yang hilang
         if (bgImgEl.classList.contains("bg-top")) parentNode.classList.add("b-top");
         else if (bgImgEl.classList.contains("bg-bottom")) parentNode.classList.add("b-bottom");
         else if (bgImgEl.classList.contains("bg-center")) parentNode.classList.add("b-center");
@@ -78,12 +73,44 @@ let initRatioJS = () => {
         parentNode.style.cssText += `background-image: url(${bgSrc}); background-size:cover; background-position: center; background-repeat: no-repeat; display:block;`;
     });
 };
-// ---------- SERVICE WORKER ----------
+
 let handleServiceWorker = () => {
     if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 };
 
-// ---------- SPINNER ----------
+let showToast = (message, type = 'success') => {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    let toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type} border-0`;
+    toast.role = "alert";
+    toast.style.minWidth = '200px';
+    toast.style.transition = 'opacity 0.5s ease';
+    toast.style.opacity = '0';
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body" style="padding: 5px;font-size: 11px;text-transform: uppercase;">${message}</div>
+        </div>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('show');
+        toast.style.opacity = '1';
+    }, 100);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.classList.remove('show');
+        setTimeout(() => {
+            if (toast.parentNode) {container.removeChild(toast);}
+        }, 500);
+    }, 3000);
+};
+
 let createSpinner = () => {
     let spinner = document.createElement('div');
     spinner.id = 'spinner-loader';
@@ -106,10 +133,11 @@ let removeSpinner = () => {
 let showSkeleton = (container, count = 6) => {
     for (let i = 0; i < count; i++) {
         let li = document.createElement('li');
-        li.className = 'recent-place-item skeleton';
+        li.className = 'recent-place-item skeleton d-flex';
         li.innerHTML = `
+            <div class="skellr"></div>
             <div class="skeleton-card">
-                <div class="skeleton-line" width="70%"></div>
+                <div class="skeleton-line" width="85%"></div>
                 <div class="skeleton-line" width="100%"></div>
             </div>
         `;
@@ -166,8 +194,7 @@ const fmtDateTime = (d) => {
 let renderHeadContent = () => {
     let head = document.head;
     let path = window.location.pathname.split("/").filter(Boolean);
-    let pageTitle = path.length ? path[path.length - 1].replace(/-/g, " ").toUpperCase() : "FS CRM";
-    document.title = pageTitle;
+
 
     let metaLinks = [
         { tag: "meta", attributes: { "http-equiv": "Content-Type", content: "text/html; charset=UTF-8" } },

@@ -6,7 +6,7 @@
   <style>
     .addcust svg {
       position: fixed;
-      bottom: 20px;
+      bottom: 120px;
       right: 20px;
       width: 48px;
       height: 48px;
@@ -347,12 +347,12 @@
         renderHeader();
 
         let waitUsercode = setInterval(() => {
-            let el = document.getElementById("usercode");
-            if (el) {
-                clearInterval(waitUsercode);
-                setTimeout(() => loadJadwal(el.value), 60);
-            }
-        }, 60);
+        let el = document.getElementById("usercode");
+        if (el) {
+            clearInterval(waitUsercode);
+            setTimeout(() => loadJadwal(el.value), 3000);
+        }
+        }, 500);
 
         let loadJadwal = usercode => {
         let { minggu, hari } = getMingguHari();
