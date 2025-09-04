@@ -528,7 +528,7 @@
                 removeSkeleton(document.querySelector(".my-ride-list"));
             });
         };
-    
+        
         let delitjdw = (id, el) => {
             let existingModal = document.getElementById('dynamicDeleteModal');
             if (!existingModal) {
@@ -553,33 +553,41 @@
                 `;
                 document.body.appendChild(modalDiv);
             }
-    
-            let modal = new bootstrap.Modal(document.getElementById('dynamicDeleteModal'));
+
+            let modalElement = document.getElementById('dynamicDeleteModal');
+            let modal = new bootstrap.Modal(modalElement);
             modal.show();
-    
-            document.getElementById('confirmDelete').onclick = () => {
-                fetch(urlbe + "hapusjadwal", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ id })
-                })
-                .then(r => r.json())
-                .then(res => {
-                    if (res.success) {
-                        let li = el.closest('li.ride-item');
-                        if (li) li.remove();
-                        showToast('Jadwal berhasil dihapus', 'success');
-                    } else {
-                        showToast('Gagal menghapus jadwal', 'error');
-                    }
-                    modal.hide();
-                })
-                .catch(() => {
-                    showToast('Terjadi kesalahan saat menghapus jadwal', 'error');
-                    modal.hide();
-                });
+
+            document.getElementById('confirmDelete').onclick = (e) => {
+                e.target.blur();
+
+                setTimeout(() => {
+                    fetch(urlbe + "hapusjadwal", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ id })
+                    })
+                    .then(r => r.json())
+                    .then(res => {
+                        if (res.success) {
+                            let targetItem = document.querySelector(`[data-id="${id}"]`);
+                            if (targetItem) targetItem.remove();
+                            let li = el.closest('li.ride-item');
+                            if (li) li.remove();
+                            showToast('Jadwal berhasil dihapus', 'success');
+                        } else {
+                            showToast('Gagal menghapus jadwal', 'error');
+                        }
+                        modal.hide();
+                    })
+                    .catch(() => {
+                        showToast('Terjadi kesalahan saat menghapus jadwal', 'error');
+                        modal.hide();
+                    });
+                }, 10); 
             };
         };
+
     </script>
     
 </body>
