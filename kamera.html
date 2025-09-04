@@ -3,215 +3,156 @@
 <head>
 <title>Kamera dengan Lokasi</title>
 <style>
-    .kameradiv{
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background-color: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        font-family: sans-serif;
-        color: white;
-        text-align: center;
-    }
-
-    #videoElement {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    #canvasElement {
-        display: none;
-    }
-
-    #captureButton {
-        position: fixed;
-        bottom: 30px;
-        width: 70px;
-        height: 70px;
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        display: none;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        transition: transform 0.2s ease-in-out;
-        z-index: 1000;
-        /* Tambahan untuk animasi pulse */
-        animation: pulse 2s infinite;
-    }
-
-    #captureButton:hover {
-        transform: scale(1.1);
-    }
-
-    .capture-icon {
-        color: #000;
-        font-size: 40px;
-    }
-
-    /* Style untuk pesan peringatan */
-    #permissionMessage {
-        position: absolute;
-        top: 10%;
-        left: 10px;
-        padding: 20px;
-        background-color: rgba(0, 0, 0, 0.7);
-        border-radius: 10px;
-        text-align: left;
-        z-index: 1001;
-    }
-
-    /* Keyframes untuk animasi pulse */
-    @keyframes pulse {
-        0% {
-            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-        }
-        70% {
-            box-shadow: 0 0 0 20px rgba(255, 255, 255, 0);
-        }
-        100% {
-            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-        }
-    }
-
-    /* Style untuk spinner */
-    .spinner {
-        border: 4px solid rgba(0, 0, 0, 0.1);
-        border-left-color: #000;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+.kameradiv{
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background-color: #000;
+    display: flex; justify-content: center; align-items: center;
+    position: relative;
+    font-family: sans-serif;
+    color: white;
+    text-align: center;
+}
+#videoElement { width: 100%; height: 100%; object-fit: cover; }
+#canvasElement { display: none; }
+#captureButton {
+    position: fixed; bottom: 30px;
+    width: 70px; height: 70px;
+    background-color: rgba(255,255,255,0.8);
+    border-radius: 50%;
+    display: none; justify-content: center; align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease-in-out;
+    z-index: 1000;
+    animation: pulse 2s infinite;
+}
+#captureButton:hover { transform: scale(1.1); }
+#permissionMessage {
+    position: absolute; top: 10%; left: 10px;
+    padding: 20px; background-color: rgba(0,0,0,0.7);
+    border-radius: 10px; text-align: left; z-index:1001;
+}
+.spinner {
+    border: 4px solid rgba(0,0,0,0.1);
+    border-left-color: #000;
+    border-radius: 50%;
+    width: 30px; height: 30px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+    70% { box-shadow: 0 0 0 20px rgba(255,255,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+}
 </style>
-
 </head>
 <body>
 <div class="kameradiv">
-        
     <video id="videoElement" autoplay playsinline></video>
     <canvas id="canvasElement"></canvas>
-
     <div id="permissionMessage">
         <h3>Mohon Izinkan Akses</h3>
         <p id="messageText"></p>
         <p>Anda harus mengizinkan akses lokasi dan kamera untuk menggunakan fitur ini.</p>
     </div>
-
     <div id="captureButton" onclick="capturePhoto()">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="7" width="18" height="14" rx="2" ry="2"/>
-            <circle cx="12" cy="14" r="3"/>
-            <path d="M7 7L9 4H15L17 7"/>
-          </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 32 32"><path d="M16 13a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm3 6a1 1 0 0 1-1-1 2 2 0 0 0-2-2 1 1 0 1 1 0-2 4 4 0 0 1 4 4 1 1 0 0 1-1 1zm2.5-12L21 4.8a1 1 0 0 0-1-.8h-8a1 1 0 0 0-1 .8L10.5 7z" data-original="#000000"/><path d="M28 8H4a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h24a3 3 0 0 0 3-3V11a3 3 0 0 0-3-3zM6 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm10 11a7 7 0 1 1 0-14 7 7 0 0 1 0 14z" data-original="#000000"/></svg>
     </div>
-
 </div>
-<script src="./assets/js/script.js"></script>
+
 <script>
-    let video = document.getElementById('videoElement')
-    let canvas = document.getElementById('canvasElement')
-    let context = canvas.getContext('2d')
-    let captureButton = document.getElementById('captureButton')
-    let permissionMessage = document.getElementById('permissionMessage')
-    let messageText = document.getElementById('messageText')
-    let uplfEndpoint = urlbe + 'uplf'  // pastikan urlbe sudah didefinisikan
-    let isCapturing = false
+let video = document.getElementById('videoElement')
+let canvas = document.getElementById('canvasElement')
+let context = canvas.getContext('2d')
+let captureButton = document.getElementById('captureButton')
+let cameraIcon = document.getElementById('cameraIcon')
+let permissionMessage = document.getElementById('permissionMessage')
+let messageText = document.getElementById('messageText')
+let uplfEndpoint = urlbe+'uplf' // backend lama
+let isCapturing = false
+
+let showMessage = msg => {
+    video.style.display = 'none'
+    captureButton.style.display = 'none'
+    permissionMessage.style.display = 'block'
+    messageText.textContent = msg
+}
+
+// permisi kamera & lokasi
+let requestGeolocationPermission = () => new Promise((res, rej) => {
+    if (!navigator.geolocation) return rej('Geolocation tidak didukung browser ini.')
+    navigator.geolocation.getCurrentPosition(() => res(), () => rej('Akses lokasi ditolak.'), { enableHighAccuracy:true, timeout:5000, maximumAge:0 })
+})
+
+let requestCameraPermission = () => new Promise((res, rej) => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return rej('API getUserMedia tidak didukung browser ini.')
+    navigator.mediaDevices.getUserMedia({ video: { facingMode:"user" } })
+        .then(stream => { stream.getTracks().forEach(t=>t.stop()); res() })
+        .catch(()=>rej('Akses kamera ditolak.'))
+})
+
+let startCameraStream = async () => {
+    try{
+        let stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:"user" } })
+        video.srcObject = stream
+        video.style.display = 'block'
+        captureButton.style.display = 'flex'
+        permissionMessage.style.display = 'none'
+    } catch(err){ console.error(err); showMessage('Terjadi kesalahan saat memulai kamera.') }
+}
+
+let init = async () => {
+    try{
+        await requestGeolocationPermission()
+        await requestCameraPermission()
+        startCameraStream()
+    }catch(err){ showMessage(err); console.error(err) }
+}
+init()
+
+// capture
+let capturePhoto = () => {
+    if(isCapturing) return
+    isCapturing = true
+    captureButton.innerHTML = '<div class="spinner"></div>'
+    captureButton.style.animation = 'none'
+
+    navigator.geolocation.getCurrentPosition(
+        pos => sendCapture(pos.coords.latitude, pos.coords.longitude),
+        () => sendCapture(null, null)
+    )
+}
+
+// send capture (Base64 compatible backend lama)
+let sendCapture = (lat, lon) => {
+    canvas.width = video.videoWidth
+    canvas.height = video.videoHeight
+    context.drawImage(video, 0, 0, canvas.width, canvas.height)
     
-    let getIdFromUrl = () => new URLSearchParams(window.location.search).get('id')
-    
-    let showMessage = msg => {
-        video.style.display = 'none'
-        captureButton.style.display = 'none'
-        permissionMessage.style.display = 'block'
-        messageText.textContent = msg
-    }
-    
-    // camera + geolocation permission
-    let requestGeolocationPermission = () => new Promise((res, rej) => {
-        if (!navigator.geolocation) return rej('Geolocation tidak didukung browser ini.')
-        navigator.geolocation.getCurrentPosition(() => res(), () => rej('Akses lokasi ditolak.'), { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 })
-    })
-    
-    let requestCameraPermission = () => new Promise((res, rej) => {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return rej('API getUserMedia tidak didukung browser ini.')
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-            .then(stream => { stream.getTracks().forEach(t => t.stop()); res() })
-            .catch(() => rej('Akses kamera ditolak.'))
-    })
-    
-    let startCameraStream = async () => {
-        try {
-            let stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-            video.srcObject = stream
-            video.style.display = 'block'
-            captureButton.style.display = 'flex'
-            permissionMessage.style.display = 'none'
-        } catch (err) { console.error(err); showMessage('Terjadi kesalahan saat memulai kamera.') }
-    }
-    
-    let init = async () => {
-        try {
-            await requestGeolocationPermission()
-            await requestCameraPermission()
-            startCameraStream()
-        } catch (err) { showMessage(err); console.error(err) }
-    }
-    init()
-    
-    // capture
-    let capturePhoto = () => {
-        if (isCapturing) return
-        isCapturing = true
-        captureButton.innerHTML = '<div class="spinner"></div>'
-        captureButton.style.animation = 'none'
-    
-        navigator.geolocation.getCurrentPosition(
-            pos => sendCapture(pos.coords.latitude, pos.coords.longitude),
-            () => sendCapture(null, null)
-        )
-    }
-    
-    // send capture
-    let sendCapture = (lat, lon) => {
-        canvas.width = video.videoWidth
-        canvas.height = video.videoHeight
-        context.drawImage(video, 0, 0, canvas.width, canvas.height)
-    
-        // Convert dataURL ke Blob agar bisa diterima multer
-        canvas.toBlob(blob => {
-            let formData = new FormData()
-            formData.append('image', blob, 'capture.jpg') // nama file bebas
-            formData.append('latitude', lat)
-            formData.append('longitude', lon)
-            formData.append('id', getIdFromUrl())
-    
-            fetch(uplfEndpoint, { method: 'POST', body: formData })
-                .then(r => r.json())
-                .then(r => alert(r.message))
-                .catch(() => alert('Gagal mengirim foto dan lokasi.'))
-                .finally(() => {
-                    captureButton.innerHTML = `<svg width="40" height="40" viewBox="0 0 24 24" fill="#000" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 5C7.03 5 3 9.03 3 14C3 18.97 7.03 23 12 23C16.97 23 21 18.97 21 14C21 9.03 16.97 5 12 5ZM12 21C8.13 21 5 17.87 5 14C5 10.13 8.13 7 12 7C15.87 7 19 10.13 19 14C19 17.87 15.87 21 12 21ZM12 9C9.79 9 8 10.79 8 13C8 15.21 9.79 17 12 17C14.21 17 16 15.21 16 13C16 10.79 14.21 9 12 9Z"/>
-                    </svg>`
-                    captureButton.style.animation = 'pulse 2s infinite'
-                    isCapturing = false
-                })
-        }, 'image/jpeg', 0.8)
-    }
-    </script>
-    
+    let imageDataURL = canvas.toDataURL('image/jpeg', 0.8)
+    let formData = new FormData()
+    formData.append('image', imageDataURL)
+    formData.append('latitude', lat)
+    formData.append('longitude', lon)
+
+    fetch(uplfEndpoint, { method:'POST', body: formData })
+        .then(r => r.text())
+        .then(r => alert(r))
+        .catch(()=> alert('Gagal mengirim foto dan lokasi.'))
+        .finally(()=>{
+            // restore ikon kamera
+            captureButton.innerHTML = cameraIcon.outerHTML
+            captureButton.style.animation = 'pulse 2s infinite'
+            cameraIcon = document.getElementById('cameraIcon')
+            isCapturing = false
+        })
+}
+</script>
 </body>
 </html>
