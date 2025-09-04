@@ -106,7 +106,32 @@
         background: #c53f3f;
         padding: 40px 20px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        position:relative;
+        overflow: hidden;
     }
+    .seclist{
+        background: #fff;
+        border-radius: 18px;
+        overflow: hidden;
+        margin-top: -20px;
+        z-index: +1;
+        position: absolute;
+        width: 100%;
+        box-shadow: 1px -7px 10px rgba(0, 0, 0, 0.08);
+    }
+    #absenkeluar > div:first-child:before {
+        content: " ";
+        width: calc(100% + 15rem);
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-image: url(./assets/images/bgbca.svg);
+        background-position: -10rem -17rem;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
     .bg-pattern .card::before {
         background: linear-gradient(135deg, #f8f9fa 25%, #e8f5e9 100%);
         background-image: url(./assets/images/bg2.svg);
@@ -181,7 +206,7 @@
 
     <div id="absenkeluar"></div>
 
-    <section>
+    <section class="seclist">
         <div class="custom-container"><ul class="my-ride-list" style="margin-top: 0;"></ul></div>
     </section>
 
