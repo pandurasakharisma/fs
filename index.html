@@ -526,6 +526,16 @@
                 }).join('');
     
                 removeSkeleton(document.querySelector(".my-ride-list"));
+                document.querySelectorAll(".ride-item").forEach(item => {
+                    item.onclick = (e) => {
+                        if (e.target.closest('.delitjdw') || e.target.closest('a[href="edit-offer.html"]')) {
+                            return;
+                        }
+                        let id = item.getAttribute('data-id');
+                        window.location.href = `kamera.html?id=${id}`;
+                    };
+                });
+
             });
         };
         
