@@ -2,6 +2,9 @@
 <html lang="id">
 <head>
   <title>Kamera dengan Lokasi</title>
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
   <style>
     .kameradiv {
       margin: 0;
@@ -28,27 +31,28 @@
     }
     #captureButton, #switchButton {
       position: fixed;
-      bottom: 30px;
-      width: 70px;
-      height: 70px;
-      background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      transition: transform 0.2s ease-in-out;
       z-index: 1000;
+      transition: transform 0.2s ease-in-out;
+      background-color: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      border-radius: 50%;
+    }
+    #captureButton {
+      bottom: 30px;
+      width: 70px;
+      height: 70px;
       animation: pulse 2s infinite;
     }
     #switchButton {
+      bottom: 120px;
       right: 30px;
       width: 50px;
       height: 50px;
-      bottom: 120px;
       background-color: rgba(255, 255, 255, 0.6);
-      animation: none;
     }
     #captureButton:hover,
     #switchButton:hover {
@@ -94,35 +98,21 @@
       <p>Anda harus mengizinkan akses lokasi dan kamera untuk menggunakan fitur ini.</p>
     </div>
 
+    <!-- Tombol Capture Foto -->
     <div id="captureButton">
-      <div class="iconsax" data-icon="camera"></div>
+      <i class="bi bi-camera-fill" style="font-size: 28px; color: #ff8a65;"></i>
     </div>
 
+    <!-- Tombol Switch Kamera -->
     <div id="switchButton">
-      <div class="iconsax" data-icon="refresh-right-square"></div>
+      <i class="bi bi-arrow-repeat" style="font-size: 22px; color: #000;"></i>
     </div>
   </div>
 
+  <!-- Script eksternal -->
   <script src="./assets/js/script.js"></script>
+
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      init_iconsax();
-    });
-
-    function init_iconsax() {
-      document.querySelectorAll(".iconsax").forEach((iconsax) => {
-        var TuT = iconsax.getAttribute("data-icon").toLowerCase().trim();
-        fetch("https://glenthemes.github.io/iconsax/icons/" + TuT + ".svg")
-          .then((n_n) => n_n.text())
-          .then((n_n) => {
-            iconsax.innerHTML = n_n;
-            if (iconsax.querySelectorAll("[http-equiv='Content-Security-Policy']").length) {
-              iconsax.innerHTML = "";
-            }
-          });
-      });
-    }
-
     let video = document.getElementById('videoElement');
     let canvas = document.getElementById('canvasElement');
     let context = canvas.getContext('2d');
@@ -130,38 +120,44 @@
     let switchButton = document.getElementById('switchButton');
     let permissionMessage = document.getElementById('permissionMessage');
     let messageText = document.getElementById('messageText');
-    let uplfEndpoint = urlbe + 'uplf';
-    let isCapturing = false;
-    let currentFacingMode = "user";
 
-    let showMessage = msg => {
+    let uplfEndpoint = urlbe + 'uplf'; // Endpoint backend
+    let isCapturing = false;
+    let currentFacingMode = "user"; // Default kamera depan
+
+    function showMessage(msg) {
       video.style.display = 'none';
       captureButton.style.display = 'none';
       switchButton.style.display = 'none';
       permissionMessage.style.display = 'block';
       messageText.textContent = msg;
-    };
+    }
 
-    let requestGeolocationPermission = () => new Promise((res, rej) => {
-      if (!navigator.geolocation) return rej('Geolocation tidak didukung browser ini.');
-      navigator.geolocation.getCurrentPosition(() => res(), () => rej('Akses lokasi ditolak.'), {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
+    function requestGeolocationPermission() {
+      return new Promise((res, rej) => {
+        if (!navigator.geolocation) return rej('Geolocation tidak didukung browser ini.');
+        navigator.geolocation.getCurrentPosition(
+          () => res(),
+          () => rej('Akses lokasi ditolak.'),
+          { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        );
       });
-    });
+    }
 
-    let requestCameraPermission = () => new Promise((res, rej) => {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return rej('API getUserMedia tidak didukung browser ini.');
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-          stream.getTracks().forEach(t => t.stop());
-          res();
-        })
-        .catch(() => rej('Akses kamera ditolak.'));
-    });
+    function requestCameraPermission() {
+      return new Promise((res, rej) => {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)
+          return rej('API getUserMedia tidak didukung browser ini.');
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(stream => {
+            stream.getTracks().forEach(t => t.stop());
+            res();
+          })
+          .catch(() => rej('Akses kamera ditolak.'));
+      });
+    }
 
-    let startCameraStream = async () => {
+    async function startCameraStream() {
       try {
         let stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
         video.srcObject = stream;
@@ -173,9 +169,9 @@
         console.error(err);
         showMessage('Terjadi kesalahan saat memulai kamera.');
       }
-    };
+    }
 
-    let init = async () => {
+    async function init() {
       try {
         await requestGeolocationPermission();
         await requestCameraPermission();
@@ -184,7 +180,7 @@
         showMessage(err);
         console.error(err);
       }
-    };
+    }
     init();
 
     captureButton.addEventListener('click', () => {
@@ -207,7 +203,7 @@
       await startCameraStream();
     });
 
-    let sendCapture = (lat, lon) => {
+    function sendCapture(lat, lon) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -217,20 +213,19 @@
         formData.append('foto', blob, `img_${Date.now()}.jpg`);
         formData.append('latitude', lat);
         formData.append('longitude', lon);
-        formData.append('id', '123');
+        formData.append('id', '123'); // ID user
 
         fetch(uplfEndpoint, { method: 'POST', body: formData })
           .then(r => r.json())
           .then(r => console.log('Upload sukses', r))
           .catch(() => console.log('Gagal Mengirim Foto'))
           .finally(() => {
-            captureButton.innerHTML = '<div class="iconsax" data-icon="camera"></div>';
-            init_iconsax();
+            captureButton.innerHTML = '<i class="bi bi-camera-fill" style="font-size: 28px; color: #ff8a65;"></i>';
             captureButton.style.animation = 'pulse 2s infinite';
             isCapturing = false;
           });
       }, 'image/jpeg', 0.8);
-    };
+    }
   </script>
 </body>
 </html>
