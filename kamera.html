@@ -1,157 +1,236 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<title>Kamera dengan Lokasi</title>
-<style>
-.kameradiv{
-    margin: 0; padding: 0;
-    width: 100%; height: 100%;
-    overflow: hidden;
-    background-color: #000;
-    display: flex; justify-content: center; align-items: center;
-    position: relative;
-    font-family: sans-serif;
-    color: white;
-    text-align: center;
-}
-#videoElement { width: 100%; height: 100%; object-fit: cover; }
-#canvasElement { display: none; }
-#captureButton {
-    position: fixed; bottom: 30px;
-    width: 70px; height: 70px;
-    background-color: rgba(255,255,255,0.8);
-    border-radius: 50%;
-    display: none; justify-content: center; align-items: center;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    transition: transform 0.2s ease-in-out;
-    z-index: 1000;
-    animation: pulse 2s infinite;
-}
-#captureButton:hover { transform: scale(1.1); }
-#permissionMessage {
-    position: absolute; top: 10%; left: 10px;
-    padding: 20px; background-color: rgba(0,0,0,0.7);
-    border-radius: 10px; text-align: left; z-index:1001;
-}
-.spinner {
-    border: 4px solid rgba(0,0,0,0.1);
-    border-left-color: #000;
-    border-radius: 50%;
-    width: 30px; height: 30px;
-    animation: spin 1s linear infinite;
-}
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-@keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
-    70% { box-shadow: 0 0 0 20px rgba(255,255,255,0); }
-    100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
-}
-</style>
+  <title>Kamera dengan Lokasi</title>
+  <style>
+    .kameradiv {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      font-family: sans-serif;
+      color: white;
+      text-align: center;
+    }
+    #videoElement {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #canvasElement {
+      display: none;
+    }
+    #captureButton, #switchButton {
+      position: fixed;
+      bottom: 30px;
+      width: 70px;
+      height: 70px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease-in-out;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    #switchButton {
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      bottom: 120px;
+      background-color: rgba(255, 255, 255, 0.6);
+      animation: none;
+    }
+    #captureButton:hover,
+    #switchButton:hover {
+      transform: scale(1.1);
+    }
+    #permissionMessage {
+      position: absolute;
+      top: 10%;
+      left: 10px;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      text-align: left;
+      z-index: 1001;
+    }
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-left-color: #000;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+    }
+  </style>
 </head>
 <body>
-<div class="kameradiv">
+  <div class="kameradiv">
     <video id="videoElement" autoplay playsinline></video>
     <canvas id="canvasElement"></canvas>
-    <div id="permissionMessage">
-        <h3>Mohon Izinkan Akses</h3>
-        <p id="messageText"></p>
-        <p>Anda harus mengizinkan akses lokasi dan kamera untuk menggunakan fitur ini.</p>
-    </div>
-    <div id="captureButton" onclick="capturePhoto()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M6.76 22h10.48c2.76 0 3.86-1.69 3.99-3.75l.52-8.26A3.753 3.753 0 0 0 18 6c-.61 0-1.17-.35-1.45-.89l-.72-1.45C15.37 2.75 14.17 2 13.15 2h-2.29c-1.03 0-2.23.75-2.69 1.66l-.72 1.45C7.17 5.65 6.61 6 6 6 3.83 6 2.11 7.83 2.25 9.99l.52 8.26C2.89 20.31 4 22 6.76 22ZM10.5 8h3" stroke="#FF8A65" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 18c1.79 0 3.25-1.46 3.25-3.25S13.79 11.5 12 11.5s-3.25 1.46-3.25 3.25S10.21 18 12 18Z" stroke="#FF8A65" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-    </div>
-</div>
 
-<script src="./assets/js/script.js"></script>
-<script>
-    let video = document.getElementById('videoElement')
-    let canvas = document.getElementById('canvasElement')
-    let context = canvas.getContext('2d')
-    let captureButton = document.getElementById('captureButton')
-    let permissionMessage = document.getElementById('permissionMessage')
-    let messageText = document.getElementById('messageText')
-    let uplfEndpoint = urlbe+'uplf' // ganti sesuai backend
-    let isCapturing = false
-    
+    <div id="permissionMessage">
+      <h3>Mohon Izinkan Akses</h3>
+      <p id="messageText"></p>
+      <p>Anda harus mengizinkan akses lokasi dan kamera untuk menggunakan fitur ini.</p>
+    </div>
+
+    <div id="captureButton">
+      <div class="iconsax" data-icon="camera"></div>
+    </div>
+
+    <div id="switchButton">
+      <div class="iconsax" data-icon="refresh-right-square"></div>
+    </div>
+  </div>
+
+  <script src="./assets/js/script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      init_iconsax();
+    });
+
+    function init_iconsax() {
+      document.querySelectorAll(".iconsax").forEach((iconsax) => {
+        var TuT = iconsax.getAttribute("data-icon").toLowerCase().trim();
+        fetch("https://glenthemes.github.io/iconsax/icons/" + TuT + ".svg")
+          .then((n_n) => n_n.text())
+          .then((n_n) => {
+            iconsax.innerHTML = n_n;
+            if (iconsax.querySelectorAll("[http-equiv='Content-Security-Policy']").length) {
+              iconsax.innerHTML = "";
+            }
+          });
+      });
+    }
+
+    let video = document.getElementById('videoElement');
+    let canvas = document.getElementById('canvasElement');
+    let context = canvas.getContext('2d');
+    let captureButton = document.getElementById('captureButton');
+    let switchButton = document.getElementById('switchButton');
+    let permissionMessage = document.getElementById('permissionMessage');
+    let messageText = document.getElementById('messageText');
+    let uplfEndpoint = urlbe + 'uplf';
+    let isCapturing = false;
+    let currentFacingMode = "user";
+
     let showMessage = msg => {
-        video.style.display = 'none'
-        captureButton.style.display = 'none'
-        permissionMessage.style.display = 'block'
-        messageText.textContent = msg
-    }
-    
+      video.style.display = 'none';
+      captureButton.style.display = 'none';
+      switchButton.style.display = 'none';
+      permissionMessage.style.display = 'block';
+      messageText.textContent = msg;
+    };
+
     let requestGeolocationPermission = () => new Promise((res, rej) => {
-        if (!navigator.geolocation) return rej('Geolocation tidak didukung browser ini.')
-        navigator.geolocation.getCurrentPosition(() => res(), () => rej('Akses lokasi ditolak.'), { enableHighAccuracy:true, timeout:5000, maximumAge:0 })
-    })
-    
+      if (!navigator.geolocation) return rej('Geolocation tidak didukung browser ini.');
+      navigator.geolocation.getCurrentPosition(() => res(), () => rej('Akses lokasi ditolak.'), {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      });
+    });
+
     let requestCameraPermission = () => new Promise((res, rej) => {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return rej('API getUserMedia tidak didukung browser ini.')
-        navigator.mediaDevices.getUserMedia({ video: { facingMode:"user" } })
-            .then(stream => { stream.getTracks().forEach(t=>t.stop()); res() })
-            .catch(()=>rej('Akses kamera ditolak.'))
-    })
-    
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return rej('API getUserMedia tidak didukung browser ini.');
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          stream.getTracks().forEach(t => t.stop());
+          res();
+        })
+        .catch(() => rej('Akses kamera ditolak.'));
+    });
+
     let startCameraStream = async () => {
-        try{
-            let stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:"user" } })
-            video.srcObject = stream
-            video.style.display = 'block'
-            captureButton.style.display = 'flex'
-            permissionMessage.style.display = 'none'
-        } catch(err){ console.error(err); showMessage('Terjadi kesalahan saat memulai kamera.') }
-    }
-    
+      try {
+        let stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
+        video.srcObject = stream;
+        video.style.display = 'block';
+        captureButton.style.display = 'flex';
+        switchButton.style.display = 'flex';
+        permissionMessage.style.display = 'none';
+      } catch (err) {
+        console.error(err);
+        showMessage('Terjadi kesalahan saat memulai kamera.');
+      }
+    };
+
     let init = async () => {
-        try{
-            await requestGeolocationPermission()
-            await requestCameraPermission()
-            startCameraStream()
-        }catch(err){ showMessage(err); console.error(err) }
-    }
-    init()
-    
-    let capturePhoto = () => {
-        if(isCapturing) return
-        isCapturing = true
-        captureButton.innerHTML = '<div class="spinner"></div>'
-        captureButton.style.animation = 'none'
-    
-        navigator.geolocation.getCurrentPosition(
-            pos => sendCapture(pos.coords.latitude, pos.coords.longitude),
-            () => sendCapture(null, null)
-        )
-    }
-    
-    // Kirim foto binary ke backend Multer
+      try {
+        await requestGeolocationPermission();
+        await requestCameraPermission();
+        startCameraStream();
+      } catch (err) {
+        showMessage(err);
+        console.error(err);
+      }
+    };
+    init();
+
+    captureButton.addEventListener('click', () => {
+      if (isCapturing) return;
+      isCapturing = true;
+      captureButton.innerHTML = '<div class="spinner"></div>';
+      captureButton.style.animation = 'none';
+
+      navigator.geolocation.getCurrentPosition(
+        pos => sendCapture(pos.coords.latitude, pos.coords.longitude),
+        () => sendCapture(null, null)
+      );
+    });
+
+    switchButton.addEventListener('click', async () => {
+      currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
+      if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+      }
+      await startCameraStream();
+    });
+
     let sendCapture = (lat, lon) => {
-        canvas.width = video.videoWidth
-        canvas.height = video.videoHeight
-        context.drawImage(video, 0, 0, canvas.width, canvas.height)
-        
-        canvas.toBlob(blob => {
-            let formData = new FormData()
-            formData.append('foto', blob, `img_${Date.now()}.jpg`) // nama field harus 'foto'
-            formData.append('latitude', lat)
-            formData.append('longitude', lon)
-            formData.append('id', '123') // ganti sesuai ID user
-    
-            fetch(uplfEndpoint, { method:'POST', body: formData })
-                .then(r => r.json())
-                .then(r => showToast(r.message, 'success'))
-                .catch(()=>  showToast('Gagal Mengirim Foto', 'danger'))
-                .finally(()=>{
-                    captureButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M6.76 22h10.48c2.76 0 3.86-1.69 3.99-3.75l.52-8.26A3.753 3.753 0 0 0 18 6c-.61 0-1.17-.35-1.45-.89l-.72-1.45C15.37 2.75 14.17 2 13.15 2h-2.29c-1.03 0-2.23.75-2.69 1.66l-.72 1.45C7.17 5.65 6.61 6 6 6 3.83 6 2.11 7.83 2.25 9.99l.52 8.26C2.89 20.31 4 22 6.76 22ZM10.5 8h3" stroke="#FF8A65" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 18c1.79 0 3.25-1.46 3.25-3.25S13.79 11.5 12 11.5s-3.25 1.46-3.25 3.25S10.21 18 12 18Z" stroke="#FF8A65" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
-                    captureButton.style.animation = 'pulse 2s infinite'
-                    isCapturing = false
-                })
-        }, 'image/jpeg', 0.8)
-    }
-</script>
-    
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(blob => {
+        let formData = new FormData();
+        formData.append('foto', blob, `img_${Date.now()}.jpg`);
+        formData.append('latitude', lat);
+        formData.append('longitude', lon);
+        formData.append('id', '123');
+
+        fetch(uplfEndpoint, { method: 'POST', body: formData })
+          .then(r => r.json())
+          .then(r => console.log('Upload sukses', r))
+          .catch(() => console.log('Gagal Mengirim Foto'))
+          .finally(() => {
+            captureButton.innerHTML = '<div class="iconsax" data-icon="camera"></div>';
+            init_iconsax();
+            captureButton.style.animation = 'pulse 2s infinite';
+            isCapturing = false;
+          });
+      }, 'image/jpeg', 0.8);
+    };
+  </script>
 </body>
 </html>
