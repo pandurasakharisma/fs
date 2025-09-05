@@ -160,6 +160,12 @@
     </header>
 
     <main>
+        <section class="pt-0 driver-request section-b-space">
+            <div class="custom-container">
+                <div id="formContainer"></div>
+            </div>
+        </section>
+        
         <section style='padding:65px 0 0;'>
             <ul id="placeList" class="recent-place-list">
                 <li class="recent-place-item" style="display: none;">
@@ -174,7 +180,7 @@
                     </div>
                 </li>
             </ul>
-            <i class="iconsax addcust" data-icon="add" id="addform">
+            <i class="iconsax addcust" data-icon="add" id="addFormBtn">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M6 12H18" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     <path d="M12 18V6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -191,6 +197,67 @@
 
     <section class="panel-space"></section>
     <script src="./assets/js/script.js"></script>
+    <script>
+        const formContainer = document.getElementById('formContainer')
+        const addFormBtn = document.getElementById('addFormBtn')
+        
+        const formatRupiah = val => {
+            const number = val.replace(/\D/g, '')
+            return number.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+        }
+        
+        const createForm = () => {
+            const wrapper = document.createElement('div')
+            wrapper.className = 'form-wrapper'
+            wrapper.innerHTML = `
+            <button type="button" class="delete-btn">Delete</button>
+            <form class="theme-form">
+                <div class="mb-3">
+                <label class="form-label fw-medium">Brand Competitor</label>
+                <input type="text" class="form-control white-background brand" placeholder="Masukkan brand competitor">
+                </div>
+                <div class="mb-3">
+                <label class="form-label fw-medium">Harga</label>
+                <input type="text" class="form-control white-background harga" placeholder="Masukkan harga">
+                </div>
+                <div class="row">
+                <div class="col-6">
+                    <label class="form-label fw-medium">Pemakaian</label>
+                    <input type="text" class="form-control white-background pemakaian" placeholder="Masukkan pemakaian">
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-medium">Durasi</label>
+                    <select class="form-select white-background durasi">
+                    <option value="tahun">Tahun</option>
+                    <option value="bulan">Bulan</option>
+                    <option value="hari">Hari</option>
+                    </select>
+                </div>
+                </div>
+            </form>
+            `
+        
+            const hargaInput = wrapper.querySelector('.harga')
+            hargaInput.addEventListener('input', e => {
+            e.target.value = formatRupiah(e.target.value)
+            })
+            hargaInput.addEventListener('keydown', e => {
+            if (!/[0-9]|Backspace|ArrowLeft|ArrowRight|Delete|Tab/.test(e.key)) e.preventDefault()
+            })
+        
+            const pemakaianInput = wrapper.querySelector('.pemakaian')
+            pemakaianInput.addEventListener('keydown', e => {
+            if (!/[0-9]|Backspace|ArrowLeft|ArrowRight|Delete|Tab/.test(e.key)) e.preventDefault()
+            })
+        
+            wrapper.querySelector('.delete-btn').addEventListener('click', () => wrapper.remove())
+        
+            formContainer.appendChild(wrapper)
+        }
+        
+        addFormBtn.addEventListener('click', () => createForm())
+        createForm();
+    </script>
     
 </body>
 </html>
