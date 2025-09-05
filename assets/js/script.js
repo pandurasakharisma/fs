@@ -90,7 +90,6 @@ let showToast = (message, type = 'success') => {
     let toast = document.createElement('div');
     toast.className = `toast align-items-center text-white bg-${type} border-0`;
     toast.role = "alert";
-    toast.style.minWidth = '200px';
     toast.style.transition = 'opacity 0.5s ease';
     toast.style.opacity = '0';
     toast.innerHTML = `

@@ -127,7 +127,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
   -webkit-appearance: none;
 }
 
-.custom-container {padding: 0 8px;}
+.custom-container {padding: 0 20px;}
 @media (max-width: 600px) {
   .custom-container {padding: 0 calc(8px + 5 * (100vw - 320px) / 280);}
 }
@@ -4611,8 +4611,8 @@ body.dark .auth-bg-image-box .auth-bg-image {
 .recent-place-list li {
   width: 100%;
 }
-.recent-place-list li + li.ready {border-bottom: 2px solid #4CAF50;}
-.recent-place-list li + li {
+.recent-place-list li.ready {border-bottom: 2px solid #4CAF50;}
+.recent-place-list li, .recent-place-list li + li {
   padding-bottom: 8px;
   margin-bottom: 8px;
   border-bottom: 1px solid rgba(var(--line-color), 1);
@@ -7983,17 +7983,16 @@ body.dark .vehicle-content .content-title .members {
   z-index: 9999;
 }
 .toast {
-  min-width: 250px;
   margin-bottom: 10px;
   padding: 8px 12px;
-  font-size:8px;
+  font-size: 8px;
   color: white;
+  width: 100%;
   border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   opacity: 0;
   transform: translateX(100%);
   transition: all 0.5s ease;
-  font-family: sans-serif;
 }
 .toast.show {
   opacity: 1;
