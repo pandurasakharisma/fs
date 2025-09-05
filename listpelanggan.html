@@ -473,7 +473,7 @@
         let xscr = 0;
         window.onscroll = () => {
             let totalHeightOfContent = document.body.scrollHeight;
-            if (window.innerHeight + window.scrollY >= totalHeightOfContent) {
+            if (window.innerHeight + window.scrollY >= (totalHeightOfContent -400)) {
                 fetchAndRenderStores();
                 xscr++;
             }
