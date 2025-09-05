@@ -100,12 +100,12 @@
 
     <!-- Tombol Capture Foto -->
     <div id="captureButton">
-      <i class="bi bi-camera-fill" style="font-size: 28px; color: #ff8a65;"></i>
+      <i class="bi bi-camera-fill" style="font-size: 28px; color: #fff;background:#c53f3f;"></i>
     </div>
 
     <!-- Tombol Switch Kamera -->
     <div id="switchButton">
-      <i class="bi bi-arrow-repeat" style="font-size: 22px; color: #000;"></i>
+      <i class="bi bi-arrow-repeat" style="font-size: 22px; color: #fff;background:#c53f3f;"></i>
     </div>
   </div>
 
@@ -121,9 +121,9 @@
     let permissionMessage = document.getElementById('permissionMessage');
     let messageText = document.getElementById('messageText');
 
-    let uplfEndpoint = urlbe + 'uplf'; // Endpoint backend
+    let uplfEndpoint = urlbe + 'uplf'; 
     let isCapturing = false;
-    let currentFacingMode = "user"; // Default kamera depan
+    let currentFacingMode = "user"; 
 
     function showMessage(msg) {
       video.style.display = 'none';
