@@ -3238,7 +3238,7 @@ body.dark .auth-bg-image-box .auth-bg-image {
 }
 @media (max-width: 600px) {
   .auth-content-bg .auth-title {
-    padding-top: calc(10px + 10 * (100vw - 320px) / 280);
+    padding-top: calc(10px + 10 * (100vw - 280px) / 280);
   }
 }
 .auth-content-bg .auth-title .loader-line {
