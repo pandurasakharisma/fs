@@ -98,7 +98,6 @@ export const renderLogin = () => {
       toggler.addEventListener("click", showHidePassword(index));
     })
     
-    init_iconsax()
     document.getElementById('cekl').onclick = () => handleLogin()
     document.body.onkeypress = e => e.key === 'Enter' ? handleLogin(e) : null
 

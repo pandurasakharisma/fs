@@ -142,119 +142,99 @@ export const renderLogin = () => {
             
         </style>
         <header id="header" class="main-header inner-page-header">
-        <div class="custom-container">
-            <div class="header-panel">
-            <div class="flex-spacing gap-2 w-100" style="align-items: center; display: flex;">
-                
-                <!-- Tombol Back -->
-                <a onclick="hrefs('home')" class="back-btn">
-                <i class="iconsax icon-btn" data-icon="chevron-left" height="40" width="40" style="border: none;margin-left: -10px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M15.0013 20.6695C14.8113 20.6695 14.6213 20.5995 14.4713 20.4495L7.95125 13.9295C6.89125 12.8695 6.89125 11.1295 7.95125 10.0695L14.4713 3.54953C14.7613 3.25953 15.2413 3.25953 15.5312 3.54953C15.8212 3.83953 15.8212 4.31953 15.5312 4.60953L9.01125 11.1295C8.53125 11.6095 8.53125 12.3895 9.01125 12.8695L15.5312 19.3895C15.8212 19.6795 15.8212 20.1595 15.5312 20.4495C15.3813 20.5895 15.1912 20.6695 15.0013 20.6695Z" fill="#292D32"></path>
-                    </svg>
-                </i>
-                </a>
-
-                <!-- Input Search (DITARUH DI TENGAH) -->
-                <div class="location-box flex-grow-1" style="
-                    background-color: rgba(var(--box-bg), 1);
-                    display: flex;
-                    align-items: center;
-                    border-radius: 6px;
-                    padding: 8px;
-                ">
-                    <img class="icon" src="./assets/images/svg/gps.svg" alt="location" style="width:18px; margin-right:6px;">
-                    <input type="text" id="searchInput" class="form-control border-0 p-0" placeholder="Enter destination" style="background: none;flex:1; box-shadow:none;">
-                    <img id="clearBtn" class="clear-btn" width="12" style="display:none; cursor:pointer;margin-right:6px;" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e" alt="clear">
+            <div class="custom-container">
+                <div class="header-panel">
+                <div class="flex-spacing gap-2 w-100" style="align-items: center; display: flex;">
+                    <a onclick="hrefs('home')" class="back-btn">
+                        <i class="iconsax icon-btn" data-icon="chevron-left" height="40" width="40" style="border: none;margin-left: -10px;"></i>
+                    </a>
+                    <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 8px;">
+                        <img class="icon" src="./assets/images/svg/gps.svg" alt="location" style="width:18px; margin-right:6px;">
+                        <input type="text" id="searchInput" class="form-control border-0 p-0" placeholder="Enter destination" style="background: none;flex:1; box-shadow:none;">
+                        <img id="clearBtn" class="clear-btn" width="12" style="display:none; cursor:pointer;margin-right:6px;" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e" alt="clear">
+                    </div>
+                </div>
                 </div>
             </div>
-            </div>
-        </div>
-    </header>
+        </header>
 
-    <main>
-        <section style='padding:65px 0 0;'>
-            <ul id="placeList" class="recent-place-list">
-                <li class="recent-place-item" style="display: none;">
-                    <div class="recent-box">
-                        <div class="recent-icon">
-                            <img class="icon" src="./assets/images/svg/location-fill.svg" alt="location">
+        <main>
+            <section style='padding:65px 0 0;'>
+                <ul id="placeList" class="recent-place-list">
+                    <li class="recent-place-item" style="display: none;">
+                        <div class="recent-box">
+                            <div class="recent-icon">
+                                <img class="icon" src="./assets/images/svg/location-fill.svg" alt="location">
+                            </div>
+                            <div>
+                                <h5 class="card-name"></h5>
+                                <p class="address"></p>
+                            </div>
                         </div>
-                        <div>
-                            <h5 class="card-name"></h5>
-                            <p class="address"></p>
+                    </li>
+                </ul>
+                <i class="iconsax addcust" data-icon="add" id="addform"></i>
+                <div class="offcanvas-footer tbf2 ride-offcanvas hide">
+                    <div class="offcanvas-body p-0 d-flex flex-spacing gap-2">
+                        <h5>Yakin menambahkan <span class='totl'></span>Lokasi ? </h5>
+                        <select class="form-select rider-options hide">
+                            <option selected="">Switch Rider</option>
+                            <option value="1">My Self</option>
+                        </select>
+                    </div>
+                    <div class="flex-align-center flex-nowrap gap-3 border-0 pt-3 " style='border-bottom:1px solid rgba(var(--line-color), 1);'>
+                        <span class="btn theme-btn w-100 mt-0 addcustx">Simpan</span>
+                        <span class="btn white-btn title-color w-100 mt-0" onclick="hrefs('home')">Cancel</span>
+                    </div>
+                </div>
+            </section>
+            <div id="modpop">
+                <div id="olay"></div>
+                <div class="theme-content-bg">
+                    <form class="theme-form" style="margin-bottom:100px;">
+                        <div class="form-group">
+                            <label class="form-label mb-2" for="CardName">Nama Pelanggan</label>
+                            <input type="text" class="form-control" id="CardName" name="CardName" placeholder="Masukkan nama pelanggan" required>
                         </div>
-                    </div>
-                </li>
-            </ul>
-            <i class="iconsax addcust" data-icon="add" id="addform">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 12H18" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <path d="M12 18V6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-            </i>
-            
-            <div class="offcanvas-footer tbf2 ride-offcanvas hide">
-                <div class="offcanvas-body p-0 d-flex flex-spacing gap-2">
-                    <h5>Yakin menambahkan <span class='totl'></span>Lokasi ? </h5>
-                    <select class="form-select rider-options hide">
-                        <option selected="">Switch Rider</option>
-                        <option value="1">My Self</option>
-                    </select>
-                </div>
-                <div class="flex-align-center flex-nowrap gap-3 border-0 pt-3 " style='border-bottom:1px solid rgba(var(--line-color), 1);'>
-                    <span class="btn theme-btn w-100 mt-0 addcustx">Simpan</span>
-                    <span class="btn white-btn title-color w-100 mt-0" onclick="hrefs('home')">Cancel</span>
-                </div>
-            </div>
-        </section>
-        <div id="modpop">
-            <div id="olay"></div>
-            <div class="theme-content-bg">
-                <form class="theme-form" style="margin-bottom:100px;">
-                    <div class="form-group">
-                        <label class="form-label mb-2" for="CardName">Nama Pelanggan</label>
-                        <input type="text" class="form-control" id="CardName" name="CardName" placeholder="Masukkan nama pelanggan" required>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="form-label mb-2" for="Address">Alamat</label>
-                        <input type="text" class="form-control" id="Address" name="Address" placeholder="Masukkan alamat" required>
+                        <div class="form-group">
+                            <label class="form-label mb-2" for="Address">Alamat</label>
+                            <input type="text" class="form-control" id="Address" name="Address" placeholder="Masukkan alamat" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label mb-2" for="City">Kota</label>
+                            <input type="text" class="form-control" id="City" name="City" placeholder="Masukkan kota" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label mb-2" for="Province">Provinsi</label>
+                            <input type="text" class="form-control" id="Province" name="Province" placeholder="Masukkan provinsi" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label mb-2" for="Phone">No. Telepon</label>
+                            <input type="text" class="form-control" id="Phone" name="Phone" placeholder="Masukkan nomor telepon" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label mb-2" for="PIC">Penanggung Jawab (PIC)</label>
+                            <input type="text" class="form-control" id="PIC" name="PIC" placeholder="Masukkan nama penanggung jawab" required>
+                        </div>
+
+                        <div class="order-type"></div>
+                    </form>
+
+                    <div class="offcanvas-footer tbf flex-align-center flex-nowrap gap-3 border-0 pt-3 px-0 pb-0" style='border-bottom:1px solid rgba(var(--line-color), 1);'>
+                        <span class="btn theme-btn w-100 mt-0 pulse simpancust">Simpan</span>
+                        <span class="btn white-btn title-color w-100 mt-0 closepopup" onclick="closePopup()">Cancel</a>
                     </div>
-
-                    <div class="form-group">
-                        <label class="form-label mb-2" for="City">Kota</label>
-                        <input type="text" class="form-control" id="City" name="City" placeholder="Masukkan kota" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label mb-2" for="Province">Provinsi</label>
-                        <input type="text" class="form-control" id="Province" name="Province" placeholder="Masukkan provinsi" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label mb-2" for="Phone">No. Telepon</label>
-                        <input type="text" class="form-control" id="Phone" name="Phone" placeholder="Masukkan nomor telepon" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label mb-2" for="PIC">Penanggung Jawab (PIC)</label>
-                        <input type="text" class="form-control" id="PIC" name="PIC" placeholder="Masukkan nama penanggung jawab" required>
-                    </div>
-
-                    <div class="order-type"></div>
-                </form>
-
-                <div class="offcanvas-footer tbf flex-align-center flex-nowrap gap-3 border-0 pt-3 px-0 pb-0" style='border-bottom:1px solid rgba(var(--line-color), 1);'>
-                    <span class="btn theme-btn w-100 mt-0 pulse simpancust">Simpan</span>
-                    <span class="btn white-btn title-color w-100 mt-0 closepopup" onclick="closePopup()">Cancel</a>
                 </div>
             </div>
-        </div>
 
-    </main>
+        </main>
 
-    <section class="panel-space"></section>
+        <section class="panel-space"></section>
     `
 
     let openPopup = () => document.getElementById('modpop').classList.add('show');

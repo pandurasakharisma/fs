@@ -219,23 +219,21 @@ let renderHeadContent = () => {
 let router = async () => {
     createSpinner()
     checkAuth()
-
-    // ambil hash tanpa simbol #
     let path = window.location.hash.replace('#', '') || 'home'
-    let pageJs = `./pages/${path}.js`  // contoh: #dashboard => ./pages/dashboard.js
+    let pageJs = `./pages/${path}.js`  
 
     try {
-        // load modul halaman secara dinamis
         let module = await import(pageJs)
-
         if (module.default && typeof module.default === 'function') {
-            await module.default() // panggil default export
+            await module.default() 
         } else {
             document.getElementById('app').innerHTML = `<h2>Halaman ${path} tidak memiliki default export</h2>`
         }
+        
+        init_iconsax()
     } catch (err) {
         console.error('Routing error:', err)
-        document.getElementById('app').innerHTML = `<h2>404 - Halaman ${path} tidak ditemukan</h2>`
+        document.getElementById('app').innerHTML = `<img class="e4042" src="./assets/images/e404.svg" alt="Not Found"><div class="sesatf"><a class="btn btnb pulse" onclick="hrefs()">Kembali Ke Halaman Utama</a></div>`
     } finally {
         removeSpinner()
     }
@@ -255,7 +253,6 @@ window.onhashchange = router
 let main = async () => {
     checkAuth()
     createSpinner()
-
     let scripts = [
         './assets/js/sticky-header.js',
         './assets/js/bootstrap.bundle.min.js',
@@ -270,4 +267,5 @@ let main = async () => {
     } finally {
         removeSpinner()
     }
+    
 }
