@@ -3229,7 +3229,7 @@ body.dark .auth-bg-image-box .auth-bg-image {
   border-radius: 20px 20px 0 0;
   position: absolute;
   bottom: 0;
-  max-height: calc(100vh - 60px - 287px);
+  max-height: calc(100vh - 360px - 287px);
   height: 100%;
 }
 .auth-content-bg .auth-title {

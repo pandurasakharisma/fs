@@ -158,7 +158,10 @@ export let renderKamera = () => {
             formData.append('id', '123');
             fetch(uplfEndpoint, { method: 'POST', body: formData })
             .then(r => r.json())
-            .then(r => console.log('Upload sukses', r))
+            .then(r => {
+                showToast('Gambar Berhasil diUpload', 'success');
+                window.location.hash = '/listitem'
+            })
             .catch(() => console.log('Gagal Mengirim Foto'))
             .finally(() => {
                 captureButton.innerHTML = `<i class="iconsax icon" data-icon="camera"></i>`;
