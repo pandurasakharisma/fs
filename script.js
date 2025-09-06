@@ -1,6 +1,7 @@
 let urlbe = "https://rightly-composed-marlin.ngrok-free.app/"
 
-let setUserCode = () => {
+window.hrefs = (url = null) => window.location.hash = url ?? 'home';
+window.setUserCode = () => {
     let data = localStorage.getItem('user_data'),
         obj = data ? JSON.parse(data) : null,
         cardId = obj && obj.Card_ID ? String(obj.Card_ID) : '',
@@ -18,20 +19,32 @@ let setUserCode = () => {
     }
 }
 
+let init_iconsax = () => {
+    document.querySelectorAll(".iconsax").forEach(iconsax => {
+        let TuT = iconsax.getAttribute("data-icon").toLowerCase().trim();
+        fetch("https://glenthemes.github.io/iconsax/icons/" + TuT + ".svg")
+            .then(res => res.text())
+            .then(svg => iconsax.innerHTML = svg)
+            .catch(error => console.error(`Gagal memuat ikon: ${TuT}`, error));
+    });
+};
+
 let getAuthToken = () => localStorage.getItem("user_token")
 
 let checkAuth = () => {
     let userToken = getAuthToken(),
         currentUrl = window.location.href.toLowerCase()
-    if (!userToken && !currentUrl.includes("login")) window.location.href = './login.html'
+    if (!userToken && !currentUrl.includes("login")) window.location.hash = '/login'
     setUserCode()
 }
+
 
 let logout = (url = null) => {
     localStorage.removeItem("user_token")
     localStorage.removeItem("user_data")
     localStorage.removeItem("user_absen")
-    window.location.href = url ?? './login.html'
+    showToast('Kamu Berhasil Logout', 'success');
+    window.location.hash = '/login'
 }
 
 let loadScript = src => new Promise((resolve, reject) => {
@@ -87,12 +100,74 @@ let showToast = (message, type = 'success') => {
     `
     container.appendChild(toast)
     setTimeout(() => { toast.classList.add('show'); toast.style.opacity = '1' }, 100)
-    // setTimeout(() => {
-    //     toast.style.opacity = '0'
-    //     toast.classList.remove('show')
-    //     setTimeout(() => { toast.parentNode && container.removeChild(toast) }, 500)
-    // }, 3000)
+    setTimeout(() => {
+        toast.style.opacity = '0'
+        toast.classList.remove('show')
+        setTimeout(() => { toast.parentNode && container.removeChild(toast) }, 500)
+    }, 3000)
 }
+
+let showSkeleton = (container, count = 6) => {
+    for (let i = 0; i < count; i++) {
+        let li = document.createElement('li');
+        li.className = 'recent-place-item skeleton d-flex';
+        li.innerHTML = `
+            <div class="skellr"></div>
+            <div class="skeleton-card">
+                <div class="skeleton-line" width="85%"></div>
+                <div class="skeleton-line" width="100%"></div>
+            </div>
+        `;
+        container.appendChild(li);
+    }
+};
+
+let removeSkeleton = (container) => {
+    container.querySelectorAll('.skeleton').forEach(el => el.remove());
+};
+
+
+let formatDateIndo = dateStr => {
+    if (!dateStr) return ''
+    let bulan = [
+        'Januari','Februari','Maret','April','Mei','Juni',
+        'Juli','Agustus','September','Oktober','November','Desember'
+    ]
+    let [y, m, d] = dateStr.split('-')
+    return `${parseInt(d)} ${bulan[parseInt(m)-1]} ${y}`
+}
+
+let formatTime = timeStr => {
+    if (!timeStr) return ''
+    let parts = timeStr.split(':')
+    return parts.length >= 2 ? `${parts[0]}:${parts[1]}${parts[2] ? ':'+parts[2] : ''}` : timeStr
+}
+
+
+const getHariMon1 = (d) => ((d.getDay() + 6) % 7) + 1;
+const getMingguKe = (d) => {
+    const first = new Date(d.getFullYear(), d.getMonth(), 1);
+    const firstDowMon1 = getHariMon1(first);
+    const offset = firstDowMon1 - 1;
+    return Math.floor((offset + d.getDate() - 1) / 7) + 1;
+};
+
+let getMingguHari = () => {
+    let now = new Date()
+    let tanggal = now.getDate()
+    let hari = now.getDay() 
+    hari = hari === 0 ? 7 : hari 
+    let minggu = Math.ceil(tanggal / 7) 
+    return { minggu, hari }
+}
+
+
+const fmtDateTime = (d) => {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+};
+
+
 
 let createSpinner = () => {
     let spinner = document.createElement('div')
@@ -136,6 +211,7 @@ let renderHeadContent = () => {
         head.appendChild(element)
     })
 }
+
 
 /* ==========================================
    DYNAMIC ROUTER DENGAN DYNAMIC IMPORT
