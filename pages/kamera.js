@@ -31,7 +31,8 @@ export let renderKamera = () => {
                 cursor: pointer;
                 z-index: 1000;
                 transition: transform 0.2s ease-in-out;
-                background-color: rgba(255, 255, 255, 0.8);
+                background-color: #c53f3f;
+                stroke:#fff;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
                 border-radius: 50%;
             }
@@ -46,7 +47,6 @@ export let renderKamera = () => {
                 right: 30px;
                 width: 50px;
                 height: 50px;
-                background-color: rgba(255, 255, 255, 0.6);
             }
             #captureButton:hover,#switchButton:hover {transform: scale(1.1);}
             #permissionMessage {
@@ -96,6 +96,8 @@ export let renderKamera = () => {
 
     `
     
+    init_iconsax();
+    
     let video = document.getElementById('videoElement'),
         canvas = document.getElementById('canvasElement'),
         context = canvas.getContext('2d'),
@@ -141,6 +143,7 @@ export let renderKamera = () => {
             await requestGeolocationPermission();
             await requestCameraPermission();
             startCameraStream();
+            init_iconsax();
         } catch (err) {
             showMessage(err);
         }
@@ -167,12 +170,13 @@ export let renderKamera = () => {
                 captureButton.innerHTML = `<i class="iconsax icon" data-icon="camera"></i>`;
                 captureButton.style.animation = 'pulse 2s infinite';
                 isCapturing = false;
+                init_iconsax();
             });
         }, 'image/jpeg', 0.8);
     };
 
     init();
-    init_iconsax()
+    init_iconsax();
     captureButton.onclick = () => {
         if (isCapturing) return;
         isCapturing = true;
@@ -189,6 +193,8 @@ export let renderKamera = () => {
         if (video.srcObject) video.srcObject.getTracks().forEach(track => track.stop());
         await startCameraStream();
     };
+
+
 
 }
 
