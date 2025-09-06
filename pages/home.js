@@ -18,8 +18,12 @@ let panelkeluar = () => {
         `;
 
         let data = localStorage.getItem('user_absen'),
+            data2 = localStorage.getItem('user_data'),
             obj = data ? JSON.parse(data) : null,
-            jam = obj && obj.jam ? String(obj.jam) : '';
+            obj2 = data2 ? JSON.parse(data2) : null,
+            jam = obj && obj.jam ? String(obj.jam) : '',
+            nama = obj2 && obj2.Full_Name ? String(obj2.Full_Name) : '';
+
 
         let rightCol = document.createElement('div');
         rightCol.className = 'col-6 text-center';
@@ -36,7 +40,14 @@ let panelkeluar = () => {
         row.appendChild(leftCol);
         row.appendChild(rightCol);
         cardAbsen.appendChild(row);
+        
+        let welc = document.createElement('div');
+        welc.className = 'welc';
+        welc.innerHTML = `Welcome Back, <strong class="welc_name">${nama}</strong>`;
+        bgPatternDiv.appendChild(welc);
         bgPatternDiv.appendChild(cardAbsen);
+        
+        
         document.querySelector('#absenkeluar').appendChild(bgPatternDiv);
     };
 
@@ -213,12 +224,23 @@ export const renderHome = () => {
 
             #absenkeluar>div:first-child {
                 background: #c53f3f;
-                padding: 40px 20px 60px;
+                padding: 80px 20px 60px;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
                 position: relative;
                 overflow: hidden;
             }
 
+            .welc{    
+                z-index: +2;
+                position: absolute;
+                top: 50px;
+                padding-left: 18px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 300px;
+                color: #fff;
+            }
             .seclist {
                 background: #fff;
                 border-top-left-radius: 18px;
