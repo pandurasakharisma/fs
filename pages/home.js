@@ -28,7 +28,7 @@ let panelkeluar = () => {
                 <span class="status-dot"></span>
                 <span id="clockInTime">Check In : ${jam} </span>
             </p>
-            <button onclick='logout()' class="btn btn-clock mb-2" id="btnClock" style="background: #c53f3f;color: #fff;border: none;">
+            <button onclick='logout()' class="btn btn-clock mb-2" id="btnClock" style="font-size:13px;background: #c53f3f;color: #fff;border: none;">
                 Keluar Akun
             </button>
         `;
