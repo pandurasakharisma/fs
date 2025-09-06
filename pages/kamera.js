@@ -172,6 +172,7 @@ export let renderKamera = () => {
     };
 
     init();
+    init_iconsax()
     captureButton.onclick = () => {
         if (isCapturing) return;
         isCapturing = true;
