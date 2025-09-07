@@ -556,7 +556,7 @@ let loadJadwal = usercode => {
                                     <div class="d-flex align-content-center gap-2 lh-base">
                                         <h5 class="fw-normal title-color">${d.Full_Name}</h5>
                                     </div>
-                                    <span style='font-size: 10px;margin-left: 6px;' class="fw-normal content-color mt-1">${d.Job_Position || ''}</h6>
+                                    <div style='font-size: 10px;margin: 6px;' class="fw-normal content-color mt-1">${d.Job_Position || ''}</div>
                                 </div>` : ''}
                                 <div class="flex-align-center gap-2">
                                     <a href="edit-offer.html"> 
