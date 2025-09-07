@@ -6,7 +6,7 @@ export let renderKamera = () => {
 
     let id = params.get('id');
     if (!id) {
-        window.location.hash = '/home';
+        window.location.hash = 'home';
         return;
     }
 
@@ -193,7 +193,7 @@ export let renderKamera = () => {
         canvas.toBlob(finalBlob => {
             let formData = new FormData();
             let finalName = fileName ? fileName : `capture_${Date.now()}`;
-            formData.append('foto', finalBlob, `${finalName}.jpg`);
+            formData.append('foto', finalBlob, `${finalName}.webp`);
             formData.append('latitude', lat);
             formData.append('longitude', lon);
             formData.append('id', id);
@@ -201,15 +201,13 @@ export let renderKamera = () => {
                 .then(r => r.json())
                 .then(r => {
                     showToast('Gambar Berhasil diUpload', 'success');
-
-                    // redirect dengan semua parameter yang sama
                     let redirectParams = new URLSearchParams();
                     expectedKeys.forEach(key => {
                         if (params.has(key)) {
                             redirectParams.set(key, params.get(key));
                         }
                     });
-                    window.location.hash = '/listitem?' + redirectParams.toString();
+                    window.location.hash = 'listitem?' + redirectParams.toString();
                 })
                 .catch(() => console.log('Gagal Mengirim Foto'))
                 .finally(() => {
@@ -219,7 +217,7 @@ export let renderKamera = () => {
                     captureButton.style.animation = 'pulse 2s infinite';
                     isCapturing = false;
                 });
-        }, 'image/jpeg', 0.6);
+        }, 'image/webp', 0.8);
     };
 
     init();
