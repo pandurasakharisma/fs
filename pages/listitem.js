@@ -1,5 +1,5 @@
 export let renderKamera = () => {
-    
+
     document.querySelector('#app').innerHTML = `
         <style>
             .categories-place-box {
@@ -11,7 +11,6 @@ export let renderKamera = () => {
                 border: 1px solid rgba(var(--line-color), 1);
                 border-radius: 6px;
             }
-
             .offer-head .delete-btn {
                 background: #f9ebeb;
                 stroke: #c53f3f;
@@ -43,20 +42,18 @@ export let renderKamera = () => {
                 inset: 0;
                 display: flex;
                 justify-content: center;
-                align-items: flex-end; /* muncul dari bawah */
+                align-items: flex-end;
                 visibility: hidden;
                 opacity: 0;
                 transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
                 z-index: 9999;
             }
-
             #olay {
                 position: absolute;
                 inset: 0;
                 background: #000;
                 opacity: .6;
             }
-
             #modpop .theme-content-bg {
                 background: #fff;
                 width: 100%;
@@ -69,12 +66,10 @@ export let renderKamera = () => {
                 padding: 0 20px;
                 position: relative;
             }
-
             #modpop.show {
                 visibility: visible;
                 opacity: 1;
             }
-
             .addcust svg {
                 position: fixed;
                 bottom: 80px;
@@ -91,8 +86,6 @@ export let renderKamera = () => {
                 transition: transform 0.2s ease-in-out;
             }
             .addcust svg path {stroke: #fff!important;}
-            
-
             .addcust svg:hover {transform: scale(1.15);}
             #modpop .tbf{
                 position: fixed;
@@ -103,7 +96,6 @@ export let renderKamera = () => {
                 background: #fff;
                 max-width: 450px;
             }
-
             .tbf2{
                 position: fixed;
                 bottom: 0;
@@ -114,7 +106,6 @@ export let renderKamera = () => {
                 max-width: calc(600px);
                 padding: 20px 10px 9px;
             }
-
             .bgm{
                 background: #c53f3f;
                 padding: 100px 20px 60px;
@@ -190,7 +181,6 @@ export let renderKamera = () => {
             .form-wrapper {
                 padding: 15px;
                 background-color: rgba(var(--white), 1);
-                border: 1px solid rgba(var(--line-color), 1);
                 border-radius: 10px;
                 margin-bottom: 10px;
                 box-shadow: 0px 4px 20px 0px rgba(var(--title-color), 0.06);
@@ -209,28 +199,6 @@ export let renderKamera = () => {
                 background-color: rgba(var(--theme-color), 0.1);
                 border-radius: 4px;
             }
-            .skeleton-loader {
-                background: #f0f0f0;
-                border-radius: 6px;
-                overflow: hidden;
-                position: relative;
-                margin-bottom: 10px;
-                padding: 10px;
-            }
-
-            .skeleton-loader-line {
-                height: 14px;
-                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-                background-size: 200% 100%;
-                border-radius: 4px;
-                animation: shimmer 1.5s infinite;
-                margin: 6px 0;
-            }
-
-            @keyframes shimmer {
-                0% { background-position: -200% 0; }
-                100% { background-position: 200% 0; }
-            }
         </style>
         <header id="header" class="main-header inner-page-header">
             <div class="custom-container">
@@ -242,7 +210,8 @@ export let renderKamera = () => {
                     <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 8px;">
                         <img class="icon" src="./assets/images/svg/gps.svg" alt="location" style="width:18px; margin-right:6px;">
                         <input type="text" id="searchInput" class="form-control border-0 p-0" placeholder="Enter destination" style="background: none;flex:1; box-shadow:none;">
-                        <img id="clearBtn" class="clear-btn" width="12" style="display:none; cursor:pointer;margin-right:6px;" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e" alt="clear">
+                        <img id="clearBtn" class="clear-btn" width="12" style="display:none; cursor:pointer;margin-right:6px;" 
+                        src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e">
                     </div>
                 </div>
                 </div>
@@ -274,17 +243,13 @@ export let renderKamera = () => {
                     <div class="gantung1 d-flex shadow-sm">
                         <div>
                             <p>Durasi Kunjungan</p>
-                            <strong id="cdk">18:00:10</strong>
+                            <strong id="cdk">00:00</strong>
                         </div>
-                        <button onclick="logout()" class="btn btn-clock mb-0" id="btnClock">
-                            Keluar Akun
-                        </button>
+                        <button onclick="logout()" class="btn btn-clock mb-0" id="btnClock">Keluar Akun</button>
                     </div>
-                    
                     <div id="formContainer"></div>
                 </div>
             </section>
-            
             <section style='padding:65px 0 0;'>
                 <ul id="placeList" class="recent-place-list">
                     <li class="recent-place-item" style="display: none;">
@@ -299,39 +264,37 @@ export let renderKamera = () => {
                         </div>
                     </li>
                 </ul>
-                <i class="iconsax addcust" data-icon="add" id="addFormBtn">
+                <i class="iconsax addcust" data-icon="add" id="addFormBtn" onclick="createForm()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M6 12H18" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         <path d="M12 18V6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </i>
-                
-                <div class="offcanvas-footer tbf2  hide flex-align-center flex-nowrap gap-3 border-0 pt-3 " style='border-bottom:1px solid rgba(var(--line-color), 1);'>
+                <div class="offcanvas-footer tbf2 hide flex-align-center flex-nowrap gap-3 border-0 pt-3 " style='border-bottom:1px solid rgba(var(--line-color), 1);'>
                     <span class="btn theme-btn w-100 mt-0 addcustx">Simpan</span>
                     <a class="btn white-btn title-color w-100 mt-0" href="./index.html">Cancel</a>
                 </div>
             </section>
-
         </main>
-
-
     `
+
+    let formCount = 0
     const formContainer = document.getElementById('formContainer')
-    const addFormBtn = document.getElementById('addFormBtn')
-    
-    const formatRupiah = val => {
+
+    window.formatRupiah = function(val){
         const number = val.replace(/\D/g, '')
         return number.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
     }
-    
-    const createForm = () => {
+
+    window.createForm = function(){
+        formCount++
         const wrapper = document.createElement('div')
         wrapper.className = 'form-wrapper'
         wrapper.innerHTML = `
             <div class="offer-head">
-                <h4>30% OFF </h4>
-                <div class=" flex-align-center gap-2">
-                    <span class="delete-btn">
+                <h4>Brand #${formCount}</h4>
+                <div class="flex-align-center gap-2">
+                    <span class="delete-btn" onclick="deleteForm(this)">
                         <i class="iconsax icon error-icon" data-icon="trash-square"></i>
                     </span>
                 </div>
@@ -342,23 +305,22 @@ export let renderKamera = () => {
                     <label class="form-labeljo">Brand Competitor</label>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-controljo harga" placeholder=" " required>
+                    <input type="text" class="form-controljo harga" placeholder=" " required inputmode="numeric" pattern="[0-9]*" oninput="this.value=formatRupiah(this.value)" onkeydown="return onlyNumber(event)">
                     <label class="form-labeljo">Harga</label>
                 </div>
                 <div class="row" style="display: flex; gap: 20px;">
                     <div class="col-6" style="flex: 1;">
                         <div class="form-group">
-                            <input type="text" class="form-controljo pemakaian" placeholder=" " required>
+                            <input type="text" class="form-controljo pemakaian" placeholder=" " required inputmode="numeric" pattern="[0-9]*" onkeydown="return onlyNumber(event)">
                             <label class="form-labeljo">Pemakaian</label>
                         </div>
                     </div>
                     <div class="col-6" style="flex: 1;">
                         <div class="form-group">
                             <select class="form-selectjo durasi" required>
-                            <option value="" disabled selected></option>
-                            <option value="tahun">Tahun</option>
-                            <option value="bulan">Bulan</option>
-                            <option value="hari">Hari</option>
+                                <option value="tahun" selected>Tahun</option>
+                                <option value="bulan">Bulan</option>
+                                <option value="hari">Hari</option>
                             </select>
                             <label class="form-labeljo">Durasi</label>
                         </div>
@@ -366,30 +328,37 @@ export let renderKamera = () => {
                 </div>
             </form>
         `
-    
-        const hargaInput = wrapper.querySelector('.harga')
-        hargaInput.addEventListener('input', e => {
-        e.target.value = formatRupiah(e.target.value)
-        })
-        hargaInput.addEventListener('keydown', e => {
-        if (!/[0-9]|Backspace|ArrowLeft|ArrowRight|Delete|Tab/.test(e.key)) e.preventDefault()
-        })
-    
-        const pemakaianInput = wrapper.querySelector('.pemakaian')
-        pemakaianInput.addEventListener('keydown', e => {
-        if (!/[0-9]|Backspace|ArrowLeft|ArrowRight|Delete|Tab/.test(e.key)) e.preventDefault()
-        })
-    
-        wrapper.querySelector('.delete-btn').addEventListener('click', () => wrapper.remove())
-    
         formContainer.appendChild(wrapper)
-        
         init_iconsax()
     }
-    
-    addFormBtn.addEventListener('click', () => createForm())
-    createForm();
-}
 
+    window.deleteForm = function(el){
+        el.closest('.form-wrapper').remove()
+        const wrappers = document.querySelectorAll('#formContainer .form-wrapper')
+        formCount = 0
+        wrappers.forEach((item) => {
+            formCount++
+            item.querySelector('.offer-head h4').innerText = `Brand #${formCount}`
+        })
+    }
+
+    window.onlyNumber = function(e){
+        if (!/[0-9]|Backspace|ArrowLeft|ArrowRight|Delete|Tab/.test(e.key)) {
+            e.preventDefault()
+            return false
+        }
+    }
+
+    createForm()
+
+    let seconds = 0
+    const cdk = document.getElementById('cdk')
+    setInterval(function(){
+        seconds++
+        const minutes = Math.floor(seconds / 60)
+        const secs = seconds % 60
+        cdk.textContent = minutes.toString().padStart(2,'0') + ':' + secs.toString().padStart(2,'0')
+    },1000)
+}
 
 export default renderKamera
