@@ -1,4 +1,4 @@
-var cacheName = "FS-CRM";
+var cacheName = "FS-CRM-v1";
 var filesToCache = [
   "./",
   "./index.html",
@@ -31,17 +31,35 @@ var filesToCache = [
   "./assets/js/sticky-header.js",
   "./assets/js/swiper-bundle.min.js",
   "./assets/js/template-setting.js",
-  "./assets/js/uikit.min.js",
+  "./assets/js/uikit.min.js"
 ];
 
-/* Start the service worker and cache all of the app's content */
-setTimeout(() => {
-  self.addEventListener("install", function (e) {
-    e.waitUntil(
-      caches.open(cacheName).then(function (cache) {
-        return cache.addAll(filesToCache);
+self.addEventListener("install", e => {
+  e.waitUntil(
+    caches.open(cacheName).then(cache => cache.addAll(filesToCache))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", e => {
+  e.waitUntil(
+    caches.keys().then(keys => 
+      Promise.all(keys.map(key => {
+        if (key !== cacheName) return caches.delete(key);
+      }))
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener("fetch", e => {
+  e.respondWith(
+    fetch(e.request)
+      .then(response => {
+        let clone = response.clone();
+        caches.open(cacheName).then(cache => cache.put(e.request, clone));
+        return response;
       })
-    );
-    self.skipWaiting();
-  });
-}, 500);
+      .catch(() => caches.match(e.request))
+  );
+});

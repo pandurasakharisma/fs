@@ -544,7 +544,7 @@ let loadJadwal = usercode => {
                         <div class="my-ride-head">
                             <div class="my-ride-content flex-column" style="width:100%;margin:0 5px 0;">
                                 <div class="flex-spacing">
-                                    <a onclick="hrefs('kamera')"><h6 style="max-width: 210px;" class="title-color fw-medium">${d.cust_name || '-'}</h6></a>
+                                    <a onclick="hrefs('kamera')"><h6 style="max-width:93%;" class="title-color fw-medium">${d.cust_name || '-'}</h6></a>
                                     <span class="status accent-color fw-normal">${status}</span>
                                 </div>
                             </div>
