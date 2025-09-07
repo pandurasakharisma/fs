@@ -8006,38 +8006,61 @@ body.dark .vehicle-content .content-title .members {
     70% {transform: scale(1.1);box-shadow: 0 0 0 20px rgba(197, 63, 63, 0);}
     100% {transform: scale(1);box-shadow: 0 0 0 0 rgba(197, 63, 63, 0);}
 }
-.form-group {
-  position: relative;
-  margin-bottom: 32px;
+
+.jotheme-form .form-group {
+  position: relative !important;
+  margin-bottom: 32px !important;
 }
-.form-group .form-control {
-  width: 100%;
-  border: none;
-  border-bottom: 2px solid #ccc;
-  padding: 10px 0;
-  font-size: 16px;
-  background: transparent;
-  color: var(--text-color);
+
+.jotheme-form .form-group .form-controljo {
+  width: 100% !important;
+  border: none !important;
+  border-bottom: 2px solid #ccc !important;
+  padding: 10px 0 !important;
+  font-size: 16px !important;
+  background: transparent !important;
+  color: #333 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: border-color 0.2s ease !important;
+}
+
+.jotheme-form .form-group .form-controljo::placeholder {
+  color: transparent !important;
+}
+
+.jotheme-form .form-group .form-controljo:focus {
+  border-bottom-color: #6200ee !important;
+}
+
+.jotheme-form .form-group .form-labeljo {
+  position: absolute !important;
+  top: 10px !important;
+  left: 0 !important;
+  font-size: 16px !important;
+  color: #aaa !important;
+  pointer-events: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.jotheme-form .form-group:focus-within .form-labeljo,
+.jotheme-form .form-group .form-controljo:not(:placeholder-shown) + .form-labeljo {
+  top: -14px !important;
+  font-size: 12px !important;
+  color: #6200ee !important;
+}
+
+.form-controljo:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #000 !important;
+  caret-color: #000;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.form-controljo:focus {
   outline: none;
-  transition: border-color var(--transition-speed) ease;
-}
-.form-group .form-control:focus {
-  border-bottom-color: var(--primary);
-}
-.form-group .form-label {
-  position: absolute;
-  top: 10px;
-  left: 0;
-  font-size: 16px;
-  color: var(--placeholder-color);
-  pointer-events: none;
-  transition: all var(--transition-speed) ease;
-}
-.form-group .form-control:focus + .form-label,
-.form-group .form-control:not(:placeholder-shown) + .form-label {
-  top: -14px;
-  font-size: 12px;
-  color: var(--primary);
+  box-shadow: none;
 }
 
 .sesatf {

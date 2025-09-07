@@ -157,7 +157,7 @@ export const renderLogin = () => {
                     </a>
                     <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 8px;">
                         <img class="icon" src="./assets/images/svg/gps.svg" alt="location" style="width:18px; margin-right:6px;">
-                        <input type="text" id="searchInput" class="form-control border-0 p-0" placeholder="Enter destination" style="background: none;flex:1; box-shadow:none;">
+                        <input type="text" id="searchInput" class="form-control border-0 p-0" placeholder="Cari Lokasi" style="background: none;flex:1; box-shadow:none;">
                         <img id="clearBtn" class="clear-btn" width="12" style="display:none; cursor:pointer;margin-right:6px;" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e" alt="clear">
                     </div>
                 </div>
@@ -197,39 +197,40 @@ export const renderLogin = () => {
             <div id="modpop">
                 <div id="olay"></div>
                 <div class="theme-content-bg">
-                    <form class="theme-form" style="margin-bottom:100px;">
+                    <div class="title mt-4"><h3>Registrasi Customer</h3></div>
+                    <form class="jotheme-form" style="margin-bottom:100px;">
                         <div class="form-group">
-                            <label class="form-label mb-2" for="CardName">Nama Pelanggan</label>
-                            <input type="text" class="form-control" id="CardName" name="CardName" placeholder="Masukkan nama pelanggan" required>
+                            <input type="text" class="form-controljo" id="CardName" name="CardName" placeholder=" " required>
+                            <label class="form-labeljo" for="CardName">Nama Pelanggan</label>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label mb-2" for="Address">Alamat</label>
-                            <input type="text" class="form-control" id="Address" name="Address" placeholder="Masukkan alamat" required>
+                            <input type="text" class="form-controljo" id="Address" name="Address" placeholder=" " required>
+                            <label class="form-labeljo" for="Address">Alamat</label>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label mb-2" for="City">Kota</label>
-                            <input type="text" class="form-control" id="City" name="City" placeholder="Masukkan kota" required>
+                            <input type="text" class="form-controljo" id="City" name="City" placeholder=" " required>
+                            <label class="form-labeljo" for="City">Kota</label>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label mb-2" for="Province">Provinsi</label>
-                            <input type="text" class="form-control" id="Province" name="Province" placeholder="Masukkan provinsi" required>
+                            <input type="text" class="form-controljo" id="Province" name="Province" placeholder=" " required>
+                            <label class="form-labeljo" for="Province">Provinsi</label>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label mb-2" for="Phone">No. Telepon</label>
-                            <input type="text" class="form-control" id="Phone" name="Phone" placeholder="Masukkan nomor telepon" required>
+                            <input type="text" class="form-controljo" id="Phone" name="Phone" placeholder=" " required>
+                            <label class="form-labeljo" for="Phone">No. Telepon</label>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label mb-2" for="PIC">Penanggung Jawab (PIC)</label>
-                            <input type="text" class="form-control" id="PIC" name="PIC" placeholder="Masukkan nama penanggung jawab" required>
+                            <input type="text" class="form-controljo" id="PIC" name="PIC" placeholder=" " required>
+                            <label class="form-labeljo" for="PIC">Penanggung Jawab (PIC)</label>
                         </div>
 
                         <div class="order-type"></div>
-                    </form>
+                        </form>
 
                     <div class="offcanvas-footer tbf flex-align-center flex-nowrap gap-3 border-0 pt-3 px-0 pb-0" style='border-bottom:1px solid rgba(var(--line-color), 1);'>
                         <span class="btn theme-btn w-100 mt-0 pulse simpancust">Simpan</span>
@@ -360,7 +361,7 @@ export const renderLogin = () => {
     };
 
     document.querySelector(".simpancust").onclick = async function () {
-        let form = document.querySelector(".theme-form");
+        let form = document.querySelector(".jotheme-form");
         let formData = new FormData(form);
         let data = {};
         let kosong = false;
