@@ -32,9 +32,6 @@ var filesToCache = [
   "./pages/listitem.js",
   "./pages/listpelanggan.js",
   "./pages/login.js",
-  "./assets/fonts/GTWalsheimPro/GTWalsheimPro-Regular.woff2",
-  "./assets/fonts/GTWalsheimPro/GTWalsheimPro-Medium.woff2",
-  "./assets/fonts/GTWalsheimPro/GTWalsheimPro-Bold.woff2"
 ];
 
 self.addEventListener("install", event => {
