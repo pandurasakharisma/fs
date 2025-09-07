@@ -8006,12 +8006,10 @@ body.dark .vehicle-content .content-title .members {
     70% {transform: scale(1.1);box-shadow: 0 0 0 20px rgba(197, 63, 63, 0);}
     100% {transform: scale(1);box-shadow: 0 0 0 0 rgba(197, 63, 63, 0);}
 }
-
 .jotheme-form .form-group {
   position: relative !important;
   margin-bottom: 32px !important;
 }
-
 .jotheme-form .form-group .form-controljo {
   width: 100% !important;
   border: none !important;
@@ -8024,15 +8022,12 @@ body.dark .vehicle-content .content-title .members {
   box-shadow: none !important;
   transition: border-color 0.2s ease !important;
 }
-
 .jotheme-form .form-group .form-controljo::placeholder {
   color: transparent !important;
 }
-
 .jotheme-form .form-group .form-controljo:focus {
-  border-bottom-color: #6200ee !important;
+  border-bottom-color: #c53f3f !important;
 }
-
 .jotheme-form .form-group .form-labeljo {
   position: absolute !important;
   top: 10px !important;
@@ -8042,14 +8037,12 @@ body.dark .vehicle-content .content-title .members {
   pointer-events: none !important;
   transition: all 0.2s ease !important;
 }
-
 .jotheme-form .form-group:focus-within .form-labeljo,
 .jotheme-form .form-group .form-controljo:not(:placeholder-shown) + .form-labeljo {
   top: -14px !important;
   font-size: 12px !important;
-  color: #6200ee !important;
+  color: #c53f3f !important;
 }
-
 .form-controljo:-webkit-autofill {
   -webkit-box-shadow: 0 0 0px 1000px white inset !important;
   box-shadow: 0 0 0px 1000px white inset !important;
@@ -8057,7 +8050,6 @@ body.dark .vehicle-content .content-title .members {
   caret-color: #000;
   transition: background-color 5000s ease-in-out 0s;
 }
-
 .form-controljo:focus {
   outline: none;
   box-shadow: none;
