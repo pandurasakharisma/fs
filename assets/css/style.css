@@ -294,7 +294,7 @@ h1 {
 }
 
 h2 {
-  font-size: 20px;
+  font-size:15px;
   margin-bottom: 0;
 }
 
@@ -7234,7 +7234,7 @@ body.dark .onboarding-section .driver-main-slider .poster-image .image-dark {
 }
 .my-ride-list li .my-ride-box .my-ride-details .ride-location-listing {
   width: 100%;
-  padding: 15px;
+  padding: 5px 15px;
   background-color: rgba(var(--box-bg), 1);
   border-radius: 6px;
 }
@@ -7249,8 +7249,8 @@ body.dark .onboarding-section .driver-main-slider .poster-image .image-dark {
   display: flex;
   align-items: flex-start;
   gap: 5px;
-  padding-bottom: 7px;
-  margin-bottom: 7px;
+  padding-bottom: 3px;
+  margin-bottom: 3px;
   background-color: rgba(var(--box-bg), 1);
   box-shadow: none;
   border: none;
@@ -8008,39 +8008,45 @@ body.dark .vehicle-content .content-title .members {
 }
 .jotheme-form .form-group {
   position: relative !important;
-  margin-bottom: 32px !important;
+  margin-bottom: 18px !important;
 }
-.jotheme-form .form-group .form-controljo {
+.jotheme-form .form-group .form-controljo,
+.jotheme-form .form-group .form-selectjo {
   width: 100% !important;
   border: none !important;
-  border-bottom: 2px solid #ccc !important;
-  padding: 10px 0 !important;
-  font-size: 16px !important;
+  border-bottom: 1.5px solid #ccc !important;
+  padding: 6px 0 !important;
+  font-size: 14px !important;
   background: transparent !important;
   color: #333 !important;
   outline: none !important;
   box-shadow: none !important;
   transition: border-color 0.2s ease !important;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 .jotheme-form .form-group .form-controljo::placeholder {
   color: transparent !important;
 }
-.jotheme-form .form-group .form-controljo:focus {
+.jotheme-form .form-group .form-controljo:focus,
+.jotheme-form .form-group .form-selectjo:focus {
   border-bottom-color: #c53f3f !important;
 }
 .jotheme-form .form-group .form-labeljo {
   position: absolute !important;
-  top: 10px !important;
+  top: 6px !important;
   left: 0 !important;
-  font-size: 16px !important;
+  font-size: 14px !important;
   color: #aaa !important;
   pointer-events: none !important;
   transition: all 0.2s ease !important;
 }
 .jotheme-form .form-group:focus-within .form-labeljo,
-.jotheme-form .form-group .form-controljo:not(:placeholder-shown) + .form-labeljo {
-  top: -14px !important;
-  font-size: 12px !important;
+.jotheme-form .form-group .form-controljo:not(:placeholder-shown) + .form-labeljo,
+.jotheme-form .form-group .form-selectjo:not([value=""]) + .form-labeljo {
+  top: -10px !important;
+  font-size: 11px !important;
   color: #c53f3f !important;
 }
 .form-controljo:-webkit-autofill {
@@ -8054,7 +8060,6 @@ body.dark .vehicle-content .content-title .members {
   outline: none;
   box-shadow: none;
 }
-
 .sesatf {
   position: fixed;
   top: 8vh;

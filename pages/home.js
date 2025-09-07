@@ -319,7 +319,7 @@ export const renderHome = () => {
                 font-size: 0.9rem;
                 color: #6c757d;
             }
-                
+
             .location-box svg {
                 fill: #c53f3f;
                 stroke: #c53f3f;
@@ -466,7 +466,7 @@ window.delitjdw = (id, el) => {
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-body text-center">
-                        <i class="iconsax img-fluid icon"" data-icon="alert" style="width: 100px;margin-bottom: 10px;"></i> 
+                        <img class="img-fluid icon" src="./assets/images/svg/alert.svg" style="stroke: #c53f3f;width: 100px!important;margin-bottom: 10px;" alt="alert">
                         <h4>Hapus Jadwal</h4>
                         <p>Yakin ingin menghapus jadwal ini?</p>
                     </div>
@@ -604,7 +604,7 @@ let loadJadwal = usercode => {
                                     </span> 
                                 </div> 
                             </div>
-                            <ul class="ride-location-listing mt-3">
+                            <ul class="ride-location-listing mt-1">
                                 ${addressDisplay}
                                 <li class="location-box ${(!tanggal && !jam) ? 'hide' : ''}">
                                     <i class="iconsax icon" data-icon="gps"></i> 

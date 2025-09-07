@@ -12,6 +12,19 @@ export let renderKamera = () => {
                 border-radius: 6px;
             }
 
+            .offer-head .delete-btn {
+                background: #f9ebeb;
+                stroke: #c53f3f;
+                border: none;
+                border-radius: 50%;
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+            }
+            .offer-head .delete-btn:hover {background: #fff;}
             .recent-icon img {
                 width: 26px;
                 height: 48px;
@@ -319,34 +332,39 @@ export let renderKamera = () => {
                 <h4>30% OFF </h4>
                 <div class=" flex-align-center gap-2">
                     <span class="delete-btn">
-                        <i class="iconsax icon error-icon" data-icon="trash"></i>
-                    </a>
+                        <i class="iconsax icon error-icon" data-icon="trash-square"></i>
+                    </span>
                 </div>
             </div>
-        <form class="theme-form">
-            <div class="mb-3">
-            <label class="form-label fw-medium">Brand Competitor</label>
-            <input type="text" class="form-control white-background brand" placeholder="Masukkan brand competitor">
-            </div>
-            <div class="mb-3">
-            <label class="form-label fw-medium">Harga</label>
-            <input type="text" class="form-control white-background harga" placeholder="Masukkan harga">
-            </div>
-            <div class="row">
-            <div class="col-6">
-                <label class="form-label fw-medium">Pemakaian</label>
-                <input type="text" class="form-control white-background pemakaian" placeholder="Masukkan pemakaian">
-            </div>
-            <div class="col-6">
-                <label class="form-label fw-medium">Durasi</label>
-                <select class="form-select white-background durasi">
-                <option value="tahun">Tahun</option>
-                <option value="bulan">Bulan</option>
-                <option value="hari">Hari</option>
-                </select>
-            </div>
-            </div>
-        </form>
+            <form class="jotheme-form">
+                <div class="form-group">
+                    <input type="text" class="form-controljo brand" placeholder=" " required>
+                    <label class="form-labeljo">Brand Competitor</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-controljo harga" placeholder=" " required>
+                    <label class="form-labeljo">Harga</label>
+                </div>
+                <div class="row" style="display: flex; gap: 20px;">
+                    <div class="col-6" style="flex: 1;">
+                        <div class="form-group">
+                            <input type="text" class="form-controljo pemakaian" placeholder=" " required>
+                            <label class="form-labeljo">Pemakaian</label>
+                        </div>
+                    </div>
+                    <div class="col-6" style="flex: 1;">
+                        <div class="form-group">
+                            <select class="form-selectjo durasi" required>
+                            <option value="" disabled selected></option>
+                            <option value="tahun">Tahun</option>
+                            <option value="bulan">Bulan</option>
+                            <option value="hari">Hari</option>
+                            </select>
+                            <label class="form-labeljo">Durasi</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
         `
     
         const hargaInput = wrapper.querySelector('.harga')
