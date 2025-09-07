@@ -151,7 +151,6 @@ export let renderKamera = () => {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
         canvas.toBlob(blob => {
             let quality = blob.size < 2 * 1024 * 1024 ? 0.9 : 0.7;
             canvas.toBlob(finalBlob => {
@@ -160,7 +159,6 @@ export let renderKamera = () => {
                 formData.append('latitude', lat);
                 formData.append('longitude', lon);
                 formData.append('id', '123');
-
                 fetch(uplfEndpoint, { method: 'POST', body: formData })
                     .then(r => r.json())
                     .then(r => {
