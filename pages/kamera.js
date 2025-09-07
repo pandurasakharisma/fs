@@ -31,7 +31,7 @@ export let renderKamera = () => {
                 cursor: pointer;
                 z-index: 1000;
                 transition: transform 0.2s ease-in-out;
-                background-color: #c53f3f;
+                background-color: #000;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
                 border-radius: 50%;
             }
@@ -46,7 +46,6 @@ export let renderKamera = () => {
                 right: 30px;
                 width: 50px;
                 height: 50px;
-                background-color: #3f51c5;
             }
             #captureButton:hover,#switchButton:hover {transform: scale(1.1);}
             #permissionMessage {
@@ -93,19 +92,10 @@ export let renderKamera = () => {
                 <p>Anda harus mengizinkan akses lokasi dan kamera untuk menggunakan fitur ini.</p>
             </div>
             <div id="captureButton">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                    <circle cx="16" cy="17" r="5" stroke="#fff" fill="none"/>
-                    <path stroke="#fff" d="M27 8h-2.8a1 1 0 0 1-.9-.6l-.9-1.7A3 3 0 0 0 19.8 4h-7.6a3 3 0 0 0-2.6 1.7l-1 1.7a1 1 0 0 1-.8.6H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h22a3 3 0 0 0 3-3V11a3 3 0 0 0-3-3z"/>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 307.3 307.3"><g fill="#fff"><path d="M285 66.1h-81.4L187 38.6a9 9 0 0 0-7.6-4.4h-51.7a9 9 0 0 0-7.6 4.4L103.7 66H77v-6a9 9 0 0 0-8.9-9h-33a9 9 0 0 0-8.8 9v6h-3.9C10 66.1 0 76.1 0 88.5v162.2c0 12.4 10 22.4 22.4 22.4h262.5c12.4 0 22.4-10 22.4-22.4V88.5c0-12.3-10-22.4-22.4-22.4zM153.6 233.4a63.8 63.8 0 1 1 0-127.5 63.8 63.8 0 0 1 0 127.5zm117.2-121H243a9 9 0 0 1-8.9-9 9 9 0 0 1 9-8.9h27.8a9 9 0 0 1 9 9 9 9 0 0 1-9 8.8z" data-original="#000000"/><circle cx="153.7" cy="169.6" r="44.5" data-original="#000000"/></g></svg>
             </div>
             <div id="switchButton">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                    <g stroke="#fff">
-                        <path d="M14.7 23.3a1 1 0 0 0-1.4 1.4l.2.2C7.5 24.5 4 22.5 4 21a1.7 1.7 0 0 1 .7-1.2 1 1 0 1 0-1.4-1.4A3.6 3.6 0 0 0 2 21c0 3.5 5.7 5.5 11.7 6l-.4.3a1 1 0 1 0 1.4 1.4l2-2a1 1 0 0 0 0-1.4z"/>
-                        <circle cx="16" cy="13" r="2"/>
-                        <path d="M9 21h14a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3h-1a1 1 0 0 1-.8-.4l-.8-1.3A3 3 0 0 0 18 3h-3.8a3 3 0 0 0-2.5 1.3l-.8 1.3a1 1 0 0 1-.9.4H9a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3zm7-12a4 4 0 1 1-4 4 4 0 0 1 4-4zm12.7 9.4a1 1 0 0 0-1.4 1.4A1.7 1.7 0 0 1 28 21c0 1-2 2.6-6.2 3.5a1 1 0 0 0 .2 2 1 1 0 0 0 .2 0c4.9-1 7.8-3 7.8-5.5a3.6 3.6 0 0 0-1.3-2.6z"/>
-                    </g>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 32 32"><g fill="#fff" data-name="Layer 2"><path d="M14.7 23.3a1 1 0 0 0-1.4 1.4l.2.2C7.5 24.5 4 22.5 4 21a1.7 1.7 0 0 1 .7-1.2 1 1 0 1 0-1.4-1.4A3.6 3.6 0 0 0 2 21c0 3.5 5.7 5.5 11.7 6l-.4.3a1 1 0 1 0 1.4 1.4l2-2a1 1 0 0 0 0-1.4z" data-original="#000000"/><circle cx="16" cy="13" r="2" data-original="#000000"/><path d="M9 21h14a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3h-1a1 1 0 0 1-.8-.4l-.8-1.3A3 3 0 0 0 18 3h-3.8a3 3 0 0 0-2.5 1.3l-.8 1.3a1 1 0 0 1-.9.4H9a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3zm7-12a4 4 0 1 1-4 4 4 4 0 0 1 4-4zm12.7 9.4a1 1 0 0 0-1.4 1.4A1.7 1.7 0 0 1 28 21c0 1-2 2.6-6.2 3.5a1 1 0 0 0 .2 2 1 1 0 0 0 .2 0c4.9-1 7.8-3 7.8-5.5a3.6 3.6 0 0 0-1.3-2.6z" data-original="#000000"/></g></svg>
             </div>
         </div>
     `;
@@ -183,10 +173,8 @@ export let renderKamera = () => {
                     .catch(() => console.log('Gagal Mengirim Foto'))
                     .finally(() => {
                         captureButton.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                                <circle cx="16" cy="17" r="5" stroke="#fff" fill="none"/>
-                                <path stroke="#fff" d="M27 8h-2.8a1 1 0 0 1-.9-.6l-.9-1.7A3 3 0 0 0 19.8 4h-7.6a3 3 0 0 0-2.6 1.7l-1 1.7a1 1 0 0 1-.8.6H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h22a3 3 0 0 0 3-3V11a3 3 0 0 0-3-3z"/>
-                            </svg>`;
+                            <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 307.3 307.3"><g fill="#fff"><path d="M285 66.1h-81.4L187 38.6a9 9 0 0 0-7.6-4.4h-51.7a9 9 0 0 0-7.6 4.4L103.7 66H77v-6a9 9 0 0 0-8.9-9h-33a9 9 0 0 0-8.8 9v6h-3.9C10 66.1 0 76.1 0 88.5v162.2c0 12.4 10 22.4 22.4 22.4h262.5c12.4 0 22.4-10 22.4-22.4V88.5c0-12.3-10-22.4-22.4-22.4zM153.6 233.4a63.8 63.8 0 1 1 0-127.5 63.8 63.8 0 0 1 0 127.5zm117.2-121H243a9 9 0 0 1-8.9-9 9 9 0 0 1 9-8.9h27.8a9 9 0 0 1 9 9 9 9 0 0 1-9 8.8z" data-original="#000000"/><circle cx="153.7" cy="169.6" r="44.5" data-original="#000000"/></g></svg>
+                        `;
                         captureButton.style.animation = 'pulse 2s infinite';
                         isCapturing = false;
                     });
