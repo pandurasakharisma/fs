@@ -1,8 +1,6 @@
 
 let panelkeluar = () => {
-    let placeList = document.querySelector('#app');
-    showSkeleton(placeList, 20);
-
+    showSkeleton(document.querySelector('#app'), 10);
     let createDashboardUI = () => {
         let bgPatternDiv = document.createElement('div');
         bgPatternDiv.className = 'bg-pattern';
@@ -358,7 +356,7 @@ export const renderHome = () => {
 
     
     removeSkeleton(document.querySelector("#app"));
-    let placeList = document.querySelector('my-ride-list');
+    let placeList = document.querySelector('.my-ride-list');
     showSkeleton(placeList, 20);
 
     renderHeader()
@@ -546,7 +544,7 @@ let loadJadwal = usercode => {
                         <div class="my-ride-head">
                             <div class="my-ride-content flex-column" style="width:100%;margin:0 5px 0;">
                                 <div class="flex-spacing">
-                                    <a onclick="hrefs('kamera')"><h6 class="title-color fw-medium">${d.cust_name || '-'}</h6></a>
+                                    <a onclick="hrefs('kamera')"><h6 style="max-width: 210px;" class="title-color fw-medium">${d.cust_name || '-'}</h6></a>
                                     <span class="status accent-color fw-normal">${status}</span>
                                 </div>
                             </div>

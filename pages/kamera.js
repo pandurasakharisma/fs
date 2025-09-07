@@ -59,7 +59,7 @@ export let renderKamera = () => {
                 z-index: 1001;
             }
             .spinner {
-                border: 4px solid rgba(0, 0, 0, 0.1);
+                border: 4px solid rgba(255, 255, 255, 0.2);
                 border-left-color: #fff;
                 border-radius: 50%;
                 width: 30px;
@@ -86,14 +86,10 @@ export let renderKamera = () => {
                 <p>Anda harus mengizinkan akses lokasi dan kamera untuk menggunakan fitur ini.</p>
             </div>
             <div id="captureButton">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 5c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0-2c6.07 0 11 4.93 11 11s-4.93 11-11 11S1 20.07 1 14 5.93 3 12 3zm0 5a6 6 0 100 12 6 6 0 000-12z"/>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 32 32"><circle cx="16" cy="17" r="5" fill="#fff" data-original="#000000"/><path fill="#fff" d="M27 8h-2.8a1 1 0 0 1-.9-.6l-.9-1.7A3 3 0 0 0 19.8 4h-7.6a3 3 0 0 0-2.6 1.7l-1 1.7a1 1 0 0 1-.8.6H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h22a3 3 0 0 0 3-3V11a3 3 0 0 0-3-3zM16 24a7 7 0 1 1 7-7 7 7 0 0 1-7 7zm10-11a1 1 0 1 1 1-1 1 1 0 0 1-1 1z" data-original="#000000"/></svg>
             </div>
             <div id="switchButton">
-                <svg viewBox="0 0 24 24">
-                    <path d="M15.55 5.55L11 1v4.07C7.06 5.56 4 8.92 4 13c0 1.64.5 3.16 1.35 4.43l1.46-1.46A5.96 5.96 0 016 13c0-3.31 2.69-6 6-6v4l4.55-4.45zM18.65 8.57A7.926 7.926 0 0120 13c0 4.08-3.06 7.44-7 7.93V21l-4.55 4.45L15 19v-4c3.31 0 6-2.69 6-6 0-1.64-.5-3.16-1.35-4.43l-1.46 1.46z"/>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 32 32"><g fill="#fff" data-name="Layer 2"><path d="M14.7 23.3a1 1 0 0 0-1.4 1.4l.2.2C7.5 24.5 4 22.5 4 21a1.7 1.7 0 0 1 .7-1.2 1 1 0 1 0-1.4-1.4A3.6 3.6 0 0 0 2 21c0 3.5 5.7 5.5 11.7 6l-.4.3a1 1 0 1 0 1.4 1.4l2-2a1 1 0 0 0 0-1.4z" data-original="#000000"/><circle cx="16" cy="13" r="2" data-original="#000000"/><path d="M9 21h14a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3h-1a1 1 0 0 1-.8-.4l-.8-1.3A3 3 0 0 0 18 3h-3.8a3 3 0 0 0-2.5 1.3l-.8 1.3a1 1 0 0 1-.9.4H9a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3zm7-12a4 4 0 1 1-4 4 4 4 0 0 1 4-4zm12.7 9.4a1 1 0 0 0-1.4 1.4A1.7 1.7 0 0 1 28 21c0 1-2 2.6-6.2 3.5a1 1 0 0 0 .2 2 1 1 0 0 0 .2 0c4.9-1 7.8-3 7.8-5.5a3.6 3.6 0 0 0-1.3-2.6z" data-original="#000000"/></g></svg>
             </div>
         </div>
     `;
@@ -174,9 +170,7 @@ export let renderKamera = () => {
                     .catch(() => console.log('Gagal Mengirim Foto'))
                     .finally(() => {
                         captureButton.innerHTML = `
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 5c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0-2c6.07 0 11 4.93 11 11s-4.93 11-11 11S1 20.07 1 14 5.93 3 12 3zm0 5a6 6 0 100 12 6 6 0 000-12z"/>
-                            </svg>`;
+                            <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 32 32"><circle cx="16" cy="17" r="5" fill="#fff" data-original="#000000"/><path fill="#fff" d="M27 8h-2.8a1 1 0 0 1-.9-.6l-.9-1.7A3 3 0 0 0 19.8 4h-7.6a3 3 0 0 0-2.6 1.7l-1 1.7a1 1 0 0 1-.8.6H5a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h22a3 3 0 0 0 3-3V11a3 3 0 0 0-3-3zM16 24a7 7 0 1 1 7-7 7 7 0 0 1-7 7zm10-11a1 1 0 1 1 1-1 1 1 0 0 1-1 1z" data-original="#000000"/></svg>`;
                         captureButton.style.animation = 'pulse 2s infinite';
                         isCapturing = false;
                     });
