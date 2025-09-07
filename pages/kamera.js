@@ -8,7 +8,7 @@ export let renderKamera = () => {
                 width: 100%;
                 height: 100%;
                 overflow: hidden;
-                background-color: #1a1a1a;
+                background-color: #000;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -53,8 +53,7 @@ export let renderKamera = () => {
                 top: 10%;
                 left: 10px;
                 padding: 20px;
-                background-color: rgba(0, 0, 0, 0.7);
-                border-radius: 10px;
+                background-color:#000;
                 text-align: left;
                 z-index: 1001;
             }
