@@ -8006,6 +8006,40 @@ body.dark .vehicle-content .content-title .members {
     70% {transform: scale(1.1);box-shadow: 0 0 0 20px rgba(197, 63, 63, 0);}
     100% {transform: scale(1);box-shadow: 0 0 0 0 rgba(197, 63, 63, 0);}
 }
+.form-group {
+  position: relative;
+  margin-bottom: 32px;
+}
+.form-group .form-control {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  padding: 10px 0;
+  font-size: 16px;
+  background: transparent;
+  color: var(--text-color);
+  outline: none;
+  transition: border-color var(--transition-speed) ease;
+}
+.form-group .form-control:focus {
+  border-bottom-color: var(--primary);
+}
+.form-group .form-label {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  font-size: 16px;
+  color: var(--placeholder-color);
+  pointer-events: none;
+  transition: all var(--transition-speed) ease;
+}
+.form-group .form-control:focus + .form-label,
+.form-group .form-control:not(:placeholder-shown) + .form-label {
+  top: -14px;
+  font-size: 12px;
+  color: var(--primary);
+}
+
 .sesatf {
   position: fixed;
   top: 8vh;
