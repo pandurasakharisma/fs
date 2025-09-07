@@ -1,5 +1,8 @@
 
 let panelkeluar = () => {
+    let placeList = document.querySelector('#app');
+    showSkeleton(placeList, 20);
+
     let createDashboardUI = () => {
         let bgPatternDiv = document.createElement('div');
         bgPatternDiv.className = 'bg-pattern';
@@ -352,6 +355,12 @@ export const renderHome = () => {
         <a onclick="hrefs('listpelanggan')" class="iconsax addcust" data-icon="add" id="addform"></a>
 
     `
+
+    
+    removeSkeleton(document.querySelector("#app"));
+    let placeList = document.querySelector('my-ride-list');
+    showSkeleton(placeList, 20);
+
     renderHeader()
     panelkeluar()
     waitForUserCode()
