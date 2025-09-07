@@ -1,7 +1,7 @@
 let handleLogin = e => {
-    if (e) e.preventDefault()
-    let username = document.getElementById('Inputemail').value
-    let password = document.getElementById('Inputpassword').value
+    if (e) e.preventDefault();
+    let username = document.getElementById('Inputemail').value;
+    let password = document.getElementById('Inputpassword').value;
 
     fetch(urlbe + 'ceklogin', {
         method: 'POST',
@@ -11,30 +11,37 @@ let handleLogin = e => {
     .then(res => res.json())
     .then(data => {
         if (data.status === 'success') {
-            localStorage.setItem('user_data', JSON.stringify(data.data))
-            localStorage.setItem('user_absen', JSON.stringify(data.absensi))
-            localStorage.setItem('user_token', data.token)
+            localStorage.setItem('user_data', JSON.stringify(data.data));
+            localStorage.setItem('user_absen', JSON.stringify(data.absensi));
+            localStorage.setItem('user_token', data.token);
             showToast('Kamu Berhasil Login', 'success');
-            window.location.hash = '/home' 
-        }else{
+            window.location.hash = '/home';
+        } else {
             showToast(data.message, 'error');
         }
     })
     .catch((e) => {
         showToast(e.message, 'error');
-    })
-}
-
+    });
+};
 
 export const renderLogin = () => {
-    
     document.querySelector('#app').innerHTML = `
-        <style>.auth-bg-image-box .auth-bg-image{background-size: cover;height: calc(100vh - 360px);}</style>
+        <style>
+            .auth-bg-image-box, .auth-content-bg {
+                position: relative;
+                z-index: 10;
+            }
+            .auth-bg-image-box .auth-bg-image {
+                background-size: cover;
+                height: calc(100vh - 360px);
+            }
+        </style>
+
         <header id="header" class="auth-header">
             <div class="custom-container">
                 <div class="header-panel pb-0">
-                    <img class="img-fluid mx-auto logo user-logo" src="./assets/images/logo/user/logo-utama.svg"
-                        alt="logo">
+                    <img class="img-fluid mx-auto logo user-logo" src="./assets/images/logo/user/logo-utama.svg" alt="logo">
                 </div>
             </div>
         </header>
@@ -69,44 +76,41 @@ export const renderLogin = () => {
                             </div>
                         </div>
 
-                        <button id="cekl" type="submit" class="btn theme-btn w-100 auth-btn mt-3">Login</button>
-                        
+                        <button id="cekl" type="submit" class="btn theme-btn w-100 auth-btn mt-4">Login</button>
                     </div>
                 </div>
             </div>
         </div>
+    `;
 
-    `
+    // Toggle show/hide password
     var passwords = document.querySelectorAll('[type="password"]');
     var togglers = document.querySelectorAll(".toggler");
-    
-    let showHidePassword = (index) => {
-      return () => {
+    let showHidePassword = index => () => {
         var password = passwords[index];
         var toggler = togglers[index];
-        if (password.type == "password") {
-          password.setAttribute("type", "text");
-          toggler.classList.add("show");
+        if (password.type === "password") {
+            password.setAttribute("type", "text");
+            toggler.classList.add("show");
         } else {
-          toggler.classList.remove("show");
-          password.setAttribute("type", "password");
+            toggler.classList.remove("show");
+            password.setAttribute("type", "password");
         }
-      };
     };
-    
     togglers.forEach((toggler, index) => {
-      toggler.addEventListener("click", showHidePassword(index));
-    })
-    
-    document.getElementById('cekl').onclick = () => handleLogin()
-    document.body.onkeypress = e => e.key === 'Enter' ? handleLogin(e) : null
+        toggler.addEventListener("click", showHidePassword(index));
+    });
 
-    let userToken = localStorage.getItem('user_token')
+    // Handle login
+    document.getElementById('cekl').onclick = () => handleLogin();
+    document.body.onkeypress = e => e.key === 'Enter' ? handleLogin(e) : null;
+
+    // Jika user sudah login
+    let userToken = localStorage.getItem('user_token');
     if (userToken) {
         showToast('Kamu Berhasil Login', 'success');
-        window.location.hash = '/home'
+        window.location.hash = '/home';
     }
-}
+};
 
-
-export default renderLogin
+export default renderLogin;

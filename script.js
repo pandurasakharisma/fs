@@ -1,6 +1,9 @@
 let urlbe = "https://rightly-composed-marlin.ngrok-free.app/"
 
-window.hrefs = (url = null) => window.location.hash = url ?? 'home';
+window.hrefs = (url = null) =>  {
+    removeSpinner();
+    window.location.hash = url ?? 'home';
+}
 window.setUserCode = () => {
     let data = localStorage.getItem('user_data'),
         obj = data ? JSON.parse(data) : null,
@@ -34,7 +37,7 @@ let getAuthToken = () => localStorage.getItem("user_token")
 let checkAuth = () => {
     let userToken = getAuthToken(),
         currentUrl = window.location.href.toLowerCase()
-    if (!userToken && !currentUrl.includes("login")) window.location.hash = '/login'
+    if (!userToken && !currentUrl.includes("login")) window.location.hash = 'login'
     setUserCode()
 }
 
@@ -44,7 +47,7 @@ let logout = (url = null) => {
     localStorage.removeItem("user_data")
     localStorage.removeItem("user_absen")
     showToast('Kamu Berhasil Logout', 'success');
-    window.location.hash = '/login'
+    window.location.hash = 'login'
 }
 
 let loadScript = src => new Promise((resolve, reject) => {
@@ -238,13 +241,13 @@ let renderHeadContent = () => {
    DYNAMIC ROUTER DENGAN DYNAMIC IMPORT
 ========================================== */
 let router = async () => {
-    createSpinner()
     checkAuth()
     let path = window.location.hash.replace('#', '') || 'home'
     let pageJs = `./pages/${path}.js`  
 
     try {
         let module = await import(pageJs)
+        removeSpinner()
         if (module.default && typeof module.default === 'function') {
             await module.default() 
         } else {
@@ -253,6 +256,7 @@ let router = async () => {
         
         init_iconsax()
     } catch (err) {
+        removeSpinner()
         console.error('Routing error:', err)
         document.getElementById('app').innerHTML = `<img class="e4042" src="./assets/images/e404.svg" alt="Not Found"><div class="sesatf"><a class="btn btnb pulse" onclick="hrefs()">Kembali Ke Halaman Utama</a></div>`
     } finally {

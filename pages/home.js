@@ -1,6 +1,6 @@
 
 let panelkeluar = () => {
-    showSkeleton(document.querySelector('#app'), 10);
+    showSkeleton(document.querySelector('#app'), 5);
     let createDashboardUI = () => {
         let bgPatternDiv = document.createElement('div');
         bgPatternDiv.className = 'bg-pattern';
@@ -357,7 +357,7 @@ export const renderHome = () => {
     
     removeSkeleton(document.querySelector("#app"));
     let placeList = document.querySelector('.my-ride-list');
-    showSkeleton(placeList, 20);
+    showSkeleton(placeList, 10);
 
     renderHeader()
     panelkeluar()
@@ -556,7 +556,7 @@ let loadJadwal = usercode => {
                                     <div class="d-flex align-content-center gap-2 lh-base">
                                         <h5 class="fw-normal title-color">${d.Full_Name}</h5>
                                     </div>
-                                    <h6 class="fw-normal content-color mt-1">${d.Job_Position || ''}</h6>
+                                    <span style='font-size: 10px;margin-left: 6px;' class="fw-normal content-color mt-1">${d.Job_Position || ''}</h6>
                                 </div>` : ''}
                                 <div class="flex-align-center gap-2">
                                     <a href="edit-offer.html"> 
@@ -596,7 +596,7 @@ let loadJadwal = usercode => {
                     return;
                 }
                 let id = item.getAttribute('data-id');
-                window.location.hash = '/kamera'
+                window.location.hash = 'kamera'
             };
         });
 
