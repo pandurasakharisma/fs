@@ -173,7 +173,7 @@ export let renderKamera = () => {
                     captureButton.style.animation = 'pulse 2s infinite';
                     isCapturing = false;
                 });
-        }, 'image/jpg', 0.6);
+        }, 'image/jpeg', 0.6);
     };
 
     init();
