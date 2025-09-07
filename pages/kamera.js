@@ -59,7 +59,7 @@ export let renderKamera = () => {
             }
             .spinner {
                 border: 4px solid rgba(255, 255, 255, 0.2);
-                border-left-color: #fff;
+                border-left-color: #000;
                 border-radius: 50%;
                 width: 30px;
                 height: 30px;
