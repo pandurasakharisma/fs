@@ -224,7 +224,7 @@ export const renderHome = () => {
 
             #absenkeluar>div:first-child {
                 background: #c53f3f;
-                padding: 80px 20px 60px;
+                padding: 60px 20px 60px;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
                 position: relative;
                 overflow: hidden;
@@ -233,7 +233,7 @@ export const renderHome = () => {
             .welc{    
                 z-index: +2;
                 position: absolute;
-                top: 50px;
+                top: 30px;
                 padding-left: 18px;
                 white-space: nowrap;
                 overflow: hidden;

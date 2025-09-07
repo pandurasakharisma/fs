@@ -94,13 +94,20 @@ export const renderLogin = () => {
             .tbf2{
                 position: fixed;
                 bottom: 0;
-                margin: 0 auto;
                 z-index: +2;
-                width: calc(100%);
-                background: #fff;
                 max-width: calc(600px);
-                padding: 20px 10px 9px;
                 box-shadow: 0px 0px 10px rgb(0 0 0 / 21%);
+            }
+
+            .tot1{
+                background: #c53f3f;
+                color: #fff;
+                padding: 5px 10px;
+                width: 28px;
+                height: 30px;
+                line-height: .8;
+                margin: 8px;
+                border-radius: 4px;
             }
 
             .rider-options {
@@ -157,7 +164,6 @@ export const renderLogin = () => {
                 </div>
             </div>
         </header>
-
         <main>
             <section style='padding:65px 0 0;'>
                 <ul id="placeList" class="recent-place-list">
@@ -176,7 +182,7 @@ export const renderLogin = () => {
                 <i class="iconsax addcust" data-icon="add" id="addform"></i>
                 <div class="offcanvas-footer tbf2 ride-offcanvas hide">
                     <div class="offcanvas-body p-0 d-flex flex-spacing gap-2">
-                        <h5>Yakin menambahkan <span class='totl'></span>Lokasi ? </h5>
+                        <h5 style="line-height:2;font-size:11px;">Yakin menambahkan <span class='totl'></span>Lokasi ? </h5>
                         <select class="form-select rider-options hide">
                             <option selected="">Switch Rider</option>
                             <option value="1">My Self</option>
