@@ -240,29 +240,41 @@ let renderHeadContent = () => {
 /* ==========================================
    DYNAMIC ROUTER DENGAN DYNAMIC IMPORT
 ========================================== */
-let router = async () => {
-    checkAuth()
-    let path = window.location.hash.replace('#', '') || 'home'
-    let pageJs = `./pages/${path}.js`  
 
-    try {
-        let module = await import(pageJs)
-        removeSpinner()
-        if (module.default && typeof module.default === 'function') {
-            await module.default() 
-        } else {
-            document.getElementById('app').innerHTML = `<h2>Halaman ${path} tidak memiliki default export</h2>`
-        }
-        
-        init_iconsax()
-    } catch (err) {
-        removeSpinner()
-        console.error('Routing error:', err)
-        document.getElementById('app').innerHTML = `<img class="e4042" src="./assets/images/e404.svg" alt="Not Found"><div class="sesatf"><a class="btn btnb pulse" onclick="hrefs()">Kembali Ke Halaman Utama</a></div>`
-    } finally {
-        removeSpinner()
+let router = async () => {
+    checkAuth();
+    let hash = window.location.hash.slice(1).trim();
+    if (!hash) hash = 'home';
+    let [pageName, queryString] = hash.split('?');
+    pageName = pageName || 'home';
+    let cleanPage = pageName.replace(/^\//, '').toLowerCase();
+    if (cleanPage === '' || cleanPage === '#' || cleanPage === 'fs') {
+        cleanPage = 'home';
     }
-}
+    let pageJs = `./pages/${cleanPage}.js`;
+    try {
+        let module = await import(pageJs);
+        removeSpinner();
+        if (module.default && typeof module.default === 'function') {
+            await module.default(queryString || '');
+        } else {
+            document.getElementById('app').innerHTML = `<h2>Halaman ${cleanPage} tidak memiliki default export</h2>`;
+        }
+        init_iconsax();
+    } catch (err) {
+        removeSpinner();
+        console.error('Routing error:', err);
+        document.getElementById('app').innerHTML = `
+            <img class="e4042" src="./assets/images/e404.svg" alt="Not Found">
+            <div class="sesatf">
+                <a class="btn btnb pulse" onclick="hrefs()">Kembali Ke Halaman Utama</a>
+            </div>
+        `;
+    } finally {
+        removeSpinner();
+    }
+};
+
 
 /* ==========================================
    INIT

@@ -49,7 +49,7 @@ export const renderLogin = () => {
         <div class="auth-bg-image-box">
             <div class="auth-bg-image"></div>
             <div class="auth-content-bg auth-content-bg-bottom">
-                <div class="custom-container white-background pb-2" style="margin:0 20px;">
+                <div class="custom-container white-background pb-2" style="margin:0 10px;">
                     <div class="auth-title mt-0">
                         <div class="loader-line"></div>
                         <h6>Hey, Silahkan masukkan data!</h6>

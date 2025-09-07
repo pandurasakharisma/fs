@@ -244,8 +244,7 @@ export const renderHome = () => {
             }
             .seclist {
                 background: #fff;
-                border-top-left-radius: 18px;
-                border-top-right-radius: 18px;
+                border-radius: 8px 8px 0 0;
                 overflow: hidden;
                 margin-top: -20px;
                 z-index: +1;
@@ -389,7 +388,7 @@ let renderHeader = () => {
             <div class="search-input-wrapper">
                 <i class="iconsax search-icon" data-icon="search-normal-2"></i>
                 <input type="text" placeholder="Search..." id="searchInput">
-                <img id="closeSearch" style="display:none;margin-right: 15px;" class="clear-btn" width="12" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23c53f3f'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e" alt="clear">
+                <i class="iconsax icon class="clear-btn" width="12" data-icon="close-circle" style="display:none;margin-right: 15px;" id="closeSearch" ></i> 
             </div>
         </div>
     `;
@@ -462,7 +461,7 @@ window.delitjdw = (id, el) => {
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-body text-center">
-                        <img class="img-fluid icon" src="./assets/images/svg/alert.svg" style="width: 100px;margin-bottom: 10px;" alt="alert">
+                        <i class="iconsax img-fluid icon"" data-icon="alert" style="width: 100px;margin-bottom: 10px;"></i> 
                         <h4>Hapus Jadwal</h4>
                         <p>Yakin ingin menghapus jadwal ini?</p>
                     </div>
@@ -509,7 +508,6 @@ window.delitjdw = (id, el) => {
         }, 10); 
     };
 };
-
 let loadJadwal = usercode => {
     let { minggu, hari } = getMingguHari();
     fetch(urlbe + "listjadwal", {
@@ -522,6 +520,9 @@ let loadJadwal = usercode => {
         let list = document.querySelector(".my-ride-list");
         let data = res.data || [];
         let mapCust = {};
+        
+        let userData = localStorage.getItem('user_data');
+        let isAdmin = userData ? JSON.parse(userData).is_admin : false;
 
         data.forEach(d => {
             let key = d.cust_name || '-';
@@ -538,13 +539,44 @@ let loadJadwal = usercode => {
             let end = formatTime(d.end_kunjungan);
             let jam = (start && end) ? `${start} - ${end}` : '';
             let jamClass = jam ? '' : 'hide';
+            
+            let hrefTarget = '';
+            let hrefParams = `id=${d.id}&cardname=${encodeURIComponent(d.cardname || '')}&cust_code=${encodeURIComponent(d.cust_code || '')}&cust_name=${encodeURIComponent(d.cust_name || '')}&Address=${encodeURIComponent(d.Address || '')}&City=${encodeURIComponent(d.City || '')}&Province=${encodeURIComponent(d.Province || '')}&Full_Name=${encodeURIComponent(d.Full_Name || '')}&Job_Position=${encodeURIComponent(d.Job_Position || '')}&minggu=${d.minggu}&hari=${d.hari}`;
+            
+            if (!d.start_kunjungan) {
+                hrefTarget = `hrefs('kamera?${hrefParams}')`;
+            } else if (d.start_kunjungan && d.foto) {
+                hrefParams += `&foto=${encodeURIComponent(d.foto || '')}&start_kunjungan=${encodeURIComponent(d.start_kunjungan || '')}&usercode=${encodeURIComponent(d.usercode || '')}`;
+                hrefTarget = `hrefs('listitem?${hrefParams}')`;
+            }
+            
+            let addressDisplay = '';
+            if (d.Address && d.Address.toLowerCase() !== "null" && d.Address.trim() !== "") {
+                addressDisplay = `
+                    <li class="location-box">
+                        <i class="iconsax icon" data-icon="location"></i> 
+                        <h5 class="fw-light title-color">${d.Address}${d.City ? ', ' + d.City : ''}${d.Province ? ', ' + d.Province : ''}</h5>
+                    </li>
+                `;
+            } else if (d.City && d.City.toLowerCase() !== "null" && d.City.trim() !== "") {
+                addressDisplay = `
+                    <li class="location-box">
+                        <i class="iconsax icon" data-icon="location"></i> 
+                        <h5 class="fw-light title-color">${d.City}${d.Province ? ', ' + d.Province : ''}</h5>
+                    </li>
+                `;
+            }
+            
+            let showEditButton = isAdmin ? '' : 'hide';
+            let showDeleteButton = (isAdmin || d.created_by === usercode) ? '' : 'hide';
+
             return `
                 <li class="ride-item" data-id="${d.id}">
                     <div class="my-ride-box">
                         <div class="my-ride-head">
                             <div class="my-ride-content flex-column" style="width:100%;margin:0 5px 0;">
                                 <div class="flex-spacing">
-                                    <a onclick="hrefs('kamera')"><h6 style="max-width:93%;" class="title-color fw-medium">${d.cust_name || '-'}</h6></a>
+                                    <a onclick="${hrefTarget}"><h6 style="max-width:93%;" class="title-color fw-medium">${d.cust_name || '-'}</h6></a>
                                     <span class="status accent-color fw-normal">${status}</span>
                                 </div>
                             </div>
@@ -559,23 +591,18 @@ let loadJadwal = usercode => {
                                     <div style='font-size: 10px;margin: 6px;' class="fw-normal content-color mt-1">${d.Job_Position || ''}</div>
                                 </div>` : ''}
                                 <div class="flex-align-center gap-2">
-                                    <a href="edit-offer.html"> 
+                                    <a class="${showEditButton}" href="edit-offer.html"> 
                                         <i class="iconsax icon" data-icon="edit-2"></i> 
                                     </a> 
-                                    <span class="delitjdw" onclick="delitjdw(${d.id}, this)">
+                                    <span class="delitjdw ${showDeleteButton}" onclick="delitjdw(${d.id}, this)">
                                         <i class="iconsax icon error-icon" data-icon="trash"></i> 
                                     </span> 
                                 </div> 
                             </div>
                             <ul class="ride-location-listing mt-3">
-                                ${ (d.Address && d.Address.toLowerCase() !== "null" && d.Address.trim() !== "") ? `
-                                <li class="location-box">
-                                    <img class="icon" src="./assets/images/svg/location-fill.svg" alt="location">
-                                    <h5 class="fw-light title-color">${d.Address || ''}</h5>
-                                </li>
-                                ` : ''}
+                                ${addressDisplay}
                                 <li class="location-box ${(!tanggal && !jam) ? 'hide' : ''}">
-                                    <img class="icon" src="./assets/images/svg/gps.svg" alt="gps">
+                                    <i class="iconsax icon" data-icon="gps"></i> 
                                     <div class="flex-spacing" style="width:100%;">
                                         <span class="fw-light title-color border-0">${tanggal}</span>
                                         <span class="fw-light title-color border-0 ml-auto ${jamClass}">${jam}</span>
@@ -588,7 +615,7 @@ let loadJadwal = usercode => {
             `;
         }).join('');
 
-        init_iconsax()
+        init_iconsax();
         removeSkeleton(document.querySelector(".my-ride-list"));
         document.querySelectorAll(".ride-item").forEach(item => {
             item.onclick = (e) => {
@@ -596,11 +623,24 @@ let loadJadwal = usercode => {
                     return;
                 }
                 let id = item.getAttribute('data-id');
-                window.location.hash = 'kamera'
+                let itemData = data.find(x => x.id == id);
+                if (itemData) {
+                    let hrefTarget = '';
+                    let hrefParams = `id=${itemData.id}&cardname=${encodeURIComponent(itemData.cardname || '')}&cust_code=${encodeURIComponent(itemData.cust_code || '')}&cust_name=${encodeURIComponent(itemData.cust_name || '')}&Address=${encodeURIComponent(itemData.Address || '')}&City=${encodeURIComponent(itemData.City || '')}&Province=${encodeURIComponent(itemData.Province || '')}&Full_Name=${encodeURIComponent(itemData.Full_Name || '')}&Job_Position=${encodeURIComponent(itemData.Job_Position || '')}&minggu=${itemData.minggu}&hari=${itemData.hari}`;
+                    
+                    if (!itemData.start_kunjungan) {
+                        hrefTarget = `kamera?${hrefParams}`;
+                    } else if (itemData.start_kunjungan && itemData.foto) {
+                        hrefParams += `&foto=${encodeURIComponent(itemData.foto || '')}&start_kunjungan=${encodeURIComponent(itemData.start_kunjungan || '')}&usercode=${encodeURIComponent(itemData.usercode || '')}`;
+                        hrefTarget = `listitem?${hrefParams}`;
+                    }
+                    
+                    window.location.hash = hrefTarget;
+                }
             };
         });
-
     });
 };
+
 
 export default renderHome
