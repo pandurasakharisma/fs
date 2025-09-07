@@ -19,21 +19,14 @@ export let renderKamera = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id })
         })
-            .then(r => r.json())
-            .then(data => {
-                console.log('Response dari listjadwalid:', data);
-            })
-            .catch(err => console.error('Fetch listjadwalid error:', err));
+        .then(r => r.json())
+        .then(data => console.log('Response dari listjadwalid:', data))
+        .catch(err => console.error('Fetch listjadwalid error:', err));
     }
 
     let fileName = '';
     if (isValidStructure) {
-        let values = [];
-        for (let key of expectedKeys) {
-            let val = params.get(key) || '';
-            val = val.replace(/[^a-zA-Z0-9]/g, '');
-            values.push(val);
-        }
+        let values = expectedKeys.map(key => (params.get(key) || '').replace(/[^a-zA-Z0-9]/g, ''));
         fileName = values.join('_');
     }
 
@@ -111,10 +104,6 @@ export let renderKamera = () => {
                 70% { box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
                 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
             }
-            svg {
-                width: 24px;
-                height: 24px;
-            }
         </style>
         <div class="kameradiv">
             <video id="videoElement" autoplay playsinline></video>
@@ -125,10 +114,20 @@ export let renderKamera = () => {
                 <p>Anda harus mengizinkan akses lokasi dan kamera untuk menggunakan fitur ini.</p>
             </div>
             <div id="captureButton">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471.04 471.04"><g><path d="M414.72 112.64h-49.152l-27.136-40.96c-10.24-15.36-28.16-24.576-46.592-24.576H179.2c-18.432 0-36.352 9.216-46.592 24.576l-27.136 40.96H56.32A56.158 56.158 0 0 0 0 168.96v198.656a56.158 56.158 0 0 0 56.32 56.32h358.4a56.158 56.158 0 0 0 56.32-56.32V168.96a56.158 56.158 0 0 0-56.32-56.32zm-179.2 265.216c-70.144 0-126.976-56.832-126.976-126.976s56.832-126.464 126.976-126.464 126.976 56.832 126.976 126.976c0 69.632-56.832 126.464-126.976 126.464zM407.552 192h-22.528c-9.216-.512-16.384-8.192-15.872-17.408.512-8.704 7.168-15.36 15.872-15.872h20.48c9.216-.512 16.896 6.656 17.408 15.872.512 9.216-6.144 16.896-15.36 17.408z"></path><path d="M235.52 180.736c-38.912 0-70.656 31.744-70.656 70.656s31.744 70.144 70.656 70.144 70.656-31.744 70.656-70.656c0-38.912-31.744-70.144-70.656-70.144z"></path></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471.04 471.04">
+                    <g>
+                        <path d="M414.72 112.64h-49.152l-27.136-40.96c-10.24-15.36-28.16-24.576-46.592-24.576H179.2c-18.432 0-36.352 9.216-46.592 24.576l-27.136 40.96H56.32A56.158 56.158 0 0 0 0 168.96v198.656a56.158 56.158 0 0 0 56.32 56.32h358.4a56.158 56.158 0 0 0 56.32-56.32V168.96a56.158 56.158 0 0 0-56.32-56.32z"/>
+                        <path d="M235.52 180.736c-38.912 0-70.656 31.744-70.656 70.656s31.744 70.144 70.656 70.144 70.656-31.744 70.656-70.656-31.744-70.144-70.656-70.144z"/>
+                    </g>
+                </svg>
             </div>
             <div id="switchButton">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><g><g data-name="Layer 2"><path d="M14.707 23.293a1 1 0 0 0-1.414 1.414l.192.192C7.554 24.454 4 22.468 4 21a1.711 1.711 0 0 1 .68-1.17 1 1 0 1 0-1.36-1.47A3.563 3.563 0 0 0 2 21c0 3.456 5.66 5.5 11.673 5.913l-.38.38a1 1 0 1 0 1.414 1.414l2-2a1 1 0 0 0 0-1.414z"></path><circle cx="16" cy="13" r="2"></circle><path d="M9 21h14a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3h-.93a1 1 0 0 1-.832-.445l-.812-1.219A2.993 2.993 0 0 0 17.93 3h-3.86a2.993 2.993 0 0 0-2.5 1.336l-.812 1.219A1 1 0 0 1 9.93 6H9a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3zm7-12a4 4 0 1 1-4 4 4 4 0 0 1 4-4zM28.678 18.356a1 1 0 0 0-1.356 1.471A1.714 1.714 0 0 1 28 21c0 1.063-1.939 2.6-6.2 3.452a1 1 0 0 0 .2 1.981.964.964 0 0 0 .2-.02c4.886-.98 7.8-3 7.8-5.413a3.59 3.59 0 0 0-1.322-2.644z"></path></g></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+                    <g>
+                        <circle cx="16" cy="13" r="2"></circle>
+                        <path d="M9 21h14a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3H9a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3z"/>
+                    </g>
+                </svg>
             </div>
         </div>
     `;
@@ -150,21 +149,6 @@ export let renderKamera = () => {
         messageText.textContent = msg;
     };
 
-    let requestGeolocationPermission = () => new Promise((res, rej) => {
-        navigator.geolocation
-            ? navigator.geolocation.getCurrentPosition(() => res(), () => rej('Akses lokasi ditolak.'), { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 })
-            : rej('Geolocation tidak didukung browser ini.');
-    });
-
-    let requestCameraPermission = () => new Promise((res, rej) => {
-        navigator.mediaDevices?.getUserMedia
-            ? navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-                stream.getTracks().forEach(t => t.stop());
-                res();
-            }).catch(() => rej('Akses kamera ditolak.'))
-            : rej('API getUserMedia tidak didukung browser ini.');
-    });
-
     let startCameraStream = async () => {
         try {
             let stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
@@ -172,18 +156,32 @@ export let renderKamera = () => {
             video.style.display = captureButton.style.display = switchButton.style.display = 'flex';
             permissionMessage.style.display = 'none';
         } catch {
-            showMessage('Terjadi kesalahan saat memulai kamera.');
+            showMessage('Kamera belum diizinkan. Mohon aktifkan kamera.');
         }
     };
 
-    let init = async () => {
-        try {
-            await requestGeolocationPermission();
-            await requestCameraPermission();
+    let checkPermissions = async () => {
+        if (!navigator.permissions) {
             startCameraStream();
-        } catch (err) {
-            showMessage(err);
+            return;
         }
+        let cameraPerm = await navigator.permissions.query({ name: 'camera' });
+        let geoPerm = await navigator.permissions.query({ name: 'geolocation' });
+
+        const updateStatus = () => {
+            if (cameraPerm.state === 'granted' && geoPerm.state === 'granted') {
+                startCameraStream();
+            } else if (cameraPerm.state !== 'granted') {
+                showMessage('Mohon izinkan akses kamera.');
+            } else if (geoPerm.state !== 'granted') {
+                showMessage('Mohon izinkan akses lokasi.');
+            }
+        };
+
+        cameraPerm.onchange = updateStatus;
+        geoPerm.onchange = updateStatus;
+
+        updateStatus();
     };
 
     let sendCapture = (lat, lon) => {
@@ -197,36 +195,34 @@ export let renderKamera = () => {
             formData.append('latitude', lat);
             formData.append('longitude', lon);
             formData.append('id', id);
+
             fetch(uplfEndpoint, { method: 'POST', body: formData })
                 .then(r => r.json())
-                .then(r => {
+                .then(() => {
                     showToast('Gambar Berhasil diUpload', 'success');
                     let redirectParams = new URLSearchParams();
-                    expectedKeys.forEach(key => {
-                        if (params.has(key)) {
-                            redirectParams.set(key, params.get(key));
-                        }
-                    });
+                    expectedKeys.forEach(key => params.has(key) && redirectParams.set(key, params.get(key)));
                     window.location.hash = 'listitem?' + redirectParams.toString();
                 })
                 .catch(() => console.log('Gagal Mengirim Foto'))
                 .finally(() => {
                     captureButton.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471.04 471.04"><g><path d="M414.72 112.64h-49.152l-27.136-40.96c-10.24-15.36-28.16-24.576-46.592-24.576H179.2c-18.432 0-36.352 9.216-46.592 24.576l-27.136 40.96H56.32A56.158 56.158 0 0 0 0 168.96v198.656a56.158 56.158 0 0 0 56.32 56.32h358.4a56.158 56.158 0 0 0 56.32-56.32V168.96a56.158 56.158 0 0 0-56.32-56.32zm-179.2 265.216c-70.144 0-126.976-56.832-126.976-126.976s56.832-126.464 126.976-126.464 126.976 56.832 126.976 126.976c0 69.632-56.832 126.464-126.976 126.464zM407.552 192h-22.528c-9.216-.512-16.384-8.192-15.872-17.408.512-8.704 7.168-15.36 15.872-15.872h20.48c9.216-.512 16.896 6.656 17.408 15.872.512 9.216-6.144 16.896-15.36 17.408z"></path><path d="M235.52 180.736c-38.912 0-70.656 31.744-70.656 70.656s31.744 70.144 70.656 70.144 70.656-31.744 70.656-70.656c0-38.912-31.744-70.144-70.656-70.144z"></path></g></svg>
-                    `;
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471.04 471.04">
+                            <g><path d="M414.72 112.64h-49.152l-27.136-40.96c-10.24-15.36-28.16-24.576-46.592-24.576H179.2c-18.432 0-36.352 9.216-46.592 24.576l-27.136 40.96H56.32A56.158 56.158 0 0 0 0 168.96v198.656a56.158 56.158 0 0 0 56.32 56.32h358.4a56.158 56.158 0 0 0 56.32-56.32V168.96a56.158 56.158 0 0 0-56.32-56.32z"/>
+                            <path d="M235.52 180.736c-38.912 0-70.656 31.744-70.656 70.656s31.744 70.144 70.656 70.144 70.656-31.744 70.656-70.656-31.744-70.144-70.656-70.144z"/></g>
+                        </svg>`;
                     captureButton.style.animation = 'pulse 2s infinite';
                     isCapturing = false;
                 });
         }, 'image/webp', 0.8);
     };
 
-    init();
-
     captureButton.onclick = () => {
         if (isCapturing) return;
         isCapturing = true;
         captureButton.innerHTML = '<div class="spinner"></div>';
         captureButton.style.animation = 'none';
+
         navigator.geolocation.getCurrentPosition(
             pos => sendCapture(pos.coords.latitude, pos.coords.longitude),
             () => sendCapture(null, null)
@@ -238,6 +234,7 @@ export let renderKamera = () => {
         if (video.srcObject) video.srcObject.getTracks().forEach(track => track.stop());
         await startCameraStream();
     };
+    checkPermissions();
 };
 
 export default renderKamera;

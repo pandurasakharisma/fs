@@ -286,7 +286,7 @@ export const renderLogin = () => {
                 body: JSON.stringify(payload)
             });
             if (response.ok) {
-                showToast(`${store.CardName} ditambahkan ke jadwal.`, "success");
+                // showToast(`${store.CardName} ditambahkan ke jadwal.`, "success");
             } else {
                 showToast("Tidak bisa menambahkan ke jadwal.", "danger");
             }

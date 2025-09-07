@@ -319,6 +319,11 @@ export const renderHome = () => {
                 font-size: 0.9rem;
                 color: #6c757d;
             }
+                
+            .location-box svg {
+                fill: #c53f3f;
+                stroke: #c53f3f;
+            }
 
             .left-box {
                 border-right: 1px solid #dee2e6;
