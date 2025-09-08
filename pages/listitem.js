@@ -434,55 +434,113 @@ export let renderListItem = () => {
     }
 
     window.startSpeechToText = () => {
-        const formContainer = document.getElementById('formContainer');
-        formContainer.style.display = 'none';
+        const formContainer = document.getElementById('formContainer')
+        formContainer.style.display = 'none'
     
-        let existing = document.getElementById('speechContainer');
-        if (existing) existing.remove();
+        let existing = document.getElementById('speechContainer')
+        if (existing) existing.remove()
     
-        const speechWrapper = document.createElement('div');
-        speechWrapper.id = 'speechContainer';
-        speechWrapper.style.padding = '15px';
-        speechWrapper.style.marginTop = '10px';
-        speechWrapper.style.background = 'rgba(255,255,255,0.9)';
-        speechWrapper.style.borderRadius = '8px';
+        const speechWrapper = document.createElement('div')
+        speechWrapper.id = 'speechContainer'
+        speechWrapper.style.padding = '15px'
+        speechWrapper.style.marginTop = '10px'
+        speechWrapper.style.background = 'rgba(255,255,255,0.9)'
+        speechWrapper.style.borderRadius = '8px'
         speechWrapper.innerHTML = `
             <h4>Speech to Text</h4>
             <textarea id="speechText" style="width:100%;height:100px;padding:10px;border:1px solid #ccc;border-radius:6px;" placeholder="Mulai bicara..."></textarea>
             <div style="margin-top:10px;">
                 <button id="startRecBtn" class="btn theme-btn">Mulai Rekam</button>
                 <button id="stopRecBtn" class="btn gray-btn">Stop</button>
+                <button id="backBtn" class="btn white-btn">Kembali</button>
             </div>
-        `;
+        `
+        formContainer.parentNode.insertBefore(speechWrapper, formContainer.nextSibling)
     
-        formContainer.parentNode.insertBefore(speechWrapper, formContainer.nextSibling);
-    
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
         if (!SpeechRecognition) {
-            alert('Browser tidak mendukung Speech Recognition');
-            return;
+            alert('Browser tidak mendukung Speech Recognition')
+            return
         }
     
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'id-ID';
-        recognition.interimResults = true;
-        recognition.continuous = true;
+        const recognition = new SpeechRecognition()
+        recognition.lang = 'id-ID'
+        recognition.interimResults = true
+        recognition.continuous = true
     
-        const textarea = document.getElementById('speechText');
-    
-        recognition.onresult = (event) => {
-            let transcript = '';
+        const textarea = document.getElementById('speechText')
+        recognition.onresult = event => {
+            let transcript = ''
             for (let i = event.resultIndex; i < event.results.length; i++) {
-                transcript += event.results[i][0].transcript;
+                transcript += event.results[i][0].transcript
             }
-            textarea.value = transcript;
-        };
+            textarea.value = transcript
+        }
     
-        document.getElementById('startRecBtn').onclick = () => recognition.start();
-        document.getElementById('stopRecBtn').onclick = () => recognition.stop();
-    };
+        recognition.onend = async () => {
+            const text = textarea.value.trim()
+            if (!text) return
+            try {
+                const res = await fetch(urlbe + 'spkompet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                })
+                const data = await res.json()
+                if (Array.isArray(data)) {
+                    formContainer.innerHTML = ''
+                    formContainer.style.display = 'block'
+                    data.forEach((item, idx) => {
+                        const wrapper = document.createElement('div')
+                        wrapper.className = 'form-wrapper'
+                        wrapper.innerHTML = `
+                            <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
+                                <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${idx + 1}</h4>
+                                <div class="flex-align-center gap-2">
+                                    <span class="delete-btn" onclick="deleteForm(this)">
+                                        <i class="iconsax icon error-icon" data-icon="trash-square"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="jotheme-form" style="margin-top: 15px;">
+                                <div class="form-group">
+                                    <input type="text" class="form-controljo brand" placeholder=" " required value="${item.brand || ''}">
+                                    <label class="form-labeljo">Produk Competitor</label>
+                                </div>
+                                <div class="row" style="display: flex; gap: 20px;">
+                                    <div class="col-6" style="flex: 1;">
+                                        <div class="form-group">
+                                            <input type="text" class="form-controljo harga" placeholder=" " required inputmode="numeric" pattern="[0-9]*" value="${item.harga || ''}" oninput="this.value=formatRupiah(this.value)" onkeydown="return onlyNumber(event)">
+                                            <label class="form-labeljo">Harga</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6" style="flex: 1;">
+                                        <div class="form-group">
+                                            <input type="text" class="form-controljo pemakaian" placeholder=" " required inputmode="numeric" pattern="[0-9]*" value="${item.pemakaian || ''}" onkeydown="return onlyNumber(event)">
+                                            <label class="form-labeljo">Pemakaian Bulanan</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                        formContainer.appendChild(wrapper)
+                    })
+                    document.getElementById('speechContainer').remove()
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        }
     
-    document.getElementById('recr').onclick = () => startSpeechToText();
+        document.getElementById('startRecBtn').onclick = () => recognition.start()
+        document.getElementById('stopRecBtn').onclick = () => recognition.stop()
+        document.getElementById('backBtn').onclick = () => {
+            formContainer.style.display = 'block'
+            speechWrapper.remove()
+        }
+    }
+    
+    document.getElementById('recr').onclick = () => startSpeechToText()
     
     
     fetch(urlbe + 'listjadwalid', {
