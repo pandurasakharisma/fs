@@ -154,14 +154,16 @@ export let renderKamera = () => {
         captureButton = document.getElementById('captureButton'),
         switchButton = document.getElementById('switchButton'),
         permissionMessage = document.getElementById('permissionMessage'),
+        permissionButton = document.getElementById('permissionButton'),
         messageText = document.getElementById('messageText'),
         uplfEndpoint = urlbe + 'uplf',
         isCapturing = false,
         currentFacingMode = "user";
 
     let showMessage = msg => {
-        video.style.display = captureButton.style.display = switchButton.style.display = 'none';
+        video.style.display = captureButton.style.display = switchButton.style.display = 'block';
         permissionMessage.style.display = 'block';
+        permissionButton.style.display = 'block';
         messageText.textContent = msg;
     };
 
@@ -171,6 +173,7 @@ export let renderKamera = () => {
             video.srcObject = stream;
             video.style.display = captureButton.style.display = switchButton.style.display = 'flex';
             permissionMessage.style.display = 'none';
+            permissionButton.style.display = 'none';
         } catch {
             showMessage('Kamera belum diizinkan. Mohon aktifkan kamera.');
         }
@@ -262,7 +265,10 @@ export let renderKamera = () => {
         }
     };
     
-    document.getElementById('permissionButton').onclick = requestPermissions;
+    if(document.querySelector('#permissionButton')){
+        document.querySelector('#permissionButton').onclick = requestPermissions;
+    }
+    
     checkPermissions();
 };
 
