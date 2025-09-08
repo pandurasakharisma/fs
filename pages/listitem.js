@@ -1,6 +1,19 @@
-export let renderKamera = () => {
+export let renderListItem = () => {
+    let hash = window.location.hash.split('?')[1] || ''
+    let params = new URLSearchParams(hash)
+    let id = params.get('id')
+    if (!id) {
+        window.location.hash = 'home'
+        return
+    }
 
+    let cust_name = params.get('cust_name') ? decodeURIComponent(params.get('cust_name')) : ''
+    let address = params.get('Address') ? decodeURIComponent(params.get('Address')) : ''
+    let full_name = params.get('Full_Name') ? decodeURIComponent(params.get('Full_Name')) : ''
+
+    init_iconsax();
     document.querySelector('#app').innerHTML = `
+        <link rel="stylesheet" href="./assets/css/leaflet.css" />
         <style>
             .categories-place-box {
                 display: flex;
@@ -72,12 +85,12 @@ export let renderKamera = () => {
             }
             .addcust svg {
                 position: fixed;
-                bottom: 80px;
+                bottom: 110px;
                 right: 20px;
                 width: 48px;
                 height: 48px;
                 cursor: pointer;
-                z-index: 9999;
+                z-index: +3;
                 border-radius: 50%;
                 background: #c53f3f;
                 padding: 10px;
@@ -108,10 +121,26 @@ export let renderKamera = () => {
             }
             .bgm{
                 background: #c53f3f;
-                padding: 100px 20px 60px;
+                padding: 100px 20px 190px;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-                position: relative;
                 overflow: hidden;
+                position: absolute;
+            }
+            .pntoko {
+                position: absolute;
+                top: 18px;
+                width: 100%;
+                background: #fff;
+                left: 0;
+                border-radius: 20px 20px 0px 0px;
+                padding: 20px 20px 0 20px;
+            }
+            .profile-content {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                justify-content: space-between;
             }
             .shadow-sm{box-shadow:0px 0px 18px #efefef;}
             .bgm:before {
@@ -145,39 +174,13 @@ export let renderKamera = () => {
             }
             .seclist {
                 background: #fff;
-                border-top-left-radius: 18px;
-                border-top-right-radius: 18px;
-                margin-top: -20px;
                 z-index: +1;
                 position: absolute;
                 border: none;
                 width: 100%;
                 min-height: calc(100vh - 240px);
             }
-            .gantung1 {
-                margin: 0 10px;
-                margin-top: -50px;
-                background: #fff;
-                z-index: +3;
-                padding: 8px 20px;
-                border-radius: 8px;
-            }
-            .gantung1 p{font-size:11px;}
-            #cdk {
-                font-size: 1.6rem;
-                line-height: 1.1;
-                color: #c53f3f;
-            }
-            .gantung1 button{
-                background: #c53f3f;
-                color: #fff;
-                border: none;
-                margin: 0;
-                padding: 8px 20px;
-                margin-left: auto;
-                margin-right: -10px;
-            }
-            #formContainer {margin-top: 40px;margin-bottom: 120px;}
+            #formContainer {margin-bottom: 120px;}
             .form-wrapper {
                 padding: 15px;
                 background-color: rgba(var(--white), 1);
@@ -199,54 +202,158 @@ export let renderKamera = () => {
                 background-color: rgba(var(--theme-color), 0.1);
                 border-radius: 4px;
             }
+            .profile-content {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                justify-content: space-between;
+            }
+            .profile-content h5 {
+                font-weight: 500;
+                line-height: 1.5;
+                color: rgba(var(--title-color), 1);
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .comm-icon {
+                width: 35px;
+                height: 35px;
+                padding: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: rgba(var(--box-bg), 1);
+                border-radius: 100%;
+            }
+            .location-part {
+                width: 100%;
+                margin-top: 20px;
+                padding: 15px;
+                border-radius: 6px;
+                background-color: rgba(var(--box-bg), 1);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .closefoto svg{
+                stroke: #000;
+                right: 10px;
+                top: 10px;
+                position: absolute;
+                width: 48px;
+                height: 48px;
+                fill: #fff;
+            }
+            .cix {width: 60%;margin-left: 10px;}
+            #cix {
+                font-size: 20px;
+                font-weight: bold;
+                color: #ae3333;
+            }
+            .tbdone{
+                background: #ae3333;
+                color: #fff;
+                font-weight: bold;
+                width: 30%;
+                margin-left: auto;
+                display: block;
+                padding: 10px 20px;
+                height: max-content;
+            }
+            #remarks i svg {
+                background: #c53f3f;
+                stroke: #fff;
+                position: absolute;
+                top: -15px;
+                right: 20px;
+                padding: 8px;
+                border-radius: 18px;
+                animation: pulse 1s infinite;
+                cursor: pointer;
+            }
+            .recr {
+                display: block;
+                margin: 20px auto;
+                width: 40px;
+            }
+            .recr:before {
+                content: "";
+                width: 100%;
+                position: absolute;
+                top: 50px;
+                height: 3px;
+                background: #ae3333;
+                left: 0;
+            }
+            .recr svg {
+                background: #c53f3f;
+                stroke: #fff;
+                padding: 8px;
+                border-radius: 18px;
+                margin: 10px auto;
+                display: block;
+                animation: pulse 1s infinite;
+            }
         </style>
-        <header id="header" class="main-header inner-page-header">
+        <header id="header" class="main-header inner-page-header position-absolute bg-transparent" style="position: fixed!important;z-index: +9;">
             <div class="custom-container">
-                <div class="header-panel">
-                <div class="flex-spacing gap-2 w-100" style="align-items: center; display: flex;">
-                    <a onclick="hrefs('home')" class="back-btn">
-                        <i class="iconsax icon-btn" data-icon="chevron-left" height="40" width="40" style="border: none;margin-left: -10px;"></i>
+                <div class="header-panel p-0">
+                    <a onclick="hrefs('home')" >
+                        <i class="iconsax icon-btn" data-icon="chevron-left"> </i>
                     </a>
-                    <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 8px;">
-                        <img class="icon" src="./assets/images/svg/gps.svg" alt="location" style="width:18px; margin-right:6px;">
-                        <input type="text" id="searchInput" class="form-control border-0 p-0" placeholder="Enter destination" style="background: none;flex:1; box-shadow:none;">
-                        <img id="clearBtn" class="clear-btn" width="12" style="display:none; cursor:pointer;margin-right:6px;" 
-                        src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e">
-                    </div>
-                </div>
                 </div>
             </div>
         </header>
         <main>
-            <section class="bgm">
-                <div class="card card-absen p-3 position-relative">
-                    <div class="row align-items-center position-relative">
-                        <div>
-                            <h2 class="font-weight-bold">Conrad Chicago Restaurant</h2>
-                            <p class="font-weight-light m-0">963 Madyson Drive Suite 679</p>
+            <div class="location-map position-relative w-100 h-100" id="map" style="z-index: 0;"></div>
+            <section class="bgm theme-content-bg">
+                <div class="pntoko">
+                    <div class="d-flex align-items-center mb-3">
+                        <div style="width: calc(100% - 70px);">
+                            <h2 id="cardname" class="fw-bold mb-1">Jonathan Higgins</h2>
+                            <div id="Address" class="text-muted" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 94%;">JL Raya Semarang</div>
                         </div>
-                        <div class="pt-4">
-                            <div class="row">
-                                <div class="col-6">
-                                    <p class="m-0 small">Delivery <span class="badge badge-osahan badge-warning small">Free</span></p>
-                                </div>
-                                <div class="col-6">
-                                    <p class="m-0 small">Open time <span class="badge badge-osahan badge-dark small">8:00 AM</span></p>
-                                </div>
-                            </div>
+                        <div class="flex-align-center gap-2 hide" style="margin-left: auto;">
+                            <a href="chatting.html" class="comm-icon">
+                                <img class="img-fluid icon-btn" src="./assets/images/svg/messages-fill.svg" alt="messages">
+                            </a>
+                            <a href="tel:+4733378901" class="comm-icon">
+                                <img class="img-fluid icon-btn" src="./assets/images/svg/call-fill.svg" alt="call">
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="position-relative rounded overflow-hidden mb-3" style="height:120px;">
+                        <a  data-bs-toggle="modal" href="#full-screen">
+                            <img id="foto" src="" class="img-fluid w-100 h-100 object-fit-cover" alt="Photo"/>
+                            <h2 class="position-absolute  fw-bold" style="bottom: 35%;left:50%;transform:translateX(-50%);font-size:14px;background: #ae3333;padding: 10px;border-radius: 8px;color: #fff;">
+                                Image Preview
+                            </h2>
+                        </a>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 mb-3 p-2 border rounded" style="background:rgba(var(--box-bg), 1);">
+                        <img src="./assets/images/svg/location-fill.svg" alt="location" width="24">
+                        <div style="width:calc(100% - 100px);">
+                            <strong id="Full_Name">Novenny (Key Account Executive)</strong>
+                            <p id="alamat2" class="mb-0 text-muted" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 100%;">JL. Indokarya</p>
+                        </div>
+                        <div class="ms-auto text-end">
+                            <small class="text-muted d-block">Clock In</small>
+                            <strong id="cin">09:05</strong>
                         </div>
                     </div>
                 </div>
             </section>
-            <section class="seclist">
+            <section class="seclist" style="padding-top:0;">
+                <div id="recr" class="recr">
+                    <i class="iconsax icon" data-icon="mic-1"></i>
+                </div>
                 <div class="custom-container">
-                    <div class="gantung1 d-flex shadow-sm">
-                        <div>
-                            <p>Durasi Kunjungan</p>
-                            <strong id="cdk">00:00</strong>
-                        </div>
-                        <button onclick="logout()" class="btn btn-clock mb-0" id="btnClock">Keluar Akun</button>
-                    </div>
                     <div id="formContainer"></div>
                 </div>
             </section>
@@ -276,7 +383,208 @@ export let renderKamera = () => {
                 </div>
             </section>
         </main>
+        <div class="fixed-btn" style="border-top: 4px solid #ae3333;border-radius: 18px 18px 0 0;padding: 20px 0 8px;">
+            <div class="custom-container d-flex">
+                <div class="cix">
+                    <small>Durasi Kunjungan</small>
+                    <div id="cix">18.95</div>
+                </div>
+                <span href="#remarks" data-bs-toggle="offcanvas" class="btn tbdone">Selesai</span>
+            </div>
+        </div>
+        <div class="modal element-modal fade" id="full-screen" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content" style="z-index: +4;background: #000;" data-bs-dismiss="modal">
+                    <i class="iconsax icon closefoto" data-icon="close-circle" data-bs-dismiss="modal"></i>
+                </div>
+            </div>
+        </div>
+        <div class="offcanvas ride-offcanvas" tabindex="-1" id="remarks">
+            <div class="offcanvas-body p-0">
+                <h3>Berikan Kesimpulan Hasil Diskusi</h3>
+                <i class="iconsax icon-btn" data-icon="mic-1"> </i>
+                <div class="jotheme-form" style="margin-top: 15px;">
+                    <div class="form-group">
+                        <textarea class="form-controljo brand" placeholder="Masukkan remarks..." style="width: 100%; height: 40px;" required></textarea>
+                        <label class="form-labeljo">Remarks</label>
+                    </div>
+                </div>
+            </div>
+            <div class="offcanvas-footer flex-align-center flex-nowrap gap-3 border-0 pt-3 px-0 pb-0">
+                <a href="selact-ride.html" class="btn gray-btn title-color w-100 mt-0">Skip</a>
+                <a href="selact-ride.html" class="btn theme-btn w-100 mt-0">Continue</a>
+            </div>
+        </div>
     `
+    
+    
+    let loadLeaflet = () => {
+        return new Promise((resolve, reject) => {
+            if (window.L) {
+                resolve(window.L)
+                return
+            }
+            const script = document.createElement('script')
+            script.src = "./assets/js/leaflet.js"
+            script.async = true
+            script.onload = () => resolve(window.L)
+            script.onerror = () => reject(new Error("Gagal memuat Leaflet JS"))
+            document.body.appendChild(script)
+        })
+    }
+
+    window.startSpeechToText = () => {
+        const formContainer = document.getElementById('formContainer');
+        formContainer.style.display = 'none';
+    
+        let existing = document.getElementById('speechContainer');
+        if (existing) existing.remove();
+    
+        const speechWrapper = document.createElement('div');
+        speechWrapper.id = 'speechContainer';
+        speechWrapper.style.padding = '15px';
+        speechWrapper.style.marginTop = '10px';
+        speechWrapper.style.background = 'rgba(255,255,255,0.9)';
+        speechWrapper.style.borderRadius = '8px';
+        speechWrapper.innerHTML = `
+            <h4>Speech to Text</h4>
+            <textarea id="speechText" style="width:100%;height:100px;padding:10px;border:1px solid #ccc;border-radius:6px;" placeholder="Mulai bicara..."></textarea>
+            <div style="margin-top:10px;">
+                <button id="startRecBtn" class="btn theme-btn">Mulai Rekam</button>
+                <button id="stopRecBtn" class="btn gray-btn">Stop</button>
+            </div>
+        `;
+    
+        formContainer.parentNode.insertBefore(speechWrapper, formContainer.nextSibling);
+    
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert('Browser tidak mendukung Speech Recognition');
+            return;
+        }
+    
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'id-ID';
+        recognition.interimResults = true;
+        recognition.continuous = true;
+    
+        const textarea = document.getElementById('speechText');
+    
+        recognition.onresult = (event) => {
+            let transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                transcript += event.results[i][0].transcript;
+            }
+            textarea.value = transcript;
+        };
+    
+        document.getElementById('startRecBtn').onclick = () => recognition.start();
+        document.getElementById('stopRecBtn').onclick = () => recognition.stop();
+    };
+    
+    document.getElementById('recr').onclick = () => startSpeechToText();
+    
+    
+    fetch(urlbe + 'listjadwalid', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+    })
+    .then(res => res.json())
+    .then(async resData => {
+        let lokasi = resData?.data || {};
+        let lat = lokasi.lat ? parseFloat(lokasi.lat) : null;
+        let lon = lokasi.lon ? parseFloat(lokasi.lon) : null;
+        let cust_name = lokasi.cust_name || '';
+        let full_name = lokasi.Full_Name || '';
+        let Job_Position = lokasi.Job_Position || '';
+        let address = lokasi.Address || '';
+        let city = lokasi.City || '';
+        let foto  = lokasi.foto || null;
+
+        document.querySelector('#cardname').innerHTML = cust_name;
+        document.querySelector('#Address').innerHTML = address;
+        document.querySelector('#Full_Name').innerHTML = full_name+' '+Job_Position;
+
+        if(foto){
+            document.querySelector('#foto').setAttribute('src',urlbe+'upload/gambar/'+foto);
+        }
+
+        let startKunjungan = lokasi.start_kunjungan || null;
+        if (startKunjungan) {
+            document.querySelector('#cin').innerText = startKunjungan.slice(11,16);
+        
+            const cixEl = document.querySelector('#cix');
+        
+            const updateElapsedTime = () => {
+                let startParts = startKunjungan.slice(11,19).split(':');
+                let startDate = new Date();
+                startDate.setHours(parseInt(startParts[0]), parseInt(startParts[1]), parseInt(startParts[2]), 0);
+        
+                let now = new Date();
+                let elapsedMs = now - startDate;
+                elapsedMs = elapsedMs < 0 ? 0 : elapsedMs;
+        
+                let totalSeconds = Math.floor(elapsedMs / 1000);
+                let hh = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+                let mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+                let ss = String(totalSeconds % 60).padStart(2, '0');
+        
+                cixEl.innerText = `${hh}:${mm}:${ss}`;
+            }
+        
+            updateElapsedTime();
+            setInterval(updateElapsedTime, 1000);
+        }
+        
+
+        
+
+        let searchRes = await fetch(urlbe + 'carialamatlatlon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ method: 'search', address, city })
+        });
+        let searchData = await searchRes.json();
+    
+        if (searchData?.status === 'success') {
+            let firstLat = searchData.data.lat;
+            let firstLon = searchData.data.lon;
+    
+            let reverseRes = await fetch(urlbe + 'carialamatlatlon', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ method: 'reverse', lat: lat, lon: lon })
+            });
+            let reverseData = await reverseRes.json();
+    
+            if (reverseData?.status === 'success') {
+                document.querySelector('#alamat2').innerText = reverseData.data.display_name;
+            }
+    
+            loadLeaflet().then(L => {
+                if (lat && lon) {
+                    let map = L.map('map').setView([lat, lon], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '' }).addTo(map);
+    
+                    let iconHtml = '<img class="icon" src="./assets/images/svg/location-fill.svg" width="40" height="40" alt="location">';
+                    let customIcon = L.divIcon({ html: iconHtml, className: 'custom-icon', iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30] });
+    
+                    let marker = L.marker([lat, lon], { icon: customIcon }).addTo(map);
+                    marker.bindPopup(`<strong>${full_name+' '+Job_Position}</strong><p>${reverseData.data.display_name}</p>`).openPopup();
+    
+                    let marker2 = L.marker([firstLat, firstLon], { icon: customIcon }).addTo(map);
+                    marker2.bindPopup(`<strong>${cust_name}</strong><p>${address+' '+city}</p>`);
+                }
+            });
+        } else {
+            document.querySelector('#map').innerHTML = '<p style="text-align:center;padding:20px;">Alamat tidak ditemukan</p>';
+        }
+    })
+    .catch(() => {
+        document.querySelector('#map').innerHTML = '<p style="text-align:center;padding:20px;">Gagal memuat data</p>';
+    });
+    
 
     let formCount = 0
     const formContainer = document.getElementById('formContainer')
@@ -286,47 +594,64 @@ export let renderKamera = () => {
         return number.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
     }
 
+    window.showFullScreenImage = function(el){
+        const imgSrc = el.querySelector('img').getAttribute('src');
+        let modalContent = document.querySelector('#full-screen .modal-content');
+    
+        let existingImg = modalContent.querySelector('img');
+        if(existingImg) existingImg.remove();
+    
+        let modalImg = document.createElement('img');
+        modalImg.setAttribute('src', imgSrc);
+        modalImg.className = 'img-fluid object-fit-cover';
+        modalImg.style.cssText = 'max-height: 100%; max-width: 100%; margin: auto; display: block; position: absolute; top:0; bottom:0; left:0; right:0;';
+        
+        modalContent.prepend(modalImg);
+        
+        let modalEl = document.getElementById('full-screen');
+        modalEl.classList.add('show');
+        modalEl.style.display = 'block';
+        modalEl.setAttribute('aria-modal','true');
+        modalEl.setAttribute('role','dialog');
+    }
+    
+    document.querySelector('a[data-bs-toggle="modal"]').setAttribute('onclick', 'showFullScreenImage(this)');
+
+    
+
     window.createForm = function(){
         formCount++
         const wrapper = document.createElement('div')
         wrapper.className = 'form-wrapper'
         wrapper.innerHTML = `
-            <div class="offer-head">
-                <h4>Brand #${formCount}</h4>
+            <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
+                <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${formCount}</h4>
                 <div class="flex-align-center gap-2">
                     <span class="delete-btn" onclick="deleteForm(this)">
                         <i class="iconsax icon error-icon" data-icon="trash-square"></i>
                     </span>
                 </div>
             </div>
-            <form class="jotheme-form">
+            <div class="jotheme-form" style="margin-top: 15px;">
                 <div class="form-group">
                     <input type="text" class="form-controljo brand" placeholder=" " required>
-                    <label class="form-labeljo">Brand Competitor</label>
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-controljo harga" placeholder=" " required inputmode="numeric" pattern="[0-9]*" oninput="this.value=formatRupiah(this.value)" onkeydown="return onlyNumber(event)">
-                    <label class="form-labeljo">Harga</label>
+                    <label class="form-labeljo">Produk Competitor</label>
                 </div>
                 <div class="row" style="display: flex; gap: 20px;">
                     <div class="col-6" style="flex: 1;">
                         <div class="form-group">
-                            <input type="text" class="form-controljo pemakaian" placeholder=" " required inputmode="numeric" pattern="[0-9]*" onkeydown="return onlyNumber(event)">
-                            <label class="form-labeljo">Pemakaian</label>
+                            <input type="text" class="form-controljo harga" placeholder=" " required inputmode="numeric" pattern="[0-9]*" oninput="this.value=formatRupiah(this.value)" onkeydown="return onlyNumber(event)">
+                            <label class="form-labeljo">Harga</label>
                         </div>
                     </div>
                     <div class="col-6" style="flex: 1;">
                         <div class="form-group">
-                            <select class="form-selectjo durasi" required>
-                                <option value="tahun" selected>Tahun</option>
-                                <option value="bulan">Bulan</option>
-                                <option value="hari">Hari</option>
-                            </select>
-                            <label class="form-labeljo">Durasi</label>
+                            <input type="text" class="form-controljo pemakaian" placeholder=" " required inputmode="numeric" pattern="[0-9]*" onkeydown="return onlyNumber(event)">
+                            <label class="form-labeljo">Pemakaian Bulanan</label>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         `
         formContainer.appendChild(wrapper)
         init_iconsax()
@@ -338,7 +663,7 @@ export let renderKamera = () => {
         formCount = 0
         wrappers.forEach((item) => {
             formCount++
-            item.querySelector('.offer-head h4').innerText = `Brand #${formCount}`
+            item.querySelector('.offer-head h4').innerText = `SKU #${formCount}`
         })
     }
 
@@ -351,14 +676,6 @@ export let renderKamera = () => {
 
     createForm()
 
-    let seconds = 0
-    const cdk = document.getElementById('cdk')
-    setInterval(function(){
-        seconds++
-        const minutes = Math.floor(seconds / 60)
-        const secs = seconds % 60
-        cdk.textContent = minutes.toString().padStart(2,'0') + ':' + secs.toString().padStart(2,'0')
-    },1000)
 }
 
-export default renderKamera
+export default renderListItem

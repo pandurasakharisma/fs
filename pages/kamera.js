@@ -65,6 +65,19 @@ export let renderKamera = () => {
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
                 border-radius: 50%;
             }
+            #captureButton,
+            #switchButton {
+                position: fixed;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                z-index: 1000;
+                transition: transform 0.2s ease-in-out;
+                background-color: #fff;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+                border-radius: 50%;
+            }
             #captureButton {
                 bottom: 30px;
                 width: 70px;
@@ -77,7 +90,11 @@ export let renderKamera = () => {
                 width: 50px;
                 height: 50px;
             }
-            #captureButton:hover,#switchButton:hover {transform: scale(1.1);}
+            #captureButton:hover,
+            #switchButton:hover {
+                transform: scale(1.1);
+            }
+
             #permissionMessage {
                 position: absolute;
                 top: 10%;
@@ -104,6 +121,10 @@ export let renderKamera = () => {
                 70% { box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
                 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
             }
+            svg {
+                width: 36px;
+                height: 36px;
+            }
         </style>
         <div class="kameradiv">
             <video id="videoElement" autoplay playsinline></video>
@@ -114,20 +135,10 @@ export let renderKamera = () => {
                 <p>Anda harus mengizinkan akses lokasi dan kamera untuk menggunakan fitur ini.</p>
             </div>
             <div id="captureButton">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471.04 471.04">
-                    <g>
-                        <path d="M414.72 112.64h-49.152l-27.136-40.96c-10.24-15.36-28.16-24.576-46.592-24.576H179.2c-18.432 0-36.352 9.216-46.592 24.576l-27.136 40.96H56.32A56.158 56.158 0 0 0 0 168.96v198.656a56.158 56.158 0 0 0 56.32 56.32h358.4a56.158 56.158 0 0 0 56.32-56.32V168.96a56.158 56.158 0 0 0-56.32-56.32z"/>
-                        <path d="M235.52 180.736c-38.912 0-70.656 31.744-70.656 70.656s31.744 70.144 70.656 70.144 70.656-31.744 70.656-70.656-31.744-70.144-70.656-70.144z"/>
-                    </g>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 471.04 471.04" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M414.72 112.64h-49.152l-27.136-40.96c-10.24-15.36-28.16-24.576-46.592-24.576H179.2c-18.432 0-36.352 9.216-46.592 24.576l-27.136 40.96H56.32A56.158 56.158 0 0 0 0 168.96v198.656a56.158 56.158 0 0 0 56.32 56.32h358.4a56.158 56.158 0 0 0 56.32-56.32V168.96a56.158 56.158 0 0 0-56.32-56.32zm-179.2 265.216c-70.144 0-126.976-56.832-126.976-126.976s56.832-126.464 126.976-126.464 126.976 56.832 126.976 126.976c0 69.632-56.832 126.464-126.976 126.464zM407.552 192h-22.528c-9.216-.512-16.384-8.192-15.872-17.408.512-8.704 7.168-15.36 15.872-15.872h20.48c9.216-.512 16.896 6.656 17.408 15.872.512 9.216-6.144 16.896-15.36 17.408z" fill="#000000" opacity="1" data-original="#000000" class=""></path><path d="M235.52 180.736c-38.912 0-70.656 31.744-70.656 70.656s31.744 70.144 70.656 70.144 70.656-31.744 70.656-70.656c0-38.912-31.744-70.144-70.656-70.144z" fill="#000000" opacity="1" data-original="#000000" class=""></path></g></svg>
             </div>
             <div id="switchButton">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-                    <g>
-                        <circle cx="16" cy="13" r="2"></circle>
-                        <path d="M9 21h14a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3H9a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3z"/>
-                    </g>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 32 32" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><g data-name="Layer 2"><path d="M14.707 23.293a1 1 0 0 0-1.414 1.414l.192.192C7.554 24.454 4 22.468 4 21a1.711 1.711 0 0 1 .68-1.17 1 1 0 1 0-1.36-1.47A3.563 3.563 0 0 0 2 21c0 3.456 5.66 5.5 11.673 5.913l-.38.38a1 1 0 1 0 1.414 1.414l2-2a1 1 0 0 0 0-1.414z" fill="#000000" opacity="1" data-original="#000000" class=""></path><circle cx="16" cy="13" r="2" fill="#000000" opacity="1" data-original="#000000" class=""></circle><path d="M9 21h14a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3h-.93a1 1 0 0 1-.832-.445l-.812-1.219A2.993 2.993 0 0 0 17.93 3h-3.86a2.993 2.993 0 0 0-2.5 1.336l-.812 1.219A1 1 0 0 1 9.93 6H9a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3zm7-12a4 4 0 1 1-4 4 4 4 0 0 1 4-4zM28.678 18.356a1 1 0 0 0-1.356 1.471A1.714 1.714 0 0 1 28 21c0 1.063-1.939 2.6-6.2 3.452a1 1 0 0 0 .2 1.981.964.964 0 0 0 .2-.02c4.886-.98 7.8-3 7.8-5.413a3.59 3.59 0 0 0-1.322-2.644z" fill="#000000" opacity="1" data-original="#000000" class=""></path></g></g></svg>
             </div>
         </div>
     `;
@@ -207,10 +218,8 @@ export let renderKamera = () => {
                 .catch(() => console.log('Gagal Mengirim Foto'))
                 .finally(() => {
                     captureButton.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 471.04 471.04">
-                            <g><path d="M414.72 112.64h-49.152l-27.136-40.96c-10.24-15.36-28.16-24.576-46.592-24.576H179.2c-18.432 0-36.352 9.216-46.592 24.576l-27.136 40.96H56.32A56.158 56.158 0 0 0 0 168.96v198.656a56.158 56.158 0 0 0 56.32 56.32h358.4a56.158 56.158 0 0 0 56.32-56.32V168.96a56.158 56.158 0 0 0-56.32-56.32z"/>
-                            <path d="M235.52 180.736c-38.912 0-70.656 31.744-70.656 70.656s31.744 70.144 70.656 70.144 70.656-31.744 70.656-70.656-31.744-70.144-70.656-70.144z"/></g>
-                        </svg>`;
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 471.04 471.04" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M414.72 112.64h-49.152l-27.136-40.96c-10.24-15.36-28.16-24.576-46.592-24.576H179.2c-18.432 0-36.352 9.216-46.592 24.576l-27.136 40.96H56.32A56.158 56.158 0 0 0 0 168.96v198.656a56.158 56.158 0 0 0 56.32 56.32h358.4a56.158 56.158 0 0 0 56.32-56.32V168.96a56.158 56.158 0 0 0-56.32-56.32zm-179.2 265.216c-70.144 0-126.976-56.832-126.976-126.976s56.832-126.464 126.976-126.464 126.976 56.832 126.976 126.976c0 69.632-56.832 126.464-126.976 126.464zM407.552 192h-22.528c-9.216-.512-16.384-8.192-15.872-17.408.512-8.704 7.168-15.36 15.872-15.872h20.48c9.216-.512 16.896 6.656 17.408 15.872.512 9.216-6.144 16.896-15.36 17.408z" fill="#000000" opacity="1" data-original="#000000" class=""></path><path d="M235.52 180.736c-38.912 0-70.656 31.744-70.656 70.656s31.744 70.144 70.656 70.144 70.656-31.744 70.656-70.656c0-38.912-31.744-70.144-70.656-70.144z" fill="#000000" opacity="1" data-original="#000000" class=""></path></g></svg>
+                    `;
                     captureButton.style.animation = 'pulse 2s infinite';
                     isCapturing = false;
                 });
