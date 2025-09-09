@@ -820,12 +820,15 @@ export let renderListItem = () => {
             if (e.key === 'ArrowRight') shownext();
             if (e.key === 'Escape') closeviewer();
         };
-        viewer.ontouchstart = e => touchstartx = e.changedTouches[0].screenX;
-        viewer.ontouchend = e => {
+        viewer.addEventListener('touchstart', e => {
+            touchstartx = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        viewer.addEventListener('touchend', e => {
             touchendx = e.changedTouches[0].screenX;
             let diff = touchendx - touchstartx;
             if (Math.abs(diff) > 50) diff > 0 ? showprev() : shownext();
-        };
+        }, { passive: true });
     };
     
     fetch(urlbe + 'listjadwalid', {
