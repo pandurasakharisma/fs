@@ -293,32 +293,39 @@ export let renderListItem = () => {
                 width: 40px;
                 height: 40px;
                 margin: 30px auto;
-                display: block;
-                fill: #ae3333;
-                border: 3px solid #ae3333;
-                border-radius: 50%;
+                border-radius: 18px;
                 padding: 2px;
+                stroke: #fff;
+                background: #c53f3f;
+                animation: pulse 1s infinite;
             }
             .backform {
-                color: #fff;
                 margin: 15px 0;
                 width: 100%;
-                background: #ae3333;
+                color: #ae3333;
             }
+            .igall {
+                margin: 10px 0 20px;
+                border-radius: 8px;
+                max-width: 320px;
+                overflow: hidden;
+            }
+
             .gallery {
                 display: grid;
                 gap: 5px;
-                width: 100%;
                 border-radius: 8px;
-                overflow: hidden;
+                width: 100%;
+                max-width: 320px;
                 height: 145px;
-                min-width: 300px;
             }
+
             .gallery-item {
                 position: relative;
                 overflow: hidden;
                 cursor: pointer;
             }
+
             .gallery-item img {
                 width: 100%;
                 height: 100%;
@@ -326,67 +333,90 @@ export let renderListItem = () => {
                 display: block;
                 transition: transform 0.3s ease;
             }
-            .gallery-item:hover img { transform: scale(1.05); }
-            .layout-1 { grid-template-columns: 1fr; }
-            .layout-1 .gallery-item { height: 145px; }
-            .layout-2 { grid-template-columns: 1fr 1fr; }
-            .layout-2 .gallery-item { height: 145px; }
+
+            .gallery-item:hover img {
+                transform: scale(1.05);
+            }
+
+            .layout-1 {
+                grid-template-columns: 1fr;
+            }
+            .layout-1 .gallery-item {
+                height: 145px;
+            }
+
+            .layout-2 {
+                grid-template-columns: 1fr 1fr;
+                grid-auto-rows: 145px;
+            }
+            .layout-2 .gallery-item {
+                height: 100%;
+            }
+
             .layout-3 {
                 grid-template-columns: 2fr 1fr;
                 grid-template-rows: 1fr 1fr;
                 grid-template-areas: "big small1" "big small2";
             }
-            .layout-3 .gallery-item:nth-child(1) { grid-area: big; height: 100%; }
-            .layout-3 .gallery-item:nth-child(2) { grid-area: small1; height: 70px; }
-            .layout-3 .gallery-item:nth-child(3) { grid-area: small2; height: 70px; }
+            .layout-3 .gallery-item:nth-child(1) {
+                grid-area: big;
+                height: 100%;
+            }
+            .layout-3 .gallery-item:nth-child(2) {
+                grid-area: small1;
+                height: 72px;
+            }
+            .layout-3 .gallery-item:nth-child(3) {
+                grid-area: small2;
+                height: 72px;
+            }
+
             .layout-4 {
                 grid-template-columns: 1fr 1fr;
                 grid-template-rows: 1fr 1fr;
             }
-            .layout-4 .gallery-item { height: 70px; }
+            .layout-4 .gallery-item {
+                height: 72px;
+            }
+
             .layout-5 {
                 grid-template-columns: 2fr 1fr 1fr;
                 grid-template-rows: 1fr 1fr;
                 grid-template-areas: "big mid1 right1" "big mid2 right2";
             }
             .layout-5 .gallery-item:nth-child(1) { grid-area: big; height: 100%; }
-            .layout-5 .gallery-item:nth-child(2) { grid-area: mid1; height: 70px; }
-            .layout-5 .gallery-item:nth-child(3) { grid-area: mid2; height: 70px; }
-            .layout-5 .gallery-item:nth-child(4) { grid-area: right1; height: 70px; }
-            .layout-5 .gallery-item:nth-child(5) { grid-area: right2; height: 70px; }
+            .layout-5 .gallery-item:nth-child(2) { grid-area: mid1; height: 72px; }
+            .layout-5 .gallery-item:nth-child(3) { grid-area: mid2; height: 72px; }
+            .layout-5 .gallery-item:nth-child(4) { grid-area: right1; height: 72px; }
+            .layout-5 .gallery-item:nth-child(5) { grid-area: right2; height: 72px; }
+
             @media(max-width:600px){
                 .layout-2, .layout-3, .layout-4, .layout-5 {
-                    grid-template-columns: 1fr;
                     grid-template-rows: auto;
                 }
                 .gallery-item { height: 80px; }
             }
-            .igall {
-                display: flex;
-                justify-content: flex-start;
-                align-items: center;
-                margin:10px 0 20px;
-                white-space: nowrap;
-                overflow-x: auto;
-                scrollbar-width: thin;
-            }
+
             .viewer {
                 position: fixed;
                 top: 0; left: 0;
-                width: 100%; height: 100%;
-                background: rgba(0, 0, 0, 0.9);
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.9);
                 display: none;
                 justify-content: center;
                 align-items: center;
                 z-index: 9999;
             }
-            .viewer.active { display: flex; }
+            .viewer.active {display: flex;}
             .viewer img {
-                max-width: 90%;
-                max-height: 90%;
-                border-radius: 8px;
                 transition: transform 0.3s ease;
+                height: 100vh;
+                top: 0;
+                left: 0;
+                object-fit: cover;
             }
+
             .viewer .close-btn,
             .viewer .nav-btn {
                 position: absolute;
@@ -406,6 +436,15 @@ export let renderListItem = () => {
             }
             .viewer .prev-btn { left: 20px; }
             .viewer .next-btn { right: 20px; }
+            .viewer svg {
+                background: #c53f3f;
+                width: 34px;
+                height: 35px;
+                border-radius: 50%;
+                stroke: #fff;
+                padding: 8px;
+            }
+            #closebtn svg {padding: 0;background: #c53f3f;}
             .hide{display:none!important;}
         </style>
         <header id="header" class="main-header inner-page-header position-absolute bg-transparent" style="position: fixed!important;z-index: +9;">
@@ -591,12 +630,14 @@ export let renderListItem = () => {
                             stroke="inherit" stroke-width="1.5" stroke-miterlimit="10" 
                             stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <svg id="stopRecBtn" class="rs1" width="36" height="36" viewBox="0 0 24 24" style="display:none;">
-                        <path d="M10.65 19.11V4.89c0-1.35-.57-1.89-2.01-1.89H5.01C3.57 3 3 3.54 3 4.89v14.22C3 20.46 3.57 21 5.01 21h3.63c1.44 0 2.01-.54 2.01-1.89ZM21 19.11V4.89C21 3.54 20.43 3 18.99 3h-3.63c-1.43 0-2.01.54-2.01 1.89v14.22c0 1.35.57 1.89 2.01 1.89h3.63c1.44 0 2.01-.54 2.01-1.89Z" 
-                            stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <svg id="stopRecBtn" class="rs1" width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block;">
+                        <path d="M12 19C15.31 19 18 16.31 18 13V8C18 4.69 15.31 2 12 2C8.69 2 6 4.69 6 8V13C6 16.31 8.69 19 12 19Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M3 11V13C3 17.97 7.03 22 12 22C16.97 22 21 17.97 21 13V11" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M9.11011 7.47993C10.8901 6.82993 12.8301 6.82993 14.6101 7.47993" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M10.03 10.4799C11.23 10.1499 12.5 10.1499 13.7 10.4799" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </div>
-                <textarea id="speechText" style="width:100%;height:100px;padding:10px;border-radius:6px;"></textarea>
+                <textarea id="speechText" style="display:none;width:100%;height:100px;padding:10px;border-radius:6px;"></textarea>
                 <span class="btn backform">Kembali Ke Form</span>    
             `;
             formContainer.parentNode.insertBefore(speechWrapper, formContainer.nextSibling);
@@ -740,7 +781,10 @@ export let renderListItem = () => {
     
 
     
-    document.getElementById('recr').onclick = () => startSpeechToText()
+    document.getElementById('recr').onclick = () => {
+        startSpeechToText()
+        document.querySelector("#recr svg").setAttribute('style','stroke: unset;background: unset;animation: none;');
+    }
 
     let imagedata = [];
     let gallery = document.getElementById('gallery');
@@ -752,12 +796,20 @@ export let renderListItem = () => {
         viewer.id = 'viewer';
         viewer.className = 'viewer';
         viewer.innerHTML = `
-            <span class="close-btn" id="closebtn">&times;</span>
-            <span class="nav-btn prev-btn" id="prevbtn">&#10094;</span>
+            <span class="close-btn" id="closebtn">
+                <i class="iconsax icon error-icon" data-icon="close-circle"></i>
+            </span>
+            <span class="nav-btn prev-btn" id="prevbtn">
+                <i class="iconsax icon error-icon" data-icon="chevron-left"></i>
+            </span>
             <img id="viewerimage" src="" alt="">
-            <span class="nav-btn next-btn" id="nextbtn">&#10095;</span>
+            <span class="nav-btn next-btn" id="nextbtn">
+                <i class="iconsax icon error-icon" data-icon="chevron-right"></i>
+            </span>
         `;
         document.querySelector("#app").appendChild(viewer);
+        
+        init_iconsax();
         viewerimage = document.getElementById('viewerimage');
         closebtn = document.getElementById('closebtn');
         prevbtn = document.getElementById('prevbtn');

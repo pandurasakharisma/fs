@@ -479,7 +479,7 @@ window.delitjdw = (id, el) => {
         `;
         document.body.appendChild(modalDiv);
     }
-
+    init_iconsax();
     let modalElement = document.getElementById('dynamicDeleteModal');
     let modal = new bootstrap.Modal(modalElement);
     modal.show();

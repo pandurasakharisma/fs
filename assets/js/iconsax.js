@@ -1,12 +1,6 @@
-// for details please visit: https://glenthemes.github.io/iconsax
-document.addEventListener("DOMContentLoaded", () => {
-  init_iconsax();
-});
-
-function init_iconsax() {
+let init_iconsax = ()=>{
   document.querySelectorAll(".iconsax").forEach((iconsax) => {
-    var TuT = iconsax.getAttribute("data-icon").toLowerCase().trim();
-
+    let TuT = iconsax.getAttribute("data-icon").toLowerCase().trim();
     fetch("https://glenthemes.github.io/iconsax/icons/" + TuT + ".svg")
       .then((n_n) => {
         return n_n.text();
@@ -19,3 +13,5 @@ function init_iconsax() {
       });
   });
 }
+
+init_iconsax();
