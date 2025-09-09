@@ -252,20 +252,18 @@ export let renderListItem = () => {
                 animation: pulse 1s infinite;
                 cursor: pointer;
             }
+
             .recr {
                 display: block;
-                margin: 20px auto;
-                width: 40px;
+                margin: 5px 10px 20px;
+                width: calc(100% - 20px);
+                text-align: center;
+                background: #f9ebeb;
+                border-radius: 8px;
+                padding: 10px 0;
+                color: #ae3333;
             }
-            .recr:before {
-                content: "";
-                width: 100%;
-                position: absolute;
-                top: 50px;
-                height: 3px;
-                background: #ae3333;
-                left: 0;
-            }
+
             .recr svg {
                 background: #c53f3f;
                 stroke: #fff;
@@ -273,8 +271,9 @@ export let renderListItem = () => {
                 border-radius: 18px;
                 margin: 10px auto;
                 display: block;
-                animation: pulse 1s infinite;
             }
+            .recr.onrecord {background: #1996751a;color:#199675;}    
+            .recr.onrecord svg{animation: pulse 1s infinite;background:#199675;}
             .iatas{
                 position: absolute;
                 top: -16px;
@@ -492,10 +491,11 @@ export let renderListItem = () => {
                 </div>
             </section>
             <section class="seclist" style="padding-top:0;">
-                <div id="recr" class="recr">
-                    <i class="iconsax icon" data-icon="mic-1"></i>
-                </div>
                 <div class="custom-container">
+                    <div id="recr" class="recr">
+                        <i class="iconsax icon" data-icon="mic-1"></i>
+                        <div class="statrecr">Klik Untuk Merekam</div>
+                    </div>
                     <div id="formContainer"></div>
                 </div>
             </section>
@@ -568,6 +568,139 @@ export let renderListItem = () => {
         })
     }
     
+    window.startSpeechToText = () => {
+        const formContainer = document.getElementById('formContainer');
+        let speechWrapper = document.getElementById('speechContainer');
+    
+        if (!speechWrapper) {
+            speechWrapper = document.createElement('div');
+            speechWrapper.id = 'speechContainer';
+            speechWrapper.classList = 'hide';
+            speechWrapper.style.padding = '0 15px';
+            speechWrapper.style.background = 'rgba(255,255,255,0.9)';
+            speechWrapper.style.borderRadius = '8px';
+            speechWrapper.innerHTML = `
+                <div id="recordel" style="text-align:center;margin-bottom:10px;">
+                    <textarea id="speechText" class="hide" style="width:100%;height:100px;padding:10px;border-radius:6px;"></textarea>
+                </div>
+            `;
+            formContainer.parentNode.insertBefore(speechWrapper, formContainer.nextSibling);
+        }
+    
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert('Browser tidak mendukung Speech Recognition');
+            return;
+        }
+    
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'id-ID';
+        recognition.interimResults = true;
+        recognition.continuous = true;
+    
+        const textarea = document.getElementById('speechText');
+        recognition.onresult = e => {
+            let transcript = '';
+            for (let i = e.resultIndex; i < e.results.length; i++) {
+                transcript += e.results[i][0].transcript;
+            }
+            textarea.value = transcript;
+        };
+    
+        const recrBtn = document.getElementById('recr');
+        let isRecording = false;
+        let fetchInterval = null;
+    
+        const toggleRecording = () => {
+            isRecording = !isRecording;
+            recrBtn.classList.toggle('onrecord', isRecording);
+    
+            const statrecr = document.querySelector('.statrecr');
+            if (statrecr) statrecr.textContent = isRecording ? 'Kamu sedang merekam' : 'Ketuk untuk merekam';
+    
+                textarea.classList.add('hide');
+                recognition.start();
+    
+                fetchInterval = setInterval(async () => {
+                    const text = textarea.value.trim();
+                    if (!text) return;
+    
+                    try {
+                        const res = await fetch(urlbe + 'spkompet', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ text })
+                        });
+                        const result = await res.json();
+                        if (result.status === "success" && result.data) {
+                            const items = Array.isArray(result.data) ? result.data : [result.data];
+                            items.forEach((item, idx) => {
+                                const wrapper = document.createElement('div');
+                                wrapper.className = 'form-wrapper';
+                                wrapper.innerHTML = `
+                                    <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
+                                        <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${idx + 1}</h4>
+                                        <div class="flex-align-center gap-2">
+                                            <span class="delete-btn" onclick="deleteForm(this)">
+                                                <i class="iconsax icon error-icon" data-icon="trash-square"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="jotheme-form" style="margin-top: 15px;">
+                                        <div class="form-group">
+                                            <input type="text" class="form-controljo brand" placeholder=" " required value="${item.namaproduk || ''}">
+                                            <label class="form-labeljo">Produk Competitor</label>
+                                        </div>
+                                        <div class="row" style="display: flex; gap: 20px;">
+                                            <div class="col-6" style="flex: 1;">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-controljo harga" 
+                                                        value="${item?.harga ? formatRupiah(String(item.harga)) : item.harga}"
+                                                        placeholder=" " 
+                                                        required 
+                                                        inputmode="numeric" 
+                                                        pattern="[0-9]*" 
+                                                        oninput="this.value=formatRupiah(this.value)" 
+                                                        onkeydown="return onlyNumber(event)">
+                                                    <label class="form-labeljo">Harga</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6" style="flex: 1;margin-left: -35px;">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-controljo pemakaian" 
+                                                        value="${item?.qty ? formatRupiah(String(item.qty)) : item.qty}"
+                                                        placeholder=" " 
+                                                        required 
+                                                        inputmode="numeric" 
+                                                        pattern="[0-9]*" 
+                                                        oninput="this.value=formatRupiah(this.value)" 
+                                                        onkeydown="return onlyNumber(event)">
+                                                    <label class="form-labeljo">Pemakaian Bulanan</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                                formContainer.appendChild(wrapper);
+                                init_iconsax();
+                            });
+                        }
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }, 5000);
+    
+            
+        };
+    
+        recrBtn.onclick = toggleRecording;
+    
+        recognition.onend = () => {
+            if (isRecording) recognition.start();
+        };
+    };
+    startSpeechToText()
+    
     window.speechremark = () => {
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = 'id-ID';
@@ -609,181 +742,6 @@ export let renderListItem = () => {
                 isrecording = false;
             }
         };
-    }
-
-    window.startSpeechToText = () => {
-        init_iconsax();
-        const formContainer = document.getElementById('formContainer');
-        let speechWrapper = document.getElementById('speechContainer');
-    
-        if (!speechWrapper) {
-            speechWrapper = document.createElement('div');
-            speechWrapper.id = 'speechContainer';
-            speechWrapper.style.padding = '0 15px';
-            speechWrapper.style.background = 'rgba(255,255,255,0.9)';
-            speechWrapper.style.borderRadius = '8px';
-            speechWrapper.style.display = 'none';
-            speechWrapper.innerHTML = `
-                <div id="recordel" style="text-align:center;margin-bottom:10px;">
-                    <svg id="startRecBtn" class="rs0" width="36" height="36" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" 
-                            stroke="inherit" stroke-width="1.5" stroke-miterlimit="10" 
-                            stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <svg id="stopRecBtn" class="rs1" width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block;">
-                        <path d="M12 19C15.31 19 18 16.31 18 13V8C18 4.69 15.31 2 12 2C8.69 2 6 4.69 6 8V13C6 16.31 8.69 19 12 19Z" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M3 11V13C3 17.97 7.03 22 12 22C16.97 22 21 17.97 21 13V11" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M9.11011 7.47993C10.8901 6.82993 12.8301 6.82993 14.6101 7.47993" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M10.03 10.4799C11.23 10.1499 12.5 10.1499 13.7 10.4799" stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </div>
-                <textarea id="speechText" style="display:none;width:100%;height:100px;padding:10px;border-radius:6px;"></textarea>
-                <span class="btn backform">Kembali Ke Form</span>    
-            `;
-            formContainer.parentNode.insertBefore(speechWrapper, formContainer.nextSibling);
-        }
-    
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            alert('Browser tidak mendukung Speech Recognition');
-            return;
-        }
-    
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'id-ID';
-        recognition.interimResults = true;
-        recognition.continuous = true;
-    
-        const textarea = document.getElementById('speechText');
-        recognition.onresult = e => {
-            let transcript = '';
-            for (let i = e.resultIndex; i < e.results.length; i++) {
-                transcript += e.results[i][0].transcript;
-            }
-            textarea.value = transcript;
-        };
-    
-        const recrBtn = document.getElementById('recr');
-        const startBtn = document.getElementById('startRecBtn');
-        const stopBtn = document.getElementById('stopRecBtn');
-        let isRecording = false;
-    
-        recrBtn.onclick = () => {
-            isRecording = !isRecording;
-            if (isRecording) {
-                formContainer.style.display = 'none';
-                speechWrapper.style.display = 'block';
-                startBtn.style.display = 'none';
-                stopBtn.style.display = 'inline-block';
-                recognition.start();
-            } else {
-                formContainer.style.display = 'block';
-                speechWrapper.style.display = 'none';
-                startBtn.style.display = 'inline-block';
-                stopBtn.style.display = 'none';
-                recognition.stop();
-            }
-        };
-    
-        startBtn.onclick = () => {
-            recognition.start();
-            startBtn.style.display = 'none';
-            stopBtn.style.display = 'inline-block';
-        };
-    
-        stopBtn.onclick = () => {
-            recognition.stop();
-            startBtn.style.display = 'inline-block';
-            stopBtn.style.display = 'none';
-        };
-    
-        recognition.onend = async () => {
-            if (!isRecording) return;
-            const text = textarea.value.trim();
-            if (!text) return;
-            try {
-                const res = await fetch(urlbe + 'spkompet', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text })
-                });
-                const result = await res.json();
-                if (result.status === "success" && result.data) {
-                    const items = Array.isArray(result.data) ? result.data : [result.data];
-        
-                    document.querySelector("#recr").click();
-                    formContainer.innerHTML += '';
-                    formContainer.style.display = 'block';
-        
-                    items.forEach((item, idx) => {
-                        const wrapper = document.createElement('div');
-                        wrapper.className = 'form-wrapper';
-                        wrapper.innerHTML = `
-                            <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
-                                <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${idx + 1}</h4>
-                                <div class="flex-align-center gap-2">
-                                    <span class="delete-btn" onclick="deleteForm(this)">
-                                        <i class="iconsax icon error-icon" data-icon="trash-square"></i>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="jotheme-form" style="margin-top: 15px;">
-                                <div class="form-group">
-                                    <input type="text" class="form-controljo brand" placeholder=" " required value="${item.namaproduk || ''}">
-                                    <label class="form-labeljo">Produk Competitor</label>
-                                </div>
-                                <div class="row" style="display: flex; gap: 20px;">
-                                    <div class="col-6" style="flex: 1;">
-                                        <div class="form-group">
-                                            <input type="text" class="form-controljo harga" 
-                                            
-                                                value="${item?.harga ? formatRupiah(String(item.harga)) : item.harga}"
-                                                placeholder=" " 
-                                                required 
-                                                inputmode="numeric" 
-                                                pattern="[0-9]*" 
-                                                oninput="this.value=formatRupiah(this.value)" 
-                                                onkeydown="return onlyNumber(event)">
-                                            <label class="form-labeljo">Harga</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-6" style="flex: 1;margin-left: -35px;">
-                                        <div class="form-group">
-                                            <input type="text" class="form-controljo pemakaian" 
-                                            value="${item?.qty ? formatRupiah(String(item.qty)) : item.qty}"
-                                                placeholder=" " 
-                                                required 
-                                                inputmode="numeric" 
-                                                pattern="[0-9]*" 
-                                                oninput="this.value=formatRupiah(this.value)" 
-                                                onkeydown="return onlyNumber(event)">
-                                            <label class="form-labeljo">Pemakaian Bulanan</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        formContainer.appendChild(wrapper);
-                        init_iconsax();
-                    });
-        
-                    speechWrapper.style.display = 'none';
-                    startBtn.style.display = 'inline-block';
-                    stopBtn.style.display = 'none';
-                    isRecording = false;
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        };
-        
-    };
-    
-
-    
-    document.getElementById('recr').onclick = () => {
-        startSpeechToText()
-        document.querySelector("#recr svg").setAttribute('style','stroke: unset;background: unset;animation: none;');
     }
 
     let imagedata = [];
