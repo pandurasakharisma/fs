@@ -567,7 +567,6 @@ export let renderListItem = () => {
             document.body.appendChild(script)
         })
     }
-    
     window.startSpeechToText = () => {
         const formContainer = document.getElementById('formContainer');
         let speechWrapper = document.getElementById('speechContainer');
@@ -575,7 +574,7 @@ export let renderListItem = () => {
         if (!speechWrapper) {
             speechWrapper = document.createElement('div');
             speechWrapper.id = 'speechContainer';
-            speechWrapper.classList = 'hide';
+            speechWrapper.classList.add('hide');
             speechWrapper.style.padding = '0 15px';
             speechWrapper.style.background = 'rgba(255,255,255,0.9)';
             speechWrapper.style.borderRadius = '8px';
@@ -611,6 +610,18 @@ export let renderListItem = () => {
         let isRecording = false;
         let fetchInterval = null;
     
+        const startRecognition = () => {
+            try {
+                recognition.start();
+            } catch (e) {}
+        };
+    
+        const stopRecognition = () => {
+            recognition.stop();
+            clearInterval(fetchInterval);
+            fetchInterval = null;
+        };
+    
         const toggleRecording = () => {
             isRecording = !isRecording;
             recrBtn.classList.toggle('onrecord', isRecording);
@@ -618,8 +629,11 @@ export let renderListItem = () => {
             const statrecr = document.querySelector('.statrecr');
             if (statrecr) statrecr.textContent = isRecording ? 'Kamu sedang merekam' : 'Ketuk untuk merekam';
     
+            if (isRecording) {
+                formContainer.style.display = 'none';
+                speechWrapper.classList.remove('hide');
                 textarea.classList.add('hide');
-                recognition.start();
+                startRecognition();
     
                 fetchInterval = setInterval(async () => {
                     const text = textarea.value.trim();
@@ -690,16 +704,22 @@ export let renderListItem = () => {
                     }
                 }, 5000);
     
-            
+            } else {
+                formContainer.style.display = 'block';
+                speechWrapper.classList.add('hide');
+                stopRecognition();
+            }
         };
     
         recrBtn.onclick = toggleRecording;
     
         recognition.onend = () => {
-            if (isRecording) recognition.start();
+            if (isRecording) startRecognition();
         };
     };
-    startSpeechToText()
+    
+    startSpeechToText();
+    
     
     window.speechremark = () => {
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
