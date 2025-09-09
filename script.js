@@ -1,4 +1,6 @@
-let urlbe = "https://rightly-composed-marlin.ngrok-free.app/"
+let urlbe = "https://rightly-composed-marlin.ngrok-free.app/",
+urlbe2 = "https://http://app2.pkserve.com/fs/"
+
 
 window.hrefs = (url = null) =>  {
     removeSpinner();

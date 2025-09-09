@@ -657,7 +657,7 @@ export let renderListItem = () => {
         document.querySelector('#Full_Name').innerHTML = full_name+' '+Job_Position;
 
         if(foto){
-            document.querySelector('#foto').setAttribute('src',urlbe+'upload/gambar/'+foto);
+            document.querySelector('#foto').setAttribute('src',urlbe2+'upload/gambar/'+foto);
         }
 
         let startKunjungan = lokasi.start_kunjungan || null;
