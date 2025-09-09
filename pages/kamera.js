@@ -43,7 +43,6 @@ export let renderKamera = () => {
                 justify-content: center;
                 align-items: center;
                 position: relative;
-                font-family: sans-serif;
                 color: white;
                 text-align: center;
             }
@@ -83,20 +82,14 @@ export let renderKamera = () => {
                 width: 70px;
                 height: 70px;
                 animation: pulse 2s infinite;
-                
-                padding: 5px;
-                width: 50px;
-                height: 50px;
+                padding: 15px;
             }
             #switchButton {
                 bottom: 120px;
                 right: 30px;
-                width: 50px;
-                height: 50px;
-                
-                padding: 5px;
-                width: 50px;
-                height: 50px;
+                width: 60px;
+                height: 60px;
+                padding: 10px;
             }
             #captureButton:hover,
             #switchButton:hover {
@@ -143,7 +136,7 @@ export let renderKamera = () => {
                 <p id="messageText"></p> 
                 <p>Anda harus mengizinkan akses lokasi dan kamera untuk menggunakan fitur ini.</p> 
             </div>
-            <button id="permissionButton" style="display: block;position: absolute;margin: 20px;padding: 8px 20px;border-radius: 8px;text-transform: uppercase;top: 160px;left: 0;">Coba Izinkan Lagi</button>
+            <button id="permissionButton" style="display: block;position: absolute;margin: 20px;padding: 8px 20px;border-radius: 8px;text-transform: uppercase;top: 170px;left: 10px;">Coba Izinkan Lagi</button>
             <div id="captureButton">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 471.04 471.04" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M414.72 112.64h-49.152l-27.136-40.96c-10.24-15.36-28.16-24.576-46.592-24.576H179.2c-18.432 0-36.352 9.216-46.592 24.576l-27.136 40.96H56.32A56.158 56.158 0 0 0 0 168.96v198.656a56.158 56.158 0 0 0 56.32 56.32h358.4a56.158 56.158 0 0 0 56.32-56.32V168.96a56.158 56.158 0 0 0-56.32-56.32zm-179.2 265.216c-70.144 0-126.976-56.832-126.976-126.976s56.832-126.464 126.976-126.464 126.976 56.832 126.976 126.976c0 69.632-56.832 126.464-126.976 126.464zM407.552 192h-22.528c-9.216-.512-16.384-8.192-15.872-17.408.512-8.704 7.168-15.36 15.872-15.872h20.48c9.216-.512 16.896 6.656 17.408 15.872.512 9.216-6.144 16.896-15.36 17.408z" fill="#000000" opacity="1" data-original="#000000" class=""></path><path d="M235.52 180.736c-38.912 0-70.656 31.744-70.656 70.656s31.744 70.144 70.656 70.144 70.656-31.744 70.656-70.656c0-38.912-31.744-70.144-70.656-70.144z" fill="#000000" opacity="1" data-original="#000000" class=""></path></g></svg>
             </div>

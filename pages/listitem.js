@@ -122,7 +122,6 @@ export let renderListItem = () => {
             .bgm{
                 padding: 100px 20px 190px;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-                overflow: hidden;
                 position: absolute;
             }
             .pntoko {
@@ -285,6 +284,36 @@ export let renderListItem = () => {
                 display: block;
                 animation: pulse 1s infinite;
             }
+            .iatas{
+                position: absolute;
+                top: -16px;
+                stroke: #fff;
+                background: #ae3333;
+                fill: #fff;
+                width: 34px;
+                height: 34px;
+                padding: 5px;
+                border-radius: 50%;
+                left: 48%;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            }
+            #recordel svg {
+                width: 40px;
+                height: 40px;
+                margin: 30px auto;
+                display: block;
+                fill: #ae3333;
+                border: 3px solid #ae3333;
+                border-radius: 50%;
+                padding: 2px;
+            }
+            .backform {
+                color: #fff;
+                margin: 15px 0;
+                width: 100%;
+                background: #ae3333;
+            }
+            .hide{display:none!important;}
         </style>
         <header id="header" class="main-header inner-page-header position-absolute bg-transparent" style="position: fixed!important;z-index: +9;">
             <div class="custom-container">
@@ -298,9 +327,11 @@ export let renderListItem = () => {
         <main>
             <div class="location-map position-relative w-100 h-100" id="map" style="z-index: 0;"></div>
             <section class="bgm theme-content-bg">
+                <i class="iconsax icon-btn" data-icon="chevron-up"></i>
+                <i class="iconsax icon-btn iatas" data-icon="chevron-up"></i>
                 <div class="pntoko">
                     <div class="d-flex align-items-center mb-3">
-                        <img class="place-icon" src="./assets/images/svg/home-fill.svg" alt="home" style="width: 32px;height: 32px;margin: 0 0 8px;margin-right: 10px;">
+                        <img class="place-icon" src="./assets/images/svg/work-fill.svg" alt="home" style="width: 34px;height: 34px;margin: 0;margin-right: 5px;padding: 5px;">
                         <div style="width: calc(100% - 70px);">
                             <h2 id="cardname" style="font-size: 12px;line-height: .8;margin-bottom: 3px;" class="fw-bold">Jonathan Higgins</h2>
                             <div id="Address" class="text-muted" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 94%;">JL Raya Semarang</div>
@@ -390,17 +421,17 @@ export let renderListItem = () => {
         <div class="offcanvas ride-offcanvas" tabindex="-1" id="remarks">
             <div class="offcanvas-body p-0">
                 <h3>Berikan Kesimpulan Hasil Diskusi</h3>
-                <i class="iconsax icon-btn" data-icon="mic-1"> </i>
+                <i class="iconsax icon-btn recremark" data-icon="mic-1"> </i>
                 <div class="jotheme-form" style="margin-top: 15px;">
                     <div class="form-group">
-                        <textarea class="form-controljo brand" placeholder="Masukkan remarks..." style="width: 100%; height: 40px;" required></textarea>
+                        <textarea class="form-controljo hasilx" id="hasilx" placeholder="Masukkan remarks..." style="width: 100%; height: 140px;" required></textarea>
                         <label class="form-labeljo">Remarks</label>
                     </div>
                 </div>
             </div>
             <div class="offcanvas-footer flex-align-center flex-nowrap gap-3 border-0 pt-3 px-0 pb-0">
-                <a href="selact-ride.html" class="btn gray-btn title-color w-100 mt-0">Skip</a>
-                <a href="selact-ride.html" class="btn theme-btn w-100 mt-0">Continue</a>
+                <span id="simpankujungan" class="btn theme-btn w-100 mt-0">Continue</span>
+                <span data-bs-dismiss="modal"class="btn gray-btn title-color w-100 mt-0">Cancel</span>
             </div>
         </div>
     `
@@ -420,67 +451,124 @@ export let renderListItem = () => {
             document.body.appendChild(script)
         })
     }
+    
+    window.speechremark = () => {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'id-ID';
+        recognition.start();
+        recognition.onresult = e => document.getElementById('hasilx').value = e.results[0][0].transcript;
+    };
+
+    if(document.querySelector(".recremark")){
+        let recremark = document.querySelector(".recremark");
+        recremark.onclick = ()=>speechremark();
+    }
 
     window.startSpeechToText = () => {
-        const formContainer = document.getElementById('formContainer')
-        formContainer.style.display = 'none'
+        init_iconsax();
+        const formContainer = document.getElementById('formContainer');
+        let speechWrapper = document.getElementById('speechContainer');
     
-        let existing = document.getElementById('speechContainer')
-        if (existing) existing.remove()
+        if (!speechWrapper) {
+            speechWrapper = document.createElement('div');
+            speechWrapper.id = 'speechContainer';
+            speechWrapper.style.padding = '0 15px';
+            speechWrapper.style.background = 'rgba(255,255,255,0.9)';
+            speechWrapper.style.borderRadius = '8px';
+            speechWrapper.style.display = 'none';
+            speechWrapper.innerHTML = `
+                <div id="recordel" style="text-align:center;margin-bottom:10px;">
+                    <svg id="startRecBtn" class="rs0" width="36" height="36" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" 
+                            stroke="inherit" stroke-width="1.5" stroke-miterlimit="10" 
+                            stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <svg id="stopRecBtn" class="rs1" width="36" height="36" viewBox="0 0 24 24" style="display:none;">
+                        <path d="M10.65 19.11V4.89c0-1.35-.57-1.89-2.01-1.89H5.01C3.57 3 3 3.54 3 4.89v14.22C3 20.46 3.57 21 5.01 21h3.63c1.44 0 2.01-.54 2.01-1.89ZM21 19.11V4.89C21 3.54 20.43 3 18.99 3h-3.63c-1.43 0-2.01.54-2.01 1.89v14.22c0 1.35.57 1.89 2.01 1.89h3.63c1.44 0 2.01-.54 2.01-1.89Z" 
+                            stroke="inherit" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <textarea id="speechText" style="width:100%;height:100px;padding:10px;border-radius:6px;"></textarea>
+                <span class="btn backform">Kembali Ke Form</span>    
+            `;
+            formContainer.parentNode.insertBefore(speechWrapper, formContainer.nextSibling);
+        }
     
-        const speechWrapper = document.createElement('div')
-        speechWrapper.id = 'speechContainer'
-        speechWrapper.style.padding = '15px'
-        speechWrapper.style.marginTop = '10px'
-        speechWrapper.style.background = 'rgba(255,255,255,0.9)'
-        speechWrapper.style.borderRadius = '8px'
-        speechWrapper.innerHTML = `
-            <h4>Speech to Text</h4>
-            <textarea id="speechText" style="width:100%;height:100px;padding:10px;border:1px solid #ccc;border-radius:6px;" placeholder="Mulai bicara..."></textarea>
-            <div style="margin-top:10px;">
-                <button id="startRecBtn" class="btn theme-btn">Mulai Rekam</button>
-                <button id="stopRecBtn" class="btn gray-btn">Stop</button>
-                <button id="backBtn" class="btn white-btn">Kembali</button>
-            </div>
-        `
-        formContainer.parentNode.insertBefore(speechWrapper, formContainer.nextSibling)
-    
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
-            alert('Browser tidak mendukung Speech Recognition')
-            return
+            alert('Browser tidak mendukung Speech Recognition');
+            return;
         }
     
-        const recognition = new SpeechRecognition()
-        recognition.lang = 'id-ID'
-        recognition.interimResults = true
-        recognition.continuous = true
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'id-ID';
+        recognition.interimResults = true;
+        recognition.continuous = true;
     
-        const textarea = document.getElementById('speechText')
-        recognition.onresult = event => {
-            let transcript = ''
-            for (let i = event.resultIndex; i < event.results.length; i++) {
-                transcript += event.results[i][0].transcript
+        const textarea = document.getElementById('speechText');
+        recognition.onresult = e => {
+            let transcript = '';
+            for (let i = e.resultIndex; i < e.results.length; i++) {
+                transcript += e.results[i][0].transcript;
             }
-            textarea.value = transcript
-        }
+            textarea.value = transcript;
+        };
+    
+        const recrBtn = document.getElementById('recr');
+        const startBtn = document.getElementById('startRecBtn');
+        const stopBtn = document.getElementById('stopRecBtn');
+        let isRecording = false;
+    
+        recrBtn.onclick = () => {
+            isRecording = !isRecording;
+            if (isRecording) {
+                formContainer.style.display = 'none';
+                speechWrapper.style.display = 'block';
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'inline-block';
+                recognition.start();
+            } else {
+                formContainer.style.display = 'block';
+                speechWrapper.style.display = 'none';
+                startBtn.style.display = 'inline-block';
+                stopBtn.style.display = 'none';
+                recognition.stop();
+            }
+        };
+    
+        startBtn.onclick = () => {
+            recognition.start();
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'inline-block';
+        };
+    
+        stopBtn.onclick = () => {
+            recognition.stop();
+            startBtn.style.display = 'inline-block';
+            stopBtn.style.display = 'none';
+        };
     
         recognition.onend = async () => {
-            const text = textarea.value.trim()
-            if (!text) return
+            if (!isRecording) return;
+            const text = textarea.value.trim();
+            if (!text) return;
             try {
                 const res = await fetch(urlbe + 'spkompet', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text })
-                })
-                const data = await res.json()
-                if (Array.isArray(data)) {
-                    formContainer.innerHTML = ''
-                    formContainer.style.display = 'block'
-                    data.forEach((item, idx) => {
-                        const wrapper = document.createElement('div')
-                        wrapper.className = 'form-wrapper'
+                });
+                const result = await res.json();
+                if (result.status === "success" && result.data) {
+                    const items = Array.isArray(result.data) ? result.data : [result.data];
+        
+                    document.querySelector("#recr").click();
+                    formContainer.innerHTML = '';
+                    formContainer.style.display = 'block';
+        
+                    items.forEach((item, idx) => {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'form-wrapper';
                         wrapper.innerHTML = `
                             <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
                                 <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${idx + 1}</h4>
@@ -492,41 +580,57 @@ export let renderListItem = () => {
                             </div>
                             <div class="jotheme-form" style="margin-top: 15px;">
                                 <div class="form-group">
-                                    <input type="text" class="form-controljo brand" placeholder=" " required value="${item.brand || ''}">
+                                    <input type="text" class="form-controljo brand" placeholder=" " required value="${item.namaproduk || ''}">
                                     <label class="form-labeljo">Produk Competitor</label>
                                 </div>
                                 <div class="row" style="display: flex; gap: 20px;">
                                     <div class="col-6" style="flex: 1;">
                                         <div class="form-group">
-                                            <input type="text" class="form-controljo harga" placeholder=" " required inputmode="numeric" pattern="[0-9]*" value="${item.harga || ''}" oninput="this.value=formatRupiah(this.value)" onkeydown="return onlyNumber(event)">
+                                            <input type="text" class="form-controljo harga" 
+                                            
+                                                value="${item?.harga ? formatRupiah(String(item.harga)) : item.harga}"
+                                                placeholder=" " 
+                                                required 
+                                                inputmode="numeric" 
+                                                pattern="[0-9]*" 
+                                                oninput="this.value=formatRupiah(this.value)" 
+                                                onkeydown="return onlyNumber(event)">
                                             <label class="form-labeljo">Harga</label>
                                         </div>
                                     </div>
                                     <div class="col-6" style="flex: 1;">
                                         <div class="form-group">
-                                            <input type="text" class="form-controljo pemakaian" placeholder=" " required inputmode="numeric" pattern="[0-9]*" value="${item.pemakaian || ''}" onkeydown="return onlyNumber(event)">
+                                            <input type="text" class="form-controljo pemakaian" 
+                                            value="${item?.qty ? formatRupiah(String(item.qty)) : item.qty}"
+                                                placeholder=" " 
+                                                required 
+                                                inputmode="numeric" 
+                                                pattern="[0-9]*" 
+                                                oninput="this.value=formatRupiah(this.value)" 
+                                                onkeydown="return onlyNumber(event)">
                                             <label class="form-labeljo">Pemakaian Bulanan</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        `
-                        formContainer.appendChild(wrapper)
-                    })
-                    document.getElementById('speechContainer').remove()
+                        `;
+                        formContainer.appendChild(wrapper);
+                        init_iconsax();
+                    });
+        
+                    speechWrapper.style.display = 'none';
+                    startBtn.style.display = 'inline-block';
+                    stopBtn.style.display = 'none';
+                    isRecording = false;
                 }
             } catch (err) {
-                console.error(err)
+                console.error(err);
             }
-        }
+        };
+        
+    };
     
-        document.getElementById('startRecBtn').onclick = () => recognition.start()
-        document.getElementById('stopRecBtn').onclick = () => recognition.stop()
-        document.getElementById('backBtn').onclick = () => {
-            formContainer.style.display = 'block'
-            speechWrapper.remove()
-        }
-    }
+
     
     document.getElementById('recr').onclick = () => startSpeechToText()
     
@@ -665,10 +769,10 @@ export let renderListItem = () => {
 
     
 
-    window.createForm = function(){
-        formCount++
-        const wrapper = document.createElement('div')
-        wrapper.className = 'form-wrapper'
+    window.createForm = function() {
+        formCount++;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'form-wrapper';
         wrapper.innerHTML = `
             <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
                 <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${formCount}</h4>
@@ -686,23 +790,39 @@ export let renderListItem = () => {
                 <div class="row" style="display: flex; gap: 20px;">
                     <div class="col-6" style="flex: 1;">
                         <div class="form-group">
-                            <input type="text" class="form-controljo harga" placeholder=" " required inputmode="numeric" pattern="[0-9]*" oninput="this.value=formatRupiah(this.value)" onkeydown="return onlyNumber(event)">
+                            <input 
+                                type="text" 
+                                class="form-controljo harga" 
+                                placeholder=" " 
+                                required 
+                                inputmode="numeric" 
+                                pattern="[0-9]*" 
+                                oninput="this.value=formatRupiah(this.value)" 
+                                onkeydown="return onlyNumber(event)">
                             <label class="form-labeljo">Harga</label>
                         </div>
                     </div>
                     <div class="col-6" style="flex: 1;">
                         <div class="form-group">
-                            <input type="text" class="form-controljo pemakaian" placeholder=" " required inputmode="numeric" pattern="[0-9]*" onkeydown="return onlyNumber(event)">
+                            <input 
+                                type="text" 
+                                class="form-controljo pemakaian" 
+                                placeholder=" " 
+                                required 
+                                inputmode="numeric" 
+                                pattern="[0-9]*" 
+                                oninput="this.value=formatRupiah(this.value)" 
+                                onkeydown="return onlyNumber(event)">
                             <label class="form-labeljo">Pemakaian Bulanan</label>
                         </div>
                     </div>
                 </div>
             </div>
-        `
-        formContainer.appendChild(wrapper)
-        init_iconsax()
-    }
-
+        `;
+        formContainer.appendChild(wrapper);
+        init_iconsax();
+    };
+    
     window.deleteForm = function(el){
         el.closest('.form-wrapper').remove()
         const wrappers = document.querySelectorAll('#formContainer .form-wrapper')
