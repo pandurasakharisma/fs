@@ -108,11 +108,12 @@ export let renderKamera = () => {
             }
             .spinner {
                 border: 4px solid rgba(255, 255, 255, 0.2);
-                border-left-color: #000;
+                border-left-color: #c53f3f;
                 border-radius: 50%;
-                width: 30px;
-                height: 30px;
+                width: 65px;
+                height: 65px;
                 animation: spin 1s linear infinite;
+                margin: -12px;
             }
             @keyframes spin {
                 0% { transform: rotate(0deg); }
@@ -229,7 +230,7 @@ export let renderKamera = () => {
                     captureButton.style.animation = 'pulse 2s infinite';
                     isCapturing = false;
                 });
-        }, 'image/webp', 0.8);
+        }, 'image/webp', 1);
     };
 
     captureButton.onclick = () => {
