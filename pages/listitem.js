@@ -430,7 +430,7 @@ export let renderListItem = () => {
                 </div>
             </div>
             <div class="offcanvas-footer flex-align-center flex-nowrap gap-3 border-0 pt-3 px-0 pb-0">
-                <span id="simpankujungan" class="btn theme-btn w-100 mt-0">Continue</span>
+                <span id="simpankujungan" onclick="saveKunjungan()" class="btn theme-btn w-100 mt-0">Continue</span>
                 <span data-bs-dismiss="modal"class="btn gray-btn title-color w-100 mt-0">Cancel</span>
             </div>
         </div>
@@ -690,7 +690,7 @@ export let renderListItem = () => {
 
         
 
-        let searchRes = await fetch(urlbe + 'carialamatlatlon', {
+        let searchRes = await fetch(urlbe + 'tanyaalamat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ method: 'search', address, city })
@@ -698,8 +698,8 @@ export let renderListItem = () => {
         let searchData = await searchRes.json();
     
         if (searchData?.status === 'success') {
-            let firstLat = searchData.data.lat;
-            let firstLon = searchData.data.lon;
+            let firstLat = searchData.data[1]?.lat;
+            let firstLon = searchData.data[1]?.lon;
     
             let reverseRes = await fetch(urlbe + 'carialamatlatlon', {
                 method: 'POST',
@@ -766,9 +766,90 @@ export let renderListItem = () => {
     }
     
     document.querySelector('a[data-bs-toggle="modal"]').setAttribute('onclick', 'showFullScreenImage(this)');
-
+    window.saveKunjungan = async () => {
+        const remark = document.getElementById('hasilx').value.trim();
+        const formWrappers = document.querySelectorAll('#formContainer .form-wrapper');
     
-
+        if (!remark) {
+            showToast("Result Kunjungan Tidak Boleh Kosong.", "danger");
+            return;
+        }
+    
+        if (formWrappers.length === 0) {
+            showToast("Data Tidak Boleh Kosong.", "danger");
+            return;
+        }
+    
+        let items = [];
+        formWrappers.forEach(wrapper => {
+            const brand = wrapper.querySelector('.brand').value.trim();
+            const harga = wrapper.querySelector('.harga').value.replace(/\D/g, '');
+            const pemakaian = wrapper.querySelector('.pemakaian').value.replace(/\D/g, '');
+            if (brand && harga && pemakaian) {
+                items.push({ brand, harga, pemakaian });
+            }
+        });
+    
+        if (items.length === 0) {
+            showToast("Data Tidak Boleh Kosong.", "danger");
+            return;
+        }
+    
+        const hash = window.location.hash.split('?')[1] || '';
+        const params = new URLSearchParams(hash);
+    
+        const id = params.get('id') || '';
+        const cardname = params.get('cardname') || '';
+        const cust_code = params.get('cust_code') || '';
+        const cust_name = params.get('cust_name') || '';
+        const address = params.get('Address') || '';
+        const city = params.get('City') || '';
+        const province = params.get('Province') || '';
+        const full_name = params.get('Full_Name') || '';
+        const job_position = params.get('Job_Position') || '';
+        const minggu = params.get('minggu') || '';
+        const hari = params.get('hari') || '';
+        const foto = params.get('foto') || '';
+        const start_kunjungan = params.get('start_kunjungan') || '';
+        const usercode = params.get('usercode') || '';
+    
+        try {
+            const response = await fetch(urlbe + 'simpankunjungan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    remark,
+                    data: items,
+                    id,
+                    cardname,
+                    cust_code,
+                    cust_name,
+                    address,
+                    city,
+                    province,
+                    full_name,
+                    job_position,
+                    minggu,
+                    hari,
+                    foto,
+                    start_kunjungan,
+                    usercode
+                })
+            });
+    
+            if (response.ok) {
+                showToast("Data Berhasil di Simpan", "success");
+                document.getElementById('hasilx').value = '';
+                document.getElementById('formContainer').innerHTML = '';
+            } else {
+                showToast("Gagal menyimpan data", "danger");
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("Terjadi kesalahan saat menyimpan data", "danger");
+        }
+    };
+    
     window.createForm = function() {
         formCount++;
         const wrapper = document.createElement('div');
