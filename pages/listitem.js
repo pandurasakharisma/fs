@@ -225,15 +225,6 @@ export let renderListItem = () => {
                 align-items: center;
                 justify-content: space-between;
             }
-            .closefoto svg{
-                stroke: #000;
-                right: 10px;
-                top: 10px;
-                position: absolute;
-                width: 48px;
-                height: 48px;
-                fill: #fff;
-            }
             .cix {width: 60%;margin-left: 10px;}
             #cix {
                 font-size: 20px;
@@ -292,11 +283,12 @@ export let renderListItem = () => {
                 fill: #fff;
                 width: 34px;
                 height: 34px;
-                padding: 5px;
+                padding: 7px;
                 border-radius: 50%;
                 left: 48%;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
             }
+            .iatas svg{width:20px;height:20px;}
             #recordel svg {
                 width: 40px;
                 height: 40px;
@@ -313,6 +305,107 @@ export let renderListItem = () => {
                 width: 100%;
                 background: #ae3333;
             }
+            .gallery {
+                display: grid;
+                gap: 5px;
+                width: 100%;
+                border-radius: 8px;
+                overflow: hidden;
+                height: 145px;
+                min-width: 300px;
+            }
+            .gallery-item {
+                position: relative;
+                overflow: hidden;
+                cursor: pointer;
+            }
+            .gallery-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                transition: transform 0.3s ease;
+            }
+            .gallery-item:hover img { transform: scale(1.05); }
+            .layout-1 { grid-template-columns: 1fr; }
+            .layout-1 .gallery-item { height: 145px; }
+            .layout-2 { grid-template-columns: 1fr 1fr; }
+            .layout-2 .gallery-item { height: 145px; }
+            .layout-3 {
+                grid-template-columns: 2fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                grid-template-areas: "big small1" "big small2";
+            }
+            .layout-3 .gallery-item:nth-child(1) { grid-area: big; height: 100%; }
+            .layout-3 .gallery-item:nth-child(2) { grid-area: small1; height: 70px; }
+            .layout-3 .gallery-item:nth-child(3) { grid-area: small2; height: 70px; }
+            .layout-4 {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+            .layout-4 .gallery-item { height: 70px; }
+            .layout-5 {
+                grid-template-columns: 2fr 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                grid-template-areas: "big mid1 right1" "big mid2 right2";
+            }
+            .layout-5 .gallery-item:nth-child(1) { grid-area: big; height: 100%; }
+            .layout-5 .gallery-item:nth-child(2) { grid-area: mid1; height: 70px; }
+            .layout-5 .gallery-item:nth-child(3) { grid-area: mid2; height: 70px; }
+            .layout-5 .gallery-item:nth-child(4) { grid-area: right1; height: 70px; }
+            .layout-5 .gallery-item:nth-child(5) { grid-area: right2; height: 70px; }
+            @media(max-width:600px){
+                .layout-2, .layout-3, .layout-4, .layout-5 {
+                    grid-template-columns: 1fr;
+                    grid-template-rows: auto;
+                }
+                .gallery-item { height: 80px; }
+            }
+            .igall {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                margin:10px 0 20px;
+                white-space: nowrap;
+                overflow-x: auto;
+                scrollbar-width: thin;
+            }
+            .viewer {
+                position: fixed;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+            }
+            .viewer.active { display: flex; }
+            .viewer img {
+                max-width: 90%;
+                max-height: 90%;
+                border-radius: 8px;
+                transition: transform 0.3s ease;
+            }
+            .viewer .close-btn,
+            .viewer .nav-btn {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 40px;
+                color: white;
+                cursor: pointer;
+                user-select: none;
+                padding: 10px;
+            }
+            .viewer .close-btn {
+                top: 20px;
+                right: 20px;
+                font-size: 35px;
+                transform: none;
+            }
+            .viewer .prev-btn { left: 20px; }
+            .viewer .next-btn { right: 20px; }
             .hide{display:none!important;}
         </style>
         <header id="header" class="main-header inner-page-header position-absolute bg-transparent" style="position: fixed!important;z-index: +9;">
@@ -345,16 +438,7 @@ export let renderListItem = () => {
                             </a>
                         </div>
                     </div>
-
-                    <div class="position-relative rounded overflow-hidden mb-3" style="height:120px;">
-                        <a  data-bs-toggle="modal" href="#full-screen">
-                            <img id="foto" src="" class="img-fluid w-100 h-100 object-fit-cover" alt="Photo"/>
-                            <h2 class="position-absolute  fw-bold" style="bottom: 35%;left:50%;transform:translateX(-50%);font-size:14px;background: #ae3333;padding: 10px;border-radius: 8px;color: #fff;">
-                                Image Preview
-                            </h2>
-                        </a>
-                    </div>
-
+                    <div class="igall"><div class="gallery" id="gallery"></div></div>
                     <div class="d-flex align-items-center gap-2 mb-3 p-2 rounded" style="background:rgba(var(--box-bg), 1);">
                         <img src="./assets/images/svg/location-fill.svg" alt="location" width="24">
                         <div style="width:calc(100% - 100px);">
@@ -411,13 +495,6 @@ export let renderListItem = () => {
                 <span href="#remarks" data-bs-toggle="offcanvas" class="btn tbdone">Selesai</span>
             </div>
         </div>
-        <div class="modal element-modal fade" id="full-screen" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content" style="z-index: +4;background: #000;" data-bs-dismiss="modal">
-                    <i class="iconsax icon closefoto" data-icon="close-circle" data-bs-dismiss="modal"></i>
-                </div>
-            </div>
-        </div>
         <div class="offcanvas ride-offcanvas" tabindex="-1" id="remarks">
             <div class="offcanvas-body p-0">
                 <h3>Berikan Kesimpulan Hasil Diskusi</h3>
@@ -455,13 +532,44 @@ export let renderListItem = () => {
     window.speechremark = () => {
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = 'id-ID';
-        recognition.start();
-        recognition.onresult = e => document.getElementById('hasilx').value = e.results[0][0].transcript;
-    };
-
-    if(document.querySelector(".recremark")){
         let recremark = document.querySelector(".recremark");
-        recremark.onclick = ()=>speechremark();
+        if (!recremark) return;
+        recremark.style.background = "#053b08";
+        recognition.start();
+        recognition.onresult = e => {
+            document.getElementById('hasilx').value = e.results[0][0].transcript;
+        };
+        recognition.onend = () => {
+            recremark.style.background = "rgba(var(--theme-color), 1)";
+        };
+    };
+    
+    if (document.querySelector(".recremark")) {
+        let recremark = document.querySelector(".recremark");
+        let isrecording = false;
+        let recognition;
+        recremark.onclick = () => {
+            if (!recognition) {
+                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = 'id-ID';
+                recognition.onresult = e => {
+                    document.getElementById('hasilx').value = e.results[0][0].transcript;
+                };
+                recognition.onend = () => {
+                    recremark.style.background = "rgba(var(--theme-color), 1)";
+                    isrecording = false;
+                };
+            }
+            if (!isrecording) {
+                recognition.start();
+                recremark.style.background = "#053b08";
+                isrecording = true;
+            } else {
+                recognition.stop();
+                recremark.style.background = "rgba(var(--theme-color), 1)";
+                isrecording = false;
+            }
+        };
     }
 
     window.startSpeechToText = () => {
@@ -563,7 +671,7 @@ export let renderListItem = () => {
                     const items = Array.isArray(result.data) ? result.data : [result.data];
         
                     document.querySelector("#recr").click();
-                    formContainer.innerHTML = '';
+                    formContainer.innerHTML += '';
                     formContainer.style.display = 'block';
         
                     items.forEach((item, idx) => {
@@ -598,7 +706,7 @@ export let renderListItem = () => {
                                             <label class="form-labeljo">Harga</label>
                                         </div>
                                     </div>
-                                    <div class="col-6" style="flex: 1;">
+                                    <div class="col-6" style="flex: 1;margin-left: -35px;">
                                         <div class="form-group">
                                             <input type="text" class="form-controljo pemakaian" 
                                             value="${item?.qty ? formatRupiah(String(item.qty)) : item.qty}"
@@ -633,7 +741,82 @@ export let renderListItem = () => {
 
     
     document.getElementById('recr').onclick = () => startSpeechToText()
+
+    let imagedata = [];
+    let gallery = document.getElementById('gallery');
+    let viewer, viewerimage, closebtn, prevbtn, nextbtn, currentindex = 0;
+    let touchstartx = 0, touchendx = 0;
     
+    let rendergaleryview = () => {
+        viewer = document.createElement('div');
+        viewer.id = 'viewer';
+        viewer.className = 'viewer';
+        viewer.innerHTML = `
+            <span class="close-btn" id="closebtn">&times;</span>
+            <span class="nav-btn prev-btn" id="prevbtn">&#10094;</span>
+            <img id="viewerimage" src="" alt="">
+            <span class="nav-btn next-btn" id="nextbtn">&#10095;</span>
+        `;
+        document.querySelector("#app").appendChild(viewer);
+        viewerimage = document.getElementById('viewerimage');
+        closebtn = document.getElementById('closebtn');
+        prevbtn = document.getElementById('prevbtn');
+        nextbtn = document.getElementById('nextbtn');
+    };
+    
+    let setgallerylayout = images => {
+        let layout = images.length === 1 ? 'layout-1' :
+                     images.length === 2 ? 'layout-2' :
+                     images.length === 3 ? 'layout-3' :
+                     images.length === 4 ? 'layout-4' :
+                     images.length === 5 ? 'layout-5' : 'layout-4';
+        gallery.className = `gallery ${layout}`;
+        gallery.innerHTML = images.map((img, index) =>
+            `<div class="gallery-item" data-index="${index}">
+                <img src="${img.src}" alt="${img.alt}" onerror="this.style.display='none'">
+            </div>`
+        ).join('');
+    };
+    
+    let openviewer = index => {
+        currentindex = index;
+        viewerimage.src = imagedata[currentindex].src;
+        viewer.classList.add('active');
+    };
+    
+    let closeviewer = () => viewer.classList.remove('active');
+    let showprev = () => {
+        currentindex = (currentindex - 1 + imagedata.length) % imagedata.length;
+        viewerimage.src = imagedata[currentindex].src;
+    };
+    let shownext = () => {
+        currentindex = (currentindex + 1) % imagedata.length;
+        viewerimage.src = imagedata[currentindex].src;
+    };
+    
+    let initgalery = () => {
+        gallery.onclick = e => {
+            let item = e.target.closest('.gallery-item');
+            if (!item) return;
+            openviewer(parseInt(item.getAttribute('data-index')));
+        };
+        closebtn.onclick = closeviewer;
+        prevbtn.onclick = showprev;
+        nextbtn.onclick = shownext;
+        viewer.onclick = e => { if (e.target === viewer) closeviewer(); };
+        document.onkeydown = e => {
+            if (!viewer.classList.contains('active')) return;
+            if (e.key === 'ArrowLeft') showprev();
+            if (e.key === 'ArrowRight') shownext();
+            if (e.key === 'Escape') closeviewer();
+        };
+        viewer.ontouchstart = e => touchstartx = e.changedTouches[0].screenX;
+        viewer.ontouchend = e => {
+            touchendx = e.changedTouches[0].screenX;
+            let diff = touchendx - touchstartx;
+            if (Math.abs(diff) > 50) diff > 0 ? showprev() : shownext();
+        };
+    };
     
     fetch(urlbe + 'listjadwalid', {
         method: 'POST',
@@ -642,7 +825,15 @@ export let renderListItem = () => {
     })
     .then(res => res.json())
     .then(async resData => {
+        
+
         let lokasi = resData?.data || {};
+        
+        imagedata = (lokasi.fotos || []).map((src, i) => ({ src: urlbe2 + 'upload/gambar/' + src, alt: `Foto ${i + 1}` }));
+        rendergaleryview();
+        setgallerylayout(imagedata);
+        initgalery();
+
         let lat = lokasi.lat ? parseFloat(lokasi.lat) : null;
         let lon = lokasi.lon ? parseFloat(lokasi.lon) : null;
         let cust_name = lokasi.cust_name || '';
@@ -650,46 +841,152 @@ export let renderListItem = () => {
         let Job_Position = lokasi.Job_Position || '';
         let address = lokasi.Address || '';
         let city = lokasi.City || '';
-        let foto  = lokasi.foto || null;
-
+        let foto = lokasi.foto || null;
+    
         document.querySelector('#cardname').innerHTML = cust_name;
         document.querySelector('#Address').innerHTML = address;
-        document.querySelector('#Full_Name').innerHTML = full_name+' '+Job_Position;
-
-        if(foto){
-            document.querySelector('#foto').setAttribute('src',urlbe2+'upload/gambar/'+foto);
-        }
-
+        document.querySelector('#Full_Name').innerHTML = `${full_name} ${Job_Position}`;
+    
         let startKunjungan = lokasi.start_kunjungan || null;
-        if (startKunjungan) {
-            document.querySelector('#cin').innerText = startKunjungan.slice(11,16);
+        let endKunjungan = lokasi.end_kunjungan || null;
+        let counterInterval;
         
-            const cixEl = document.querySelector('#cix');
-        
-            const updateElapsedTime = () => {
-                let startParts = startKunjungan.slice(11,19).split(':');
-                let startDate = new Date();
-                startDate.setHours(parseInt(startParts[0]), parseInt(startParts[1]), parseInt(startParts[2]), 0);
-        
-                let now = new Date();
-                let elapsedMs = now - startDate;
-                elapsedMs = elapsedMs < 0 ? 0 : elapsedMs;
-        
-                let totalSeconds = Math.floor(elapsedMs / 1000);
-                let hh = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-                let mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-                let ss = String(totalSeconds % 60).padStart(2, '0');
-        
-                cixEl.innerText = `${hh}:${mm}:${ss}`;
+        if(endKunjungan){
+
+            if (startKunjungan) {
+                document.querySelector('#cin').innerText = startKunjungan.slice(11, 16);
+                const cixEl = document.querySelector('#cix');
+            
+                const updateElapsedTime = () => {
+                    const startDate = new Date(startKunjungan);
+                    const endDate = endKunjungan ? new Date(endKunjungan) : new Date();
+            
+                    let elapsedMs = endDate - startDate;
+                    elapsedMs = elapsedMs < 0 ? 0 : elapsedMs;
+            
+                    const totalSeconds = Math.floor(elapsedMs / 1000);
+                    const hh = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+                    const mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+                    const ss = String(totalSeconds % 60).padStart(2, '0');
+            
+                    cixEl.innerText = `${hh}:${mm}:${ss}`;
+            
+                    // jika end_kunjungan ada, stop interval
+                    if (endKunjungan) clearInterval(counterInterval);
+                };
+            
+                updateElapsedTime();
+                counterInterval = setInterval(updateElapsedTime, 1000);
             }
+            
+        }else{
+            if (startKunjungan) {
+                document.querySelector('#cin').innerText = startKunjungan.slice(11, 16);
+                const cixEl = document.querySelector('#cix');
         
-            updateElapsedTime();
-            setInterval(updateElapsedTime, 1000);
+                const updateElapsedTime = () => {
+                    const now = new Date();
+                    const startParts = startKunjungan.slice(11, 19).split(':');
+                    const startDate = new Date();
+                    startDate.setHours(parseInt(startParts[0]), parseInt(startParts[1]), parseInt(startParts[2]), 0);
+        
+                    // Jika ada end_kunjungan, gunakan itu sebagai batas
+                    if (endKunjungan) {
+                        const endParts = endKunjungan.slice(11, 19).split(':');
+                        const endDate = new Date();
+                        endDate.setHours(parseInt(endParts[0]), parseInt(endParts[1]), parseInt(endParts[2]), 0);
+        
+                        if (now > endDate) {
+                            clearInterval(timerInterval); // Stop interval
+                            return;
+                        }
+                    }
+        
+                    let elapsedMs = now - startDate;
+                    elapsedMs = elapsedMs < 0 ? 0 : elapsedMs;
+        
+                    let totalSeconds = Math.floor(elapsedMs / 1000);
+                    let hh = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+                    let mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+                    let ss = String(totalSeconds % 60).padStart(2, '0');
+        
+                    cixEl.innerText = `${hh}:${mm}:${ss}`;
+                };
+        
+                updateElapsedTime();
+                var timerInterval = setInterval(updateElapsedTime, 1000);
+            }
         }
-        
-
-        
-
+    
+        document.querySelector('#hasilx').value = lokasi.result || '';
+    
+        const formContainer = document.getElementById('formContainer');
+        formContainer.innerHTML = '';
+    
+        (lokasi.details || []).forEach((item, index) => {
+            const formHTML = `
+                <div class="form-wrapper">
+                    <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
+                        <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${index + 1}</h4>
+                        <div class="flex-align-center gap-2">
+                            <span class="delete-btn" onclick="deleteForm(this)">
+                                <i class="iconsax icon error-icon" data-icon="trash-square"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="jotheme-form" style="margin-top: 15px;">
+                        <div class="form-group">
+                            <input type="text" class="form-controljo brand" placeholder=" " required value="${item.sku || ''}">
+                            <label class="form-labeljo">Produk Competitor</label>
+                        </div>
+                        <div class="row" style="display: flex; gap: 20px;">
+                            <div class="col-6" style="flex: 1;">
+                                <div class="form-group">
+                                    <input type="text" class="form-controljo harga" placeholder=" " required
+                                        value="${item.price ? formatRupiah(item.price.toString()) : ''}" 
+                                        oninput="this.value=formatRupiah(this.value)" 
+                                        onkeydown="return onlyNumber(event)">
+                                    <label class="form-labeljo">Harga</label>
+                                </div>
+                            </div>
+                            <div class="col-6" style="flex: 1;margin-left: -35px;">
+                                <div class="form-group">
+                                    <input type="text" class="form-controljo pemakaian" placeholder=" " required
+                                        value="${item.qty ? formatRupiah(item.qty.toString()) : ''}" 
+                                        oninput="this.value=formatRupiah(this.value)" 
+                                        onkeydown="return onlyNumber(event)">
+                                    <label class="form-labeljo">Pemakaian Bulanan</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            formContainer.insertAdjacentHTML('beforeend', formHTML);
+        });
+    
+        if (endKunjungan) {
+            document.querySelector('.recr').classList.add('hide');
+            document.querySelectorAll('.delete-btn').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('#formContainer input').forEach(input => input.disabled = true);
+    
+            const addBtn = document.getElementById('addFormBtn');
+            if (addBtn) addBtn.style.display = 'none';
+    
+            const reasonPart = document.createElement('div');
+            reasonPart.className = 'reason-part mt-3';
+            reasonPart.innerHTML = `
+                <h4 class="fw-medium error-color">Reason :</h4>
+                <p>${lokasi.result || 'No reason provided.'}</p>
+            `;
+            formContainer.appendChild(reasonPart);
+    
+            document.querySelectorAll('.tbdone').forEach(btn => btn.classList.add('disabled'));
+        }else{
+            document.querySelector('.recr').classList.remove('hide');
+            createForm();
+        }
+    
         let searchRes = await fetch(urlbe + 'tanyaalamat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -698,8 +995,8 @@ export let renderListItem = () => {
         let searchData = await searchRes.json();
     
         if (searchData?.status === 'success') {
-            let firstLat = searchData.data[1]?.lat;
-            let firstLon = searchData.data[1]?.lon;
+            let firstLat = searchData.data[0]?.lat;
+            let firstLon = searchData.data[0]?.lon;
     
             let reverseRes = await fetch(urlbe + 'carialamatlatlon', {
                 method: 'POST',
@@ -727,15 +1024,11 @@ export let renderListItem = () => {
                     marker2.bindPopup(`<strong>${cust_name}</strong><p>${address+' '+city}</p>`);
                 }
             });
-        } else {
-            document.querySelector('#map').innerHTML = '<p style="text-align:center;padding:20px;">Alamat tidak ditemukan</p>';
-        }
+        } 
     })
-    .catch(() => {
-        document.querySelector('#map').innerHTML = '<p style="text-align:center;padding:20px;">Gagal memuat data</p>';
-    });
+    .catch(() => { });
     
-
+    
     let formCount = 0
     const formContainer = document.getElementById('formContainer')
 
@@ -765,7 +1058,6 @@ export let renderListItem = () => {
         modalEl.setAttribute('role','dialog');
     }
     
-    document.querySelector('a[data-bs-toggle="modal"]').setAttribute('onclick', 'showFullScreenImage(this)');
     window.saveKunjungan = async () => {
         const remark = document.getElementById('hasilx').value.trim();
         const formWrappers = document.querySelectorAll('#formContainer .form-wrapper');
@@ -841,6 +1133,7 @@ export let renderListItem = () => {
                 showToast("Data Berhasil di Simpan", "success");
                 document.getElementById('hasilx').value = '';
                 document.getElementById('formContainer').innerHTML = '';
+                window.location.hash = 'home'
             } else {
                 showToast("Gagal menyimpan data", "danger");
             }
@@ -883,7 +1176,7 @@ export let renderListItem = () => {
                             <label class="form-labeljo">Harga</label>
                         </div>
                     </div>
-                    <div class="col-6" style="flex: 1;">
+                    <div class="col-6" style="flex: 1;margin-left: -35px;">
                         <div class="form-group">
                             <input 
                                 type="text" 
