@@ -156,7 +156,7 @@ export let renderKamera = () => {
         messageText = document.getElementById('messageText'),
         uplfEndpoint = urlbe + 'uplf',
         isCapturing = false,
-        currentFacingMode = "user";
+        currentFacingMode = "environment";
 
     let showMessage = msg => {
         video.style.display = captureButton.style.display = switchButton.style.display = 'block';
@@ -259,7 +259,7 @@ export let renderKamera = () => {
             );
             startCameraStream(); 
         } catch (err) {
-            alert('Anda harus mengizinkan akses kamera dan lokasi di browser.');
+            window.location.hash = 'home';
         }
     };
     
