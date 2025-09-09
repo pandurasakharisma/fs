@@ -120,7 +120,6 @@ export let renderListItem = () => {
                 padding: 20px 10px 9px;
             }
             .bgm{
-                background: #c53f3f;
                 padding: 100px 20px 190px;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
                 overflow: hidden;
@@ -143,18 +142,6 @@ export let renderListItem = () => {
                 justify-content: space-between;
             }
             .shadow-sm{box-shadow:0px 0px 18px #efefef;}
-            .bgm:before {
-                content: " ";
-                width: calc(100% + 15rem);
-                height: 100%;
-                position: absolute;
-                left: 0;
-                top: 0;
-                background-image: url(./assets/images/bgbca.svg);
-                background-position: -10rem -14rem;
-                background-repeat: no-repeat;
-                background-size: cover;
-            }
             .card-absen {
                 background: #fff;
                 border-radius: 8px;
@@ -261,7 +248,7 @@ export let renderListItem = () => {
                 width: 30%;
                 margin-left: auto;
                 display: block;
-                padding: 10px 20px;
+                padding: 13px 20px;
                 height: max-content;
             }
             #remarks i svg {
@@ -313,8 +300,9 @@ export let renderListItem = () => {
             <section class="bgm theme-content-bg">
                 <div class="pntoko">
                     <div class="d-flex align-items-center mb-3">
+                        <img class="place-icon" src="./assets/images/svg/home-fill.svg" alt="home" style="width: 32px;height: 32px;margin: 0 0 8px;margin-right: 10px;">
                         <div style="width: calc(100% - 70px);">
-                            <h2 id="cardname" class="fw-bold mb-1">Jonathan Higgins</h2>
+                            <h2 id="cardname" style="font-size: 12px;line-height: .8;margin-bottom: 3px;" class="fw-bold">Jonathan Higgins</h2>
                             <div id="Address" class="text-muted" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 94%;">JL Raya Semarang</div>
                         </div>
                         <div class="flex-align-center gap-2 hide" style="margin-left: auto;">
@@ -336,7 +324,7 @@ export let renderListItem = () => {
                         </a>
                     </div>
 
-                    <div class="d-flex align-items-center gap-2 mb-3 p-2 border rounded" style="background:rgba(var(--box-bg), 1);">
+                    <div class="d-flex align-items-center gap-2 mb-3 p-2 rounded" style="background:rgba(var(--box-bg), 1);">
                         <img src="./assets/images/svg/location-fill.svg" alt="location" width="24">
                         <div style="width:calc(100% - 100px);">
                             <strong id="Full_Name">Novenny (Key Account Executive)</strong>
@@ -383,7 +371,7 @@ export let renderListItem = () => {
                 </div>
             </section>
         </main>
-        <div class="fixed-btn" style="border-top: 4px solid #ae3333;border-radius: 18px 18px 0 0;padding: 20px 0 8px;">
+        <div class="fixed-btn" style="padding:20px 0 8px;">
             <div class="custom-container d-flex">
                 <div class="cix">
                     <small>Durasi Kunjungan</small>
