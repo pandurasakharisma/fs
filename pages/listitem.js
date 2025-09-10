@@ -653,48 +653,37 @@ export let renderListItem = () => {
         });
         init_iconsax();
     };
+
+
     let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) return;
     
     let recognition = new SpeechRecognition(),
         isRecording = false,
-        fetchTimeout = null,
-        isStarting = false;
+        fetchTimeout = null;
     
     recognition.lang = 'id-ID';
     recognition.interimResults = true;
     recognition.continuous = true;
-    
+
     recognition.onresult = e => {
-        let transcript = '';
-        for (let i = e.resultIndex; i < e.results.length; i++) {
-            transcript += e.results[i][0].transcript;
-        }
+        let transcript = Array.from(e.results).slice(e.resultIndex).map(r => r[0].transcript).join('');
+        activeTarget === 'hasilx' ? hasilInput?.focus() : textarea?.blur();
+        activeTarget === 'speechText' 
+            ? textarea && (textarea.value = transcript) 
+            : hasilInput && (hasilInput.value = transcript);
     
         if (activeTarget === 'speechText') {
-            const isFinal = e.results[e.results.length - 1].isFinal;
-    
-            if (isFinal) {
-                textarea.value += (textarea.value ? ' ' : '') + transcript.trim();
-            } else {
-                textarea.value = (textarea.value + ' ' + transcript.trim()).trim();
-            }
-    
-            if (isFinal) {
-                fetchTimeout && clearTimeout(fetchTimeout);
-                fetchTimeout = setTimeout(() => processSpeech(textarea.value), 1000);
-            }
-        } else if (activeTarget === 'hasilx') {
-            hasilInput.value = transcript;
+            fetchTimeout && clearTimeout(fetchTimeout);
+            fetchTimeout = setTimeout(() => processSpeech(transcript), 1000);
         }
     };
     
+    
     recognition.onend = () => {
-        if (isRecording && !isStarting) {
-            isStarting = true;
-            setTimeout(() => recognition.start(), 300); 
-        } else {
-            recrBtn?.classList.remove('onrecord');
+        if (isRecording) recognition.start();
+        else {
+            recrBtn && recrBtn.classList.remove('onrecord');
             remarkBtn && (remarkBtn.style.background = "rgba(var(--theme-color), 1)");
         }
     };
@@ -702,14 +691,38 @@ export let renderListItem = () => {
     let toggleRecording = (btn, target) => {
         activeTarget = target;
         isRecording = !isRecording;
-        btn.classList.toggle(target === 'speechText' ? 'onrecord' : 'onrecordr', isRecording);
-        statrecr.textContent = isRecording ? 'Kamu sedang merekam' : 'Ketuk untuk merekam';
-        if (isRecording) recognition.start(); else recognition.stop();
+        btn === recrBtn 
+            ? btn.classList.toggle('onrecord', isRecording) 
+            : btn.classList.toggle('onrecordr', isRecording);
+        statrecr && (statrecr.textContent = isRecording ? 'Kamu sedang merekam' : 'Ketuk untuk merekam');
+        isRecording ? recognition.start() : recognition.stop();
     };
     
     recrBtn && (recrBtn.onclick = () => toggleRecording(recrBtn, 'speechText'));
     remarkBtn && (remarkBtn.onclick = () => toggleRecording(remarkBtn, 'hasilx'));
-    
+
+    let processSpeech = async text => {
+        let cleanText = text.trim();
+        if (!cleanText || cleanText === lastText) return;
+        lastText = cleanText;
+        try {
+            let res = await fetch(urlbe + 'spkompet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: cleanText })
+            });
+            let result = await res.json();
+            if (result.status === "success" && result.data) {
+                let items = Array.isArray(result.data) ? result.data : [result.data];
+                formContainer.innerHTML = '';
+                addFormsFromData(items);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+
     let imagedata = [];
     let gallery = document.getElementById('gallery');
     let clay, viewer, viewerimage, closebtn, prevbtn, nextbtn, currentindex = 0;
