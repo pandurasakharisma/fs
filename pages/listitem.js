@@ -541,7 +541,6 @@ export let renderListItem = () => {
                 </i>
                 <div class="offcanvas-footer tbf2 hide flex-align-center flex-nowrap gap-3 border-0 pt-3 " style='border-bottom:1px solid rgba(var(--line-color), 1);'>
                     <span class="btn theme-btn w-100 mt-0 addcustx">Simpan</span>
-                    <a class="btn white-btn title-color w-100 mt-0" href="./index.html">Cancel</a>
                 </div>
             </section>
         </main>
@@ -566,8 +565,8 @@ export let renderListItem = () => {
                 </div>
             </div>
             <div class="offcanvas-footer flex-align-center flex-nowrap gap-3 border-0 pt-3 px-0 pb-0">
-                <span id="simpankujungan" onclick="saveKunjungan()" class="btn theme-btn w-100 mt-0">Continue</span>
-                <span data-bs-dismiss="modal"class="btn gray-btn title-color w-100 mt-0">Cancel</span>
+                <span data-bs-dismiss="offcanvas"class="btn gray-btn title-color w-100 mt-0">Batal</span>
+                <span id="simpankujungan" onclick="saveKunjungan()" class="btn theme-btn w-100 mt-0">Simpan</span>
             </div>
         </div>
     `
