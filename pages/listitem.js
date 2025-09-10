@@ -276,18 +276,18 @@ export let renderListItem = () => {
             .recr.onrecord svg{animation: pulse 1s infinite;background:#199675;}
             .iatas{
                 position: absolute;
-                top: -16px;
+                top: -12px;
                 stroke: #fff;
                 background: #ae3333;
                 fill: #fff;
-                width: 34px;
-                height: 34px;
+                width: 28px;
+                height: 28;
                 padding: 7px;
                 border-radius: 50%;
                 left: 48%;
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
             }
-            .iatas svg{width:20px;height:20px;}
+            .iatas svg{width: 14px;height: 14px;}
             #recordel svg {
                 width: 40px;
                 height: 40px;
@@ -306,7 +306,6 @@ export let renderListItem = () => {
             .igall {
                 margin: 10px 0 20px;
                 border-radius: 8px;
-                max-width: 320px;
                 overflow: hidden;
             }
 
@@ -315,7 +314,6 @@ export let renderListItem = () => {
                 gap: 5px;
                 border-radius: 8px;
                 width: 100%;
-                max-width: 320px;
                 height: 145px;
             }
 
@@ -436,14 +434,14 @@ export let renderListItem = () => {
             .viewer .prev-btn { left: 20px; }
             .viewer .next-btn { right: 20px; }
             .viewer svg {
-                background: #c53f3f;
+                background: #000;
                 width: 34px;
                 height: 35px;
                 border-radius: 50%;
                 stroke: #fff;
                 padding: 8px;
             }
-            #closebtn svg {padding: 0;background: #c53f3f;}
+            #closebtn svg {padding: 0;}
             .hide{display:none!important;}
         </style>
         <header id="header" class="main-header inner-page-header position-absolute bg-transparent" style="position: fixed!important;z-index: +9;">
@@ -484,7 +482,6 @@ export let renderListItem = () => {
                             <p id="alamat2" class="mb-0 text-muted" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 100%;">JL. Indokarya</p>
                         </div>
                         <div class="ms-auto text-end">
-                            <small class="text-muted d-block">Clock In</small>
                             <strong id="cin">09:05</strong>
                         </div>
                     </div>
@@ -495,6 +492,7 @@ export let renderListItem = () => {
                     <div id="recr" class="recr">
                         <i class="iconsax icon" data-icon="mic-1"></i>
                         <div class="statrecr">Klik Untuk Merekam</div>
+                        <textarea id="speechText" class="hide"></textarea>
                     </div>
                     <div id="formContainer"></div>
                 </div>
@@ -567,25 +565,13 @@ export let renderListItem = () => {
             document.body.appendChild(script)
         })
     }
+
+    let lastText = '';
     window.startSpeechToText = () => {
-        const formContainer = document.getElementById('formContainer');
-        let speechWrapper = document.getElementById('speechContainer');
-    
-        if (!speechWrapper) {
-            speechWrapper = document.createElement('div');
-            speechWrapper.id = 'speechContainer';
-            speechWrapper.classList.add('hide');
-            speechWrapper.style.padding = '0 15px';
-            speechWrapper.style.background = 'rgba(255,255,255,0.9)';
-            speechWrapper.style.borderRadius = '8px';
-            speechWrapper.innerHTML = `
-                <div id="recordel" style="text-align:center;margin-bottom:10px;">
-                    <textarea id="speechText" class="hide" style="width:100%;height:100px;padding:10px;border-radius:6px;"></textarea>
-                </div>
-            `;
-            formContainer.parentNode.insertBefore(speechWrapper, formContainer.nextSibling);
-        }
-    
+        let formContainer = document.getElementById('formContainer'),
+        recrBtn = document.getElementById('recr'),
+        textarea = document.getElementById('speechText');
+        
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
             alert('Browser tidak mendukung Speech Recognition');
@@ -596,128 +582,138 @@ export let renderListItem = () => {
         recognition.lang = 'id-ID';
         recognition.interimResults = true;
         recognition.continuous = true;
-    
-        const textarea = document.getElementById('speechText');
+
+        let fetchTimeout = null;
+        
         recognition.onresult = e => {
             let transcript = '';
             for (let i = e.resultIndex; i < e.results.length; i++) {
                 transcript += e.results[i][0].transcript;
             }
+        
             textarea.value = transcript;
+            textarea.innerHTML = transcript;
+        
+            if (fetchTimeout) clearTimeout(fetchTimeout);
+            fetchTimeout = setTimeout(async () => {
+                const text = textarea.value.trim();
+                if (!text || text === lastText) return;
+            
+                try {
+                    const res = await fetch(urlbe + 'spkompet', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text })
+                    });
+            
+                    const result = await res.json();
+            
+                    if (result.status === "success" && result.data) {
+                        const items = Array.isArray(result.data) ? result.data : [result.data];
+                        formContainer.innerHTML += '';
+            
+                        items.forEach((item, idx) => {
+                            const hargaValue = (item?.harga !== null && item?.harga !== undefined && item.harga !== '')
+                                ? formatRupiah(String(item.harga))
+                                : '';
+            
+                            const qtyValue = (item?.qty !== null && item?.qty !== undefined && item.qty !== '')
+                                ? formatRupiah(String(item.qty))
+                                : '';
+            
+                            const wrapper = document.createElement('div');
+                            wrapper.className = 'form-wrapper';
+                            wrapper.innerHTML = `
+                                <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
+                                    <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${idx + 1}</h4>
+                                    <div class="flex-align-center gap-2">
+                                        <span class="delete-btn" onclick="deleteForm(this)">
+                                            <i class="iconsax icon error-icon" data-icon="trash-square"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="jotheme-form" style="margin-top: 15px;">
+                                    <div class="form-group">
+                                        <input type="text" class="form-controljo brand" placeholder=" " required value="${item.namaproduk || ''}">
+                                        <label class="form-labeljo">Produk Competitor</label>
+                                    </div>
+                                    <div class="row" style="display: flex; gap: 20px;">
+                                        <div class="col-6" style="flex: 1;">
+                                            <div class="form-group">
+                                                <input 
+                                                    type="text" 
+                                                    class="form-controljo harga" 
+                                                    value="${hargaValue}"
+                                                    placeholder=" " 
+                                                    required 
+                                                    inputmode="numeric" 
+                                                    pattern="[0-9]*" 
+                                                    oninput="this.value=formatRupiah(this.value)" 
+                                                    onkeydown="return onlyNumber(event)">
+                                                <label class="form-labeljo">Harga</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-6" style="flex: 1;margin-left: -35px;">
+                                            <div class="form-group">
+                                                <input 
+                                                    type="text" 
+                                                    class="form-controljo pemakaian" 
+                                                    value="${qtyValue}"
+                                                    placeholder=" " 
+                                                    required 
+                                                    inputmode="numeric" 
+                                                    pattern="[0-9]*" 
+                                                    oninput="this.value=formatRupiah(this.value)" 
+                                                    onkeydown="return onlyNumber(event)">
+                                                <label class="form-labeljo">Pemakaian Bulanan</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            formContainer.appendChild(wrapper);
+                            init_iconsax();
+                        });
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            }, 1000);
+            
         };
+        
     
-        const recrBtn = document.getElementById('recr');
         let isRecording = false;
         let fetchInterval = null;
     
-        const startRecognition = () => {
-            try {
-                recognition.start();
-            } catch (e) {}
-        };
-    
+        const startRecognition = () => recognition.start();
         const stopRecognition = () => {
             recognition.stop();
             clearInterval(fetchInterval);
             fetchInterval = null;
         };
-    
+        
+
         const toggleRecording = () => {
             isRecording = !isRecording;
             recrBtn.classList.toggle('onrecord', isRecording);
-    
             const statrecr = document.querySelector('.statrecr');
             if (statrecr) statrecr.textContent = isRecording ? 'Kamu sedang merekam' : 'Ketuk untuk merekam';
     
             if (isRecording) {
-                formContainer.style.display = 'none';
-                speechWrapper.classList.remove('hide');
-                textarea.classList.add('hide');
                 startRecognition();
-    
-                fetchInterval = setInterval(async () => {
-                    const text = textarea.value.trim();
-                    if (!text) return;
-    
-                    try {
-                        const res = await fetch(urlbe + 'spkompet', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ text })
-                        });
-                        const result = await res.json();
-                        if (result.status === "success" && result.data) {
-                            const items = Array.isArray(result.data) ? result.data : [result.data];
-                            items.forEach((item, idx) => {
-                                const wrapper = document.createElement('div');
-                                wrapper.className = 'form-wrapper';
-                                wrapper.innerHTML = `
-                                    <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
-                                        <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${idx + 1}</h4>
-                                        <div class="flex-align-center gap-2">
-                                            <span class="delete-btn" onclick="deleteForm(this)">
-                                                <i class="iconsax icon error-icon" data-icon="trash-square"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="jotheme-form" style="margin-top: 15px;">
-                                        <div class="form-group">
-                                            <input type="text" class="form-controljo brand" placeholder=" " required value="${item.namaproduk || ''}">
-                                            <label class="form-labeljo">Produk Competitor</label>
-                                        </div>
-                                        <div class="row" style="display: flex; gap: 20px;">
-                                            <div class="col-6" style="flex: 1;">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-controljo harga" 
-                                                        value="${item?.harga ? formatRupiah(String(item.harga)) : item.harga}"
-                                                        placeholder=" " 
-                                                        required 
-                                                        inputmode="numeric" 
-                                                        pattern="[0-9]*" 
-                                                        oninput="this.value=formatRupiah(this.value)" 
-                                                        onkeydown="return onlyNumber(event)">
-                                                    <label class="form-labeljo">Harga</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-6" style="flex: 1;margin-left: -35px;">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-controljo pemakaian" 
-                                                        value="${item?.qty ? formatRupiah(String(item.qty)) : item.qty}"
-                                                        placeholder=" " 
-                                                        required 
-                                                        inputmode="numeric" 
-                                                        pattern="[0-9]*" 
-                                                        oninput="this.value=formatRupiah(this.value)" 
-                                                        onkeydown="return onlyNumber(event)">
-                                                    <label class="form-labeljo">Pemakaian Bulanan</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                                formContainer.appendChild(wrapper);
-                                init_iconsax();
-                            });
-                        }
-                    } catch (err) {
-                        console.error(err);
-                    }
-                }, 5000);
     
             } else {
                 formContainer.style.display = 'block';
-                speechWrapper.classList.add('hide');
                 stopRecognition();
             }
         };
     
         recrBtn.onclick = toggleRecording;
-    
         recognition.onend = () => {
             if (isRecording) startRecognition();
         };
     };
-    
     startSpeechToText();
     
     
@@ -873,6 +869,7 @@ export let renderListItem = () => {
         let full_name = lokasi.Full_Name || '';
         let Job_Position = lokasi.Job_Position || '';
         let address = lokasi.Address || '';
+        let cust_code = lokasi.cust_code || '';
         let city = lokasi.City || '';
         let foto = lokasi.foto || null;
     
@@ -1023,13 +1020,13 @@ export let renderListItem = () => {
         let searchRes = await fetch(urlbe + 'tanyaalamat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ method: 'search', address, city })
+            body: JSON.stringify({ method: 'search', address, city,CardCode:cust_code })
         });
         let searchData = await searchRes.json();
     
         if (searchData?.status === 'success') {
-            let firstLat = searchData.data[0]?.lat;
-            let firstLon = searchData.data[0]?.lon;
+            let firstLat = searchData.data?.lat;
+            let firstLon = searchData.data?.lon;
     
             let reverseRes = await fetch(urlbe + 'carialamatlatlon', {
                 method: 'POST',
