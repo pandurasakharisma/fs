@@ -666,19 +666,20 @@ export let renderListItem = () => {
     recognition.lang = 'id-ID';
     recognition.interimResults = true;
     recognition.continuous = true;
-    
-    recognition.onresult = e => {
-        if (activeTarget === 'hasilx') hasilInput.focus();
 
+    recognition.onresult = e => {
         let transcript = Array.from(e.results).slice(e.resultIndex).map(r => r[0].transcript).join('');
-        if (activeTarget === 'speechText' && textarea) textarea.value = transcript;
-        if (activeTarget === 'hasilx' && hasilInput) hasilInput.value = e.results[0][0].transcript;
+        activeTarget === 'hasilx' ? hasilInput?.focus() : textarea?.blur();
+        activeTarget === 'speechText' 
+            ? textarea && (textarea.value = transcript) 
+            : hasilInput && (hasilInput.value = transcript);
     
         if (activeTarget === 'speechText') {
             fetchTimeout && clearTimeout(fetchTimeout);
             fetchTimeout = setTimeout(() => processSpeech(transcript), 1000);
         }
     };
+    
     
     recognition.onend = () => {
         if (isRecording) recognition.start();
