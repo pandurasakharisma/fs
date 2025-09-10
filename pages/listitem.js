@@ -249,7 +249,6 @@ export let renderListItem = () => {
                 right: 20px;
                 padding: 8px;
                 border-radius: 18px;
-                animation: pulse 1s infinite;
                 cursor: pointer;
             }
 
@@ -264,7 +263,7 @@ export let renderListItem = () => {
                 color: #ae3333;
             }
 
-            .recr svg {
+            .recr svg{
                 background: #c53f3f;
                 stroke: #fff;
                 padding: 8px;
@@ -272,8 +271,8 @@ export let renderListItem = () => {
                 margin: 10px auto;
                 display: block;
             }
-            .recr.onrecord {background: #1996751a;color:#199675;}    
-            .recr.onrecord svg{animation: pulse 1s infinite;background:#199675;}
+            .recr.onrecord, .onrecordr svg {background: #1996751a;color:#199675;}    
+            .recr.onrecord svg, #remarks i.onrecordr svg{animation: pulse 1s infinite;background:#199675;}
             .iatas{
                 position: absolute;
                 top: -12px;
@@ -590,10 +589,13 @@ export let renderListItem = () => {
     }
 
     
-    let lastText = '';
-    let recrBtn = document.getElementById('recr');
-    let textarea = document.getElementById('speechText');
-
+    let lastText = '', activeTarget = null;
+    let recrBtn = document.getElementById('recr'),
+        remarkBtn = document.querySelector('.recremark'),
+        statrecr = document.querySelector('.statrecr'),
+        hasilInput = document.getElementById('hasilx'),
+        textarea = document.getElementById('speechText');
+        
     let createFormTemplate = (data = {}, idx = null) => {
         let hargaValue = data.harga ? formatRupiah(String(data.harga)) : '';
         let qtyValue = data.qty ? formatRupiah(String(data.qty)) : '';
@@ -653,42 +655,51 @@ export let renderListItem = () => {
         init_iconsax();
     };
 
+
     let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) { return;}
-
+    if (!SpeechRecognition) return;
+    
     let recognition = new SpeechRecognition(),
-    statrecr = document.querySelector('.statrecr'),
-    remarkBtn = document.querySelector('.recremark'),
-    hasilInput = document.getElementById('hasilx'),
-    isRecording = false, fetchTimeout = null;
-
+        isRecording = false,
+        fetchTimeout = null;
+    
     recognition.lang = 'id-ID';
     recognition.interimResults = true;
     recognition.continuous = true;
-
+    
     recognition.onresult = e => {
+        if (activeTarget === 'hasilx') hasilInput.focus();
+
         let transcript = Array.from(e.results).slice(e.resultIndex).map(r => r[0].transcript).join('');
-        if (textarea) textarea.value = transcript;
-        fetchTimeout && clearTimeout(fetchTimeout);
-        fetchTimeout = setTimeout(() => processSpeech(transcript), 1000);
-        if (hasilInput) hasilInput.value = e.results[0][0].transcript;
+        if (activeTarget === 'speechText' && textarea) textarea.value = transcript;
+        if (activeTarget === 'hasilx' && hasilInput) hasilInput.value = e.results[0][0].transcript;
+    
+        if (activeTarget === 'speechText') {
+            fetchTimeout && clearTimeout(fetchTimeout);
+            fetchTimeout = setTimeout(() => processSpeech(transcript), 1000);
+        }
     };
-
-    recognition.onend = () => isRecording ? recognition.start() : (
-        recrBtn && recrBtn.classList.remove('onrecord'),
-        remarkBtn && (remarkBtn.style.background = "rgba(var(--theme-color), 1)")
-    );
-
-    let toggleRecording = btn => {
+    
+    recognition.onend = () => {
+        if (isRecording) recognition.start();
+        else {
+            recrBtn && recrBtn.classList.remove('onrecord');
+            remarkBtn && (remarkBtn.style.background = "rgba(var(--theme-color), 1)");
+        }
+    };
+    
+    let toggleRecording = (btn, target) => {
+        activeTarget = target;
         isRecording = !isRecording;
-        btn ? btn.classList.toggle('onrecord', isRecording) : remarkBtn.style.background = isRecording ? "#053b08" : "rgba(var(--theme-color), 1)";
+        btn === recrBtn 
+            ? btn.classList.toggle('onrecord', isRecording) 
+            : btn.classList.toggle('onrecordr', isRecording);
         statrecr && (statrecr.textContent = isRecording ? 'Kamu sedang merekam' : 'Ketuk untuk merekam');
         isRecording ? recognition.start() : recognition.stop();
     };
-
-    recrBtn && (recrBtn.onclick = () => toggleRecording(recrBtn));
-    remarkBtn && (remarkBtn.onclick = () => toggleRecording());
-
+    
+    recrBtn && (recrBtn.onclick = () => toggleRecording(recrBtn, 'speechText'));
+    remarkBtn && (remarkBtn.onclick = () => toggleRecording(remarkBtn, 'hasilx'));
 
     let processSpeech = async text => {
         let cleanText = text.trim();
@@ -710,50 +721,7 @@ export let renderListItem = () => {
             console.error(err);
         }
     };
-    
-    
-    window.speechremark = () => {
-        let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'id-ID';
-        let recremark = document.querySelector(".recremark");
-        if (!recremark) return;
-        recremark.style.background = "#053b08";
-        recognition.start();
-        recognition.onresult = e => {
-            document.getElementById('hasilx').value = e.results[0][0].transcript;
-        };
-        recognition.onend = () => {
-            recremark.style.background = "rgba(var(--theme-color), 1)";
-        };
-    };
-    
-    if (document.querySelector(".recremark")) {
-        let recremark = document.querySelector(".recremark");
-        let isrecording = false;
-        let recognition;
-        recremark.onclick = () => {
-            if (!recognition) {
-                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-                recognition.lang = 'id-ID';
-                recognition.onresult = e => {
-                    document.getElementById('hasilx').value = e.results[0][0].transcript;
-                };
-                recognition.onend = () => {
-                    recremark.style.background = "rgba(var(--theme-color), 1)";
-                    isrecording = false;
-                };
-            }
-            if (!isrecording) {
-                recognition.start();
-                recremark.style.background = "#053b08";
-                isrecording = true;
-            } else {
-                recognition.stop();
-                recremark.style.background = "rgba(var(--theme-color), 1)";
-                isrecording = false;
-            }
-        };
-    }
+
 
     let imagedata = [];
     let gallery = document.getElementById('gallery');
