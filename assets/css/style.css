@@ -6172,7 +6172,7 @@ body.dark .onboarding-section .driver-main-slider .poster-image .image-dark {
     padding-bottom: calc(10px + 5 * (100vw - 320px) / 280);
   }
 }
-.theme-content-bg .my-ride-box .my-ride-head .my-ride-img {
+.theme-content-bg .my-ride-box .my-ride-head .my-ride-img, .my-ride-img{
   width: 25px;
   height: 25px;
   background-color: rgba(var(--title-color), 0.1);

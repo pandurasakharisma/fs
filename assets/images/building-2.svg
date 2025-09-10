@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 512 512">
+  <g fill-rule="evenodd" clip-rule="evenodd">
+    <path fill="#8192a5" d="m412.2 208 28 5.7v41.5l-28-4.9z" data-original="#8192a5"/>
+    <path fill="#65788e" d="m412.2 208 28 5.7v41.5l-8.7-1.6v-39.9l-19.3-3.9z" data-original="#65788e"/>
+    <path fill="#8192a5" d="m242.2 173.6 35.3 7.1v46.4l-35.3-6z" data-original="#8192a5"/>
+    <path fill="#65788e" d="m242.2 173.6 35.3 7.1v46.4l-8.8-1.5v-44.9l-26.5-5.3z" data-original="#65788e"/>
+    <path fill="#8ac9fe" d="m224 131.2 230.4 52.4a6 6 0 0 1 4.7 5.9v28.7a6 6 0 0 1-2.2 4.7 5.8 5.8 0 0 1-5 1.2l-230.3-45.3a6 6 0 0 1-4.9-6v-35.7c0-2 .8-3.5 2.3-4.7a5.8 5.8 0 0 1 5-1.2z" data-original="#8ac9fe"/>
+    <path fill="#60b7ff" d="m449.1 182.4 5.3 1.2a6 6 0 0 1 4.7 5.9v28.7a6 6 0 0 1-2.2 4.7 5.8 5.8 0 0 1-5 1.2l-230.3-45.3a6 6 0 0 1-4.9-6v-3L442 214c1.9.4 3.6 0 5-1.2s2.2-2.8 2.2-4.7v-25.8z" data-original="#60b7ff"/>
+    <path fill="#eceff1" d="M267 172.5a8 8 0 1 1 3.4-15.6l50.8 10.8a8 8 0 0 1 6.2 9.5 8 8 0 0 1-9.5 6.1zm106.7 22.7a8 8 0 1 1 3.3-15.7l44.1 9.4a8 8 0 1 1-3.3 15.6zm-207.8-.6 321.9 58c4.8.9 8.2 5 8.2 9.9v215.7a10 10 0 0 1-10 10H163.4a9.5 9.5 0 0 1-3-.5l-27.2-8.6-20-252.2 45.3-30.8c2.3-1.5 4.7-2 7.4-1.5z" data-original="#eceff1"/>
+    <path fill="#d1d1d6" d="M496 461.4v16.8a10 10 0 0 1-10 10H163.4a9.5 9.5 0 0 1-3-.5l-27.2-8.6-1-11.8 6.1-3.3 22.1 7a9.5 9.5 0 0 0 3 .4H486a10 10 0 0 0 10-10z" data-original="#d1d1d6"/>
+    <path fill="#c4e2ff" d="M262.8 328.2 424.2 344v144.2H262.8z" data-original="#c4e2ff"/>
+    <path fill="#add5fa" d="m412 328.2 12.2 8.4v151.6H412z" data-original="#add5fa"/>
+    <path fill="#add5fa" d="M262.8 471.4h161.4v16.8H262.8z" data-original="#add5fa"/>
+    <path fill="#d8ecfe" d="m262.8 328.2 85.2 8.4v151.6h-85.2z" data-original="#d8ecfe"/>
+    <path fill="#c4e2ff" d="m262.8 328.2 12.2 8.4v151.6h-12.2z" data-original="#c4e2ff"/>
+    <path fill="#c4e2ff" d="M262.8 471.4H348v16.8h-85.2z" data-original="#c4e2ff"/>
+    <path fill="#9facba" d="m260.3 338 163.6 16c1.7.2 3.3-.3 4.6-1.5s2-2.7 2-4.5v-11.7a6 6 0 0 0-5.4-6l-163.6-17.7c-1.7-.1-3.3.4-4.6 1.5a5.8 5.8 0 0 0-2 4.5V332a6 6 0 0 0 5.4 6z" data-original="#9facba"/>
+    <path fill="#8d9ca8" d="m260.3 338 163.6 16c1.7.2 3.3-.3 4.6-1.5s2-2.7 2-4.5v-11.7a6 6 0 0 0-5.4-6l-1.3-.1v10.7c0 1.8-.7 3.3-2 4.4a5.8 5.8 0 0 1-4.6 1.6l-162.3-16v1.1a6 6 0 0 0 5.4 6z" data-original="#8d9ca8"/>
+    <path fill="#d1d1d6" d="M16 298.2V435c0 4.4 2.8 8.2 7 9.5l137.4 43.3 1.5.4V194.6a10 10 0 0 0-3.4 1.5L20.4 290a9.7 9.7 0 0 0-4.4 8.3z" data-original="#d1d1d6"/>
+    <path fill="#b1b1b5" d="M16 418.1V435c0 4.4 2.8 8.2 7 9.5l137.4 43.3 1.5.4v-16.8a10 10 0 0 1-1.5-.3L23 427.7a9.9 9.9 0 0 1-7-9.6z" data-original="#b1b1b5"/>
+    <path fill="#c4e2ff" d="m115.6 335.6-65.2 14.7V453l65.2 20.6z" data-original="#c4e2ff"/>
+    <path fill="#add5fa" d="m59.4 345.6-9-1.5v97.6l9 1.9z" data-original="#add5fa"/>
+    <path fill="#add5fa" d="M50.4 436.3V453l65.2 20.6v-16.8z" data-original="#add5fa"/>
+    <path fill="#d8ecfe" d="m115.6 335.6-37.8 8.5v117.6l37.8 11.9z" data-original="#d8ecfe"/>
+    <path fill="#c4e2ff" d="m115.6 335.6-9 8.5v117.6l9 11.9z" data-original="#c4e2ff"/>
+    <path fill="#c4e2ff" d="M77.8 445v16.7l37.8 11.9v-16.8z" data-original="#c4e2ff"/>
+    <path fill="#9facba" d="m115.6 345.6-63.3 14.2c-1.2.3-2.4 0-3.4-.8-1-.7-1.5-1.8-1.5-3v-11.5a4 4 0 0 1 3-3.8l63.2-17.8a4 4 0 0 1 3.5.7 4 4 0 0 1 1.6 3.2v14.9a4 4 0 0 1-3.1 3.9z" data-original="#9facba"/>
+    <path fill="#8d9ca8" d="m115.6 345.6-63.3 14.2c-1.2.3-2.4 0-3.4-.8-1-.7-1.5-1.8-1.5-3v-11.5a4 4 0 0 1 3-3.8l1-.3v9.4a4 4 0 0 0 1.5 3.2c1 .8 2.1 1 3.3.7l62.5-14v2a4 4 0 0 1-3.1 3.9z" data-original="#8d9ca8"/>
+    <circle cx="126" cy="133.8" r="110" fill="#ffe177" data-original="#ffe177" transform="rotate(-3 126.7 134.5)"/>
+    <path fill="#ffd064" d="M126 23.8a110 110 0 1 1-7.4 219.7 110 110 0 0 0 0-219.4c2.4-.2 4.9-.3 7.4-.3z" data-original="#ffd064"/>
+    <path fill="#9facba" d="M180.4 181.4a8 8 0 0 1 0 16H97.6a18.2 18.2 0 0 1-12.8-31 18.3 18.3 0 0 1 3.4-2.7L71 86.2h-9.4a8 8 0 0 1 0-16h15.8a8 8 0 0 1 7.8 6.3l4.6 20.7H181c11 0 19.5 10.2 17 21.2l-11.7 52.4a8 8 0 0 1-7.7 6.2h-81c-1 0-2 1-2 2.2 0 1.2 1 2.2 2 2.2h83z" data-original="#9facba"/>
+    <path fill="#8d9ca8" d="M171 97.2h10c11 0 19.4 10.2 17 21.2l-11.8 52.4a8 8 0 0 1-7.7 6.2h-10a8 8 0 0 0 7.7-6.2l11.8-52.4c2.4-11-6-21.2-17-21.2z" data-original="#8d9ca8"/>
+  </g>
+</svg>

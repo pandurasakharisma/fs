@@ -164,7 +164,7 @@ export let renderListItem = () => {
                 position: absolute;
                 border: none;
                 width: 100%;
-                min-height: calc(100vh - 240px);
+                min-height: 400px;
             }
             #formContainer {margin-bottom: 120px;}
             .form-wrapper {
@@ -430,6 +430,7 @@ export let renderListItem = () => {
                 right: 20px;
                 font-size: 35px;
                 transform: none;
+                z-index: +2;
             }
             .viewer .prev-btn { left: 20px; }
             .viewer .next-btn { right: 20px; }
@@ -440,6 +441,26 @@ export let renderListItem = () => {
                 border-radius: 50%;
                 stroke: #fff;
                 padding: 8px;
+                z-index: +2;
+            }
+            .clay {
+                width: 100%;
+                height: 100%;
+                background:linear-gradient(0deg, #00000096 0%, rgb(0 0 0 / 12%) 20%);
+                position: absolute;
+                top: 0;z-index:0;
+            }
+            .clay strong {font-size: 16px;text-transform: uppercase;}
+            .clay .strong {
+                position: absolute;
+                bottom: 15px;
+                left: 15px;
+                color: #fff;
+                font-size: 13px;
+                background: #0000008a;
+                padding: 10px;
+                border-radius: 8px;
+                margin: 8px;
             }
             #closebtn svg {padding: 0;}
             .hide{display:none!important;}
@@ -460,8 +481,10 @@ export let renderListItem = () => {
                 <i class="iconsax icon-btn iatas" data-icon="chevron-up"></i>
                 <div class="pntoko">
                     <div class="d-flex align-items-center mb-3">
-                        <img class="place-icon" src="./assets/images/svg/work-fill.svg" alt="home" style="width: 34px;height: 34px;margin: 0;margin-right: 5px;padding: 5px;">
-                        <div style="width: calc(100% - 70px);">
+                        <span class="my-ride-img cekdetailtoko" style="margin-right: 10px;width: 38px;height: 38px;">
+                            <img class="place-icon" src="./assets/images/svg/home-fill.svg" alt="home" style="width:70%;">
+                        </span>
+                        <div class="cekdetailtoko" style="width: calc(100% - 70px);">
                             <h2 id="cardname" style="font-size: 12px;line-height: .8;margin-bottom: 3px;" class="fw-bold">Jonathan Higgins</h2>
                             <div id="Address" class="text-muted" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 94%;">JL Raya Semarang</div>
                         </div>
@@ -557,7 +580,7 @@ export let renderListItem = () => {
                 resolve(window.L)
                 return
             }
-            const script = document.createElement('script')
+            let script = document.createElement('script')
             script.src = "./assets/js/leaflet.js"
             script.async = true
             script.onload = () => resolve(window.L)
@@ -566,159 +589,131 @@ export let renderListItem = () => {
         })
     }
 
+    
     let lastText = '';
-    window.startSpeechToText = () => {
-        let formContainer = document.getElementById('formContainer'),
-        recrBtn = document.getElementById('recr'),
-        textarea = document.getElementById('speechText');
-        
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            alert('Browser tidak mendukung Speech Recognition');
-            return;
-        }
-    
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'id-ID';
-        recognition.interimResults = true;
-        recognition.continuous = true;
+    let recrBtn = document.getElementById('recr');
+    let textarea = document.getElementById('speechText');
 
-        let fetchTimeout = null;
-        
-        recognition.onresult = e => {
-            let transcript = '';
-            for (let i = e.resultIndex; i < e.results.length; i++) {
-                transcript += e.results[i][0].transcript;
-            }
-        
-            textarea.value = transcript;
-            textarea.innerHTML = transcript;
-        
-            if (fetchTimeout) clearTimeout(fetchTimeout);
-            fetchTimeout = setTimeout(async () => {
-                const text = textarea.value.trim();
-                if (!text || text === lastText) return;
-            
-                try {
-                    const res = await fetch(urlbe + 'spkompet', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ text })
-                    });
-            
-                    const result = await res.json();
-            
-                    if (result.status === "success" && result.data) {
-                        const items = Array.isArray(result.data) ? result.data : [result.data];
-                        formContainer.innerHTML += '';
-            
-                        items.forEach((item, idx) => {
-                            const hargaValue = (item?.harga !== null && item?.harga !== undefined && item.harga !== '')
-                                ? formatRupiah(String(item.harga))
-                                : '';
-            
-                            const qtyValue = (item?.qty !== null && item?.qty !== undefined && item.qty !== '')
-                                ? formatRupiah(String(item.qty))
-                                : '';
-            
-                            const wrapper = document.createElement('div');
-                            wrapper.className = 'form-wrapper';
-                            wrapper.innerHTML = `
-                                <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
-                                    <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${idx + 1}</h4>
-                                    <div class="flex-align-center gap-2">
-                                        <span class="delete-btn" onclick="deleteForm(this)">
-                                            <i class="iconsax icon error-icon" data-icon="trash-square"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="jotheme-form" style="margin-top: 15px;">
-                                    <div class="form-group">
-                                        <input type="text" class="form-controljo brand" placeholder=" " required value="${item.namaproduk || ''}">
-                                        <label class="form-labeljo">Produk Competitor</label>
-                                    </div>
-                                    <div class="row" style="display: flex; gap: 20px;">
-                                        <div class="col-6" style="flex: 1;">
-                                            <div class="form-group">
-                                                <input 
-                                                    type="text" 
-                                                    class="form-controljo harga" 
-                                                    value="${hargaValue}"
-                                                    placeholder=" " 
-                                                    required 
-                                                    inputmode="numeric" 
-                                                    pattern="[0-9]*" 
-                                                    oninput="this.value=formatRupiah(this.value)" 
-                                                    onkeydown="return onlyNumber(event)">
-                                                <label class="form-labeljo">Harga</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-6" style="flex: 1;margin-left: -35px;">
-                                            <div class="form-group">
-                                                <input 
-                                                    type="text" 
-                                                    class="form-controljo pemakaian" 
-                                                    value="${qtyValue}"
-                                                    placeholder=" " 
-                                                    required 
-                                                    inputmode="numeric" 
-                                                    pattern="[0-9]*" 
-                                                    oninput="this.value=formatRupiah(this.value)" 
-                                                    onkeydown="return onlyNumber(event)">
-                                                <label class="form-labeljo">Pemakaian Bulanan</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                            formContainer.appendChild(wrapper);
-                            init_iconsax();
-                        });
-                    }
-                } catch (err) {
-                    console.error(err);
-                }
-            }, 1000);
-            
-        };
-        
-    
-        let isRecording = false;
-        let fetchInterval = null;
-    
-        const startRecognition = () => recognition.start();
-        const stopRecognition = () => {
-            recognition.stop();
-            clearInterval(fetchInterval);
-            fetchInterval = null;
-        };
-        
+    let createFormTemplate = (data = {}, idx = null) => {
+        let hargaValue = data.harga ? formatRupiah(String(data.harga)) : '';
+        let qtyValue = data.qty ? formatRupiah(String(data.qty)) : '';
+        let produk = data.namaproduk || '';
 
-        const toggleRecording = () => {
-            isRecording = !isRecording;
-            recrBtn.classList.toggle('onrecord', isRecording);
-            const statrecr = document.querySelector('.statrecr');
-            if (statrecr) statrecr.textContent = isRecording ? 'Kamu sedang merekam' : 'Ketuk untuk merekam';
-    
-            if (isRecording) {
-                startRecognition();
-    
-            } else {
-                formContainer.style.display = 'block';
-                stopRecognition();
-            }
-        };
-    
-        recrBtn.onclick = toggleRecording;
-        recognition.onend = () => {
-            if (isRecording) startRecognition();
-        };
+        return `
+            <div class="form-wrapper">
+                <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
+                    <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${idx || ++formCount}</h4>
+                    <div class="flex-align-center gap-2">
+                        <span class="delete-btn" onclick="deleteForm(this)">
+                            <i class="iconsax icon error-icon" data-icon="trash-square"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="jotheme-form" style="margin-top: 15px;">
+                    <div class="form-group">
+                        <input type="text" class="form-controljo brand" placeholder=" " required value="${produk}">
+                        <label class="form-labeljo">Produk Competitor</label>
+                    </div>
+                    <div class="row" style="display: flex; gap: 20px;">
+                        <div class="col-6" style="flex: 1;">
+                            <div class="form-group">
+                                <input type="text" class="form-controljo harga"
+                                    value="${hargaValue}" placeholder=" "
+                                    required inputmode="numeric" pattern="[0-9]*"
+                                    oninput="this.value=formatRupiah(this.value)"
+                                    onkeydown="return onlyNumber(event)">
+                                <label class="form-labeljo">Harga</label>
+                            </div>
+                        </div>
+                        <div class="col-6" style="flex: 1;margin-left: -35px;">
+                            <div class="form-group">
+                                <input type="text" class="form-controljo pemakaian"
+                                    value="${qtyValue}" placeholder=" "
+                                    required inputmode="numeric" pattern="[0-9]*"
+                                    oninput="this.value=formatRupiah(this.value)"
+                                    onkeydown="return onlyNumber(event)">
+                                <label class="form-labeljo">Pemakaian Bulanan</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
     };
-    startSpeechToText();
+
+    window.createForm = () => {
+        formContainer.insertAdjacentHTML('beforeend', createFormTemplate());
+        init_iconsax();
+    };
+
+    let addFormsFromData = (items) => {
+        items.forEach((item, idx) => {
+            formContainer.insertAdjacentHTML('beforeend', createFormTemplate(item, idx + 1));
+        });
+        init_iconsax();
+    };
+
+    let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) { return;}
+
+    let recognition = new SpeechRecognition(),
+    statrecr = document.querySelector('.statrecr'),
+    remarkBtn = document.querySelector('.recremark'),
+    hasilInput = document.getElementById('hasilx'),
+    isRecording = false, fetchTimeout = null;
+
+    recognition.lang = 'id-ID';
+    recognition.interimResults = true;
+    recognition.continuous = true;
+
+    recognition.onresult = e => {
+        let transcript = Array.from(e.results).slice(e.resultIndex).map(r => r[0].transcript).join('');
+        if (textarea) textarea.value = transcript;
+        fetchTimeout && clearTimeout(fetchTimeout);
+        fetchTimeout = setTimeout(() => processSpeech(transcript), 1000);
+        if (hasilInput) hasilInput.value = e.results[0][0].transcript;
+    };
+
+    recognition.onend = () => isRecording ? recognition.start() : (
+        recrBtn && recrBtn.classList.remove('onrecord'),
+        remarkBtn && (remarkBtn.style.background = "rgba(var(--theme-color), 1)")
+    );
+
+    let toggleRecording = btn => {
+        isRecording = !isRecording;
+        btn ? btn.classList.toggle('onrecord', isRecording) : remarkBtn.style.background = isRecording ? "#053b08" : "rgba(var(--theme-color), 1)";
+        statrecr && (statrecr.textContent = isRecording ? 'Kamu sedang merekam' : 'Ketuk untuk merekam');
+        isRecording ? recognition.start() : recognition.stop();
+    };
+
+    recrBtn && (recrBtn.onclick = () => toggleRecording(recrBtn));
+    remarkBtn && (remarkBtn.onclick = () => toggleRecording());
+
+
+    let processSpeech = async text => {
+        let cleanText = text.trim();
+        if (!cleanText || cleanText === lastText) return;
+        lastText = cleanText;
+        try {
+            let res = await fetch(urlbe + 'spkompet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: cleanText })
+            });
+            let result = await res.json();
+            if (result.status === "success" && result.data) {
+                let items = Array.isArray(result.data) ? result.data : [result.data];
+                formContainer.innerHTML = '';
+                addFormsFromData(items);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
     
     
     window.speechremark = () => {
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = 'id-ID';
         let recremark = document.querySelector(".recremark");
         if (!recremark) return;
@@ -762,7 +757,7 @@ export let renderListItem = () => {
 
     let imagedata = [];
     let gallery = document.getElementById('gallery');
-    let viewer, viewerimage, closebtn, prevbtn, nextbtn, currentindex = 0;
+    let clay, viewer, viewerimage, closebtn, prevbtn, nextbtn, currentindex = 0;
     let touchstartx = 0, touchendx = 0;
     
     let rendergaleryview = () => {
@@ -784,6 +779,7 @@ export let renderListItem = () => {
         document.querySelector("#app").appendChild(viewer);
         
         init_iconsax();
+        clay = document.querySelector('.clay');
         viewerimage = document.getElementById('viewerimage');
         closebtn = document.getElementById('closebtn');
         prevbtn = document.getElementById('prevbtn');
@@ -804,11 +800,40 @@ export let renderListItem = () => {
         ).join('');
     };
     
+    
+    let infofoto = (dataimg) =>{
+        let fileName = dataimg.split('/').pop().replace('.webp', '');
+        console.log(fileName);
+        
+        // fetch(urlbe + 'ambilinfofoto', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ id })
+        // })
+        // .then(res => res.json())
+        // .then(async resData => {
+            
+        // });
+        
+        // let parts = fileName.split('_');
+    
+        // let cardName = parts[1];
+        // let city = parts[4] !== 'Null' ? parts[4] + ' ' + parts[5].replace(/([A-Z])/g, ' $1').trim() : parts[5].replace(/([A-Z])/g, ' $1').trim();
+        // let province = parts[6];
+        // let fullName = parts[7].replace(/([A-Z])/g, ' $1').trim();
+        // let jobPosition = parts[8].replace(/([A-Z])/g, ' $1').trim();
+        // clay.innerHTML = ` <div class="strong">
+        // <strong>${cardName}</strong><br>${city}<br>${fullName}</div>`;
+    };
+
     let openviewer = index => {
         currentindex = index;
-        viewerimage.src = imagedata[currentindex].src;
+        let dataimg = imagedata[currentindex].src;
+        viewerimage.src = dataimg
         viewer.classList.add('active');
+        infofoto(dataimg);
     };
+    
     
     let closeviewer = () => viewer.classList.remove('active');
     let showprev = () => {
@@ -857,12 +882,6 @@ export let renderListItem = () => {
         
 
         let lokasi = resData?.data || {};
-        
-        imagedata = (lokasi.fotos || []).map((src, i) => ({ src: urlbe2 + 'upload/gambar/' + src, alt: `Foto ${i + 1}` }));
-        rendergaleryview();
-        setgallerylayout(imagedata);
-        initgalery();
-
         let lat = lokasi.lat ? parseFloat(lokasi.lat) : null;
         let lon = lokasi.lon ? parseFloat(lokasi.lon) : null;
         let cust_name = lokasi.cust_name || '';
@@ -873,6 +892,11 @@ export let renderListItem = () => {
         let city = lokasi.City || '';
         let foto = lokasi.foto || null;
     
+        imagedata = (lokasi.fotos || []).map((src, i) => ({ src: urlbe2 + 'upload/gambar/' + src, alt: `Foto ${i + 1}` }));
+        rendergaleryview();
+        setgallerylayout(imagedata);
+        initgalery();
+        
         document.querySelector('#cardname').innerHTML = cust_name;
         document.querySelector('#Address').innerHTML = address;
         document.querySelector('#Full_Name').innerHTML = `${full_name} ${Job_Position}`;
@@ -885,23 +909,21 @@ export let renderListItem = () => {
 
             if (startKunjungan) {
                 document.querySelector('#cin').innerText = startKunjungan.slice(11, 16);
-                const cixEl = document.querySelector('#cix');
+                let cixEl = document.querySelector('#cix');
             
-                const updateElapsedTime = () => {
-                    const startDate = new Date(startKunjungan);
-                    const endDate = endKunjungan ? new Date(endKunjungan) : new Date();
+                let updateElapsedTime = () => {
+                    let startDate = new Date(startKunjungan);
+                    let endDate = endKunjungan ? new Date(endKunjungan) : new Date();
             
                     let elapsedMs = endDate - startDate;
                     elapsedMs = elapsedMs < 0 ? 0 : elapsedMs;
             
-                    const totalSeconds = Math.floor(elapsedMs / 1000);
-                    const hh = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-                    const mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-                    const ss = String(totalSeconds % 60).padStart(2, '0');
+                    let totalSeconds = Math.floor(elapsedMs / 1000);
+                    let hh = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+                    let mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+                    let ss = String(totalSeconds % 60).padStart(2, '0');
             
                     cixEl.innerText = `${hh}:${mm}:${ss}`;
-            
-                    // jika end_kunjungan ada, stop interval
                     if (endKunjungan) clearInterval(counterInterval);
                 };
             
@@ -912,22 +934,20 @@ export let renderListItem = () => {
         }else{
             if (startKunjungan) {
                 document.querySelector('#cin').innerText = startKunjungan.slice(11, 16);
-                const cixEl = document.querySelector('#cix');
+                let cixEl = document.querySelector('#cix');
         
-                const updateElapsedTime = () => {
-                    const now = new Date();
-                    const startParts = startKunjungan.slice(11, 19).split(':');
-                    const startDate = new Date();
+                let updateElapsedTime = () => {
+                    let now = new Date();
+                    let startParts = startKunjungan.slice(11, 19).split(':');
+                    let startDate = new Date();
                     startDate.setHours(parseInt(startParts[0]), parseInt(startParts[1]), parseInt(startParts[2]), 0);
-        
-                    // Jika ada end_kunjungan, gunakan itu sebagai batas
                     if (endKunjungan) {
-                        const endParts = endKunjungan.slice(11, 19).split(':');
-                        const endDate = new Date();
+                        let endParts = endKunjungan.slice(11, 19).split(':');
+                        let endDate = new Date();
                         endDate.setHours(parseInt(endParts[0]), parseInt(endParts[1]), parseInt(endParts[2]), 0);
         
                         if (now > endDate) {
-                            clearInterval(timerInterval); // Stop interval
+                            clearInterval(timerInterval); 
                             return;
                         }
                     }
@@ -950,11 +970,11 @@ export let renderListItem = () => {
     
         document.querySelector('#hasilx').value = lokasi.result || '';
     
-        const formContainer = document.getElementById('formContainer');
+        let formContainer = document.getElementById('formContainer');
         formContainer.innerHTML = '';
     
         (lokasi.details || []).forEach((item, index) => {
-            const formHTML = `
+            let formHTML = `
                 <div class="form-wrapper">
                     <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
                         <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${index + 1}</h4>
@@ -1000,10 +1020,10 @@ export let renderListItem = () => {
             document.querySelectorAll('.delete-btn').forEach(el => el.style.display = 'none');
             document.querySelectorAll('#formContainer input').forEach(input => input.disabled = true);
     
-            const addBtn = document.getElementById('addFormBtn');
+            let addBtn = document.getElementById('addFormBtn');
             if (addBtn) addBtn.style.display = 'none';
     
-            const reasonPart = document.createElement('div');
+            let reasonPart = document.createElement('div');
             reasonPart.className = 'reason-part mt-3';
             reasonPart.innerHTML = `
                 <h4 class="fw-medium error-color">Reason :</h4>
@@ -1060,15 +1080,15 @@ export let renderListItem = () => {
     
     
     let formCount = 0
-    const formContainer = document.getElementById('formContainer')
+    let formContainer = document.getElementById('formContainer')
 
     window.formatRupiah = function(val){
-        const number = val.replace(/\D/g, '')
+        let number = val.replace(/\D/g, '')
         return number.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
     }
 
     window.showFullScreenImage = function(el){
-        const imgSrc = el.querySelector('img').getAttribute('src');
+        let imgSrc = el.querySelector('img').getAttribute('src');
         let modalContent = document.querySelector('#full-screen .modal-content');
     
         let existingImg = modalContent.querySelector('img');
@@ -1089,8 +1109,8 @@ export let renderListItem = () => {
     }
     
     window.saveKunjungan = async () => {
-        const remark = document.getElementById('hasilx').value.trim();
-        const formWrappers = document.querySelectorAll('#formContainer .form-wrapper');
+        let remark = document.getElementById('hasilx').value.trim();
+        let formWrappers = document.querySelectorAll('#formContainer .form-wrapper');
     
         if (!remark) {
             showToast("Result Kunjungan Tidak Boleh Kosong.", "danger");
@@ -1104,9 +1124,9 @@ export let renderListItem = () => {
     
         let items = [];
         formWrappers.forEach(wrapper => {
-            const brand = wrapper.querySelector('.brand').value.trim();
-            const harga = wrapper.querySelector('.harga').value.replace(/\D/g, '');
-            const pemakaian = wrapper.querySelector('.pemakaian').value.replace(/\D/g, '');
+            let brand = wrapper.querySelector('.brand').value.trim();
+            let harga = wrapper.querySelector('.harga').value.replace(/\D/g, '');
+            let pemakaian = wrapper.querySelector('.pemakaian').value.replace(/\D/g, '');
             if (brand && harga && pemakaian) {
                 items.push({ brand, harga, pemakaian });
             }
@@ -1117,26 +1137,26 @@ export let renderListItem = () => {
             return;
         }
     
-        const hash = window.location.hash.split('?')[1] || '';
-        const params = new URLSearchParams(hash);
+        let hash = window.location.hash.split('?')[1] || '';
+        let params = new URLSearchParams(hash);
     
-        const id = params.get('id') || '';
-        const cardname = params.get('cardname') || '';
-        const cust_code = params.get('cust_code') || '';
-        const cust_name = params.get('cust_name') || '';
-        const address = params.get('Address') || '';
-        const city = params.get('City') || '';
-        const province = params.get('Province') || '';
-        const full_name = params.get('Full_Name') || '';
-        const job_position = params.get('Job_Position') || '';
-        const minggu = params.get('minggu') || '';
-        const hari = params.get('hari') || '';
-        const foto = params.get('foto') || '';
-        const start_kunjungan = params.get('start_kunjungan') || '';
-        const usercode = params.get('usercode') || '';
+        let id = params.get('id') || '';
+        let cardname = params.get('cardname') || '';
+        let cust_code = params.get('cust_code') || '';
+        let cust_name = params.get('cust_name') || '';
+        let address = params.get('Address') || '';
+        let city = params.get('City') || '';
+        let province = params.get('Province') || '';
+        let full_name = params.get('Full_Name') || '';
+        let job_position = params.get('Job_Position') || '';
+        let minggu = params.get('minggu') || '';
+        let hari = params.get('hari') || '';
+        let foto = params.get('foto') || '';
+        let start_kunjungan = params.get('start_kunjungan') || '';
+        let usercode = params.get('usercode') || '';
     
         try {
-            const response = await fetch(urlbe + 'simpankunjungan', {
+            let response = await fetch(urlbe + 'simpankunjungan', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1173,63 +1193,10 @@ export let renderListItem = () => {
         }
     };
     
-    window.createForm = function() {
-        formCount++;
-        const wrapper = document.createElement('div');
-        wrapper.className = 'form-wrapper';
-        wrapper.innerHTML = `
-            <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
-                <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${formCount}</h4>
-                <div class="flex-align-center gap-2">
-                    <span class="delete-btn" onclick="deleteForm(this)">
-                        <i class="iconsax icon error-icon" data-icon="trash-square"></i>
-                    </span>
-                </div>
-            </div>
-            <div class="jotheme-form" style="margin-top: 15px;">
-                <div class="form-group">
-                    <input type="text" class="form-controljo brand" placeholder=" " required>
-                    <label class="form-labeljo">Produk Competitor</label>
-                </div>
-                <div class="row" style="display: flex; gap: 20px;">
-                    <div class="col-6" style="flex: 1;">
-                        <div class="form-group">
-                            <input 
-                                type="text" 
-                                class="form-controljo harga" 
-                                placeholder=" " 
-                                required 
-                                inputmode="numeric" 
-                                pattern="[0-9]*" 
-                                oninput="this.value=formatRupiah(this.value)" 
-                                onkeydown="return onlyNumber(event)">
-                            <label class="form-labeljo">Harga</label>
-                        </div>
-                    </div>
-                    <div class="col-6" style="flex: 1;margin-left: -35px;">
-                        <div class="form-group">
-                            <input 
-                                type="text" 
-                                class="form-controljo pemakaian" 
-                                placeholder=" " 
-                                required 
-                                inputmode="numeric" 
-                                pattern="[0-9]*" 
-                                oninput="this.value=formatRupiah(this.value)" 
-                                onkeydown="return onlyNumber(event)">
-                            <label class="form-labeljo">Pemakaian Bulanan</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        formContainer.appendChild(wrapper);
-        init_iconsax();
-    };
     
     window.deleteForm = function(el){
         el.closest('.form-wrapper').remove()
-        const wrappers = document.querySelectorAll('#formContainer .form-wrapper')
+        let wrappers = document.querySelectorAll('#formContainer .form-wrapper')
         formCount = 0
         wrappers.forEach((item) => {
             formCount++
