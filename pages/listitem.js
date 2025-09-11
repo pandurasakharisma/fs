@@ -595,15 +595,15 @@ export let renderListItem = () => {
         hasilInput = document.getElementById('hasilx'),
         textarea = document.getElementById('speechText');
         
+    let formCount = 0, formContainer = document.getElementById('formContainer');
     let createFormTemplate = (data = {}, idx = null) => {
         let hargaValue = data.harga ? formatRupiah(String(data.harga)) : '';
         let qtyValue = data.qty ? formatRupiah(String(data.qty)) : '';
         let produk = data.namaproduk || '';
-
         return `
             <div class="form-wrapper">
                 <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
-                    <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${idx || ++formCount}</h4>
+                    <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${idx !== null ? idx : ++formCount}</h4>
                     <div class="flex-align-center gap-2">
                         <span class="delete-btn" onclick="deleteForm(this)">
                             <i class="iconsax icon error-icon" data-icon="trash-square"></i>
@@ -643,13 +643,16 @@ export let renderListItem = () => {
     };
 
     window.createForm = () => {
-        formContainer.insertAdjacentHTML('beforeend', createFormTemplate());
+        formCount++;
+        formContainer.insertAdjacentHTML('beforeend', createFormTemplate({}, formCount));
         init_iconsax();
     };
 
     let addFormsFromData = (items) => {
+        formCount = 0;
         items.forEach((item, idx) => {
             formContainer.insertAdjacentHTML('beforeend', createFormTemplate(item, idx + 1));
+            formCount++;
         });
         init_iconsax();
     };
@@ -711,13 +714,13 @@ export let renderListItem = () => {
             mediaRecorder.start();
             console.log('Recording started...');
         } catch (err) {
-            alert('Tidak bisa mengakses mikrofon.');
+            showToast("Tidak bisa mengakses mikrofon.", "danger");
         }
     };
     
     let stopAudioRecording = () => mediaRecorder?.state === 'recording' && mediaRecorder.stop();
     let uploadAudioToBackend = async blob => {
-        if (!id) return alert('ID tidak ditemukan di URL!');
+        if (!id) return showToast("ID Tidak Ditemukan.", "danger");
     
         const formData = new FormData();
         formData.append('id', id);
@@ -729,12 +732,12 @@ export let renderListItem = () => {
     
             if (result.status === 'success') {
                 hasilInput.value = result.transcript?.map(t => t.text).join('\n') || '';
-                alert('Audio berhasil diunggah dan ditranskrip!');
+                showToast("Audio berhasil diunggah dan ditranskrip.", "success");
             } else {
-                alert('Gagal memproses audio: ' + result.message);
+                showToast("Gagal memproses audio.", "danger");
             }
         } catch (err) {
-            alert('Terjadi kesalahan saat mengunggah audio.');
+            showToast("Gagal memproses audio.", "danger");
             console.error(err);
         }
     };
@@ -872,7 +875,7 @@ export let renderListItem = () => {
             if (Math.abs(diff) > 50) diff > 0 ? showprev() : shownext();
         }, { passive: true });
     };
-    
+
     fetch(urlbe + 'listjadwalid', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -899,128 +902,42 @@ export let renderListItem = () => {
             tanggal: item.tanggal,
             jam_menit: item.jam_menit
         }));
-    
         rendergaleryview();
         setgallerylayout(imagedata);
         initgalery();
-        
+    
         document.querySelector('#cardname').innerHTML = cust_name;
         document.querySelector('#Address').innerHTML = address;
         document.querySelector('#Full_Name').innerHTML = `${full_name} ${Job_Position}`;
+        document.querySelector('#hasilx').value = lokasi.result || '';
     
         let startKunjungan = lokasi.start_kunjungan || null;
         let endKunjungan = lokasi.end_kunjungan || null;
-        let counterInterval;
-        
-        if(endKunjungan){
-
-            if (startKunjungan) {
-                document.querySelector('#cin').innerText = startKunjungan.slice(11, 16);
-                let cixEl = document.querySelector('#cix');
-            
-                let updateElapsedTime = () => {
-                    let startDate = new Date(startKunjungan);
-                    let endDate = endKunjungan ? new Date(endKunjungan) : new Date();
-            
-                    let elapsedMs = endDate - startDate;
-                    elapsedMs = elapsedMs < 0 ? 0 : elapsedMs;
-            
-                    let totalSeconds = Math.floor(elapsedMs / 1000);
-                    let hh = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-                    let mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-                    let ss = String(totalSeconds % 60).padStart(2, '0');
-            
-                    cixEl.innerText = `${hh}:${mm}:${ss}`;
-                    if (endKunjungan) clearInterval(counterInterval);
-                };
-            
-                updateElapsedTime();
-                counterInterval = setInterval(updateElapsedTime, 1000);
-            }
-            
-        }else{
-            if (startKunjungan) {
-                document.querySelector('#cin').innerText = startKunjungan.slice(11, 16);
-                let cixEl = document.querySelector('#cix');
-        
-                let updateElapsedTime = () => {
-                    let now = new Date();
-                    let startParts = startKunjungan.slice(11, 19).split(':');
-                    let startDate = new Date();
-                    startDate.setHours(parseInt(startParts[0]), parseInt(startParts[1]), parseInt(startParts[2]), 0);
-                    if (endKunjungan) {
-                        let endParts = endKunjungan.slice(11, 19).split(':');
-                        let endDate = new Date();
-                        endDate.setHours(parseInt(endParts[0]), parseInt(endParts[1]), parseInt(endParts[2]), 0);
-        
-                        if (now > endDate) {
-                            clearInterval(timerInterval); 
-                            return;
-                        }
-                    }
-        
-                    let elapsedMs = now - startDate;
-                    elapsedMs = elapsedMs < 0 ? 0 : elapsedMs;
-        
-                    let totalSeconds = Math.floor(elapsedMs / 1000);
-                    let hh = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-                    let mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-                    let ss = String(totalSeconds % 60).padStart(2, '0');
-        
-                    cixEl.innerText = `${hh}:${mm}:${ss}`;
-                };
-        
-                updateElapsedTime();
-                var timerInterval = setInterval(updateElapsedTime, 1000);
-            }
-        }
+        let cixEl = document.querySelector('#cix');
     
-        document.querySelector('#hasilx').value = lokasi.result || '';
+        if (startKunjungan) {
+            document.querySelector('#cin').innerText = startKunjungan.slice(11, 16);
+            let updateElapsedTime = () => {
+                let startDate = new Date(startKunjungan);
+                let endDate = endKunjungan ? new Date(endKunjungan) : new Date();
+                let elapsedMs = Math.max(0, endDate - startDate);
+                let totalSeconds = Math.floor(elapsedMs / 1000);
+                let hh = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+                let mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+                let ss = String(totalSeconds % 60).padStart(2, '0');
+                cixEl.innerText = `${hh}:${mm}:${ss}`;
+                if (endKunjungan) clearInterval(timerInterval);
+            };
+            updateElapsedTime();
+            var timerInterval = setInterval(updateElapsedTime, 1000);
+        }
     
         let formContainer = document.getElementById('formContainer');
         formContainer.innerHTML = '';
     
-        (lokasi.details || []).forEach((item, index) => {
-            let formHTML = `
-                <div class="form-wrapper">
-                    <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
-                        <h4 style="font-size: 12px;text-transform: uppercase;">SKU #${index + 1}</h4>
-                        <div class="flex-align-center gap-2">
-                            <span class="delete-btn" onclick="deleteForm(this)">
-                                <i class="iconsax icon error-icon" data-icon="trash-square"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="jotheme-form" style="margin-top: 15px;">
-                        <div class="form-group">
-                            <input type="text" class="form-controljo brand" placeholder=" " required value="${item.sku || ''}">
-                            <label class="form-labeljo">Produk Competitor</label>
-                        </div>
-                        <div class="row" style="display: flex; gap: 20px;">
-                            <div class="col-6" style="flex: 1;">
-                                <div class="form-group">
-                                    <input type="text" class="form-controljo harga" placeholder=" " required
-                                        value="${item.price ? formatRupiah(item.price.toString()) : ''}" 
-                                        oninput="this.value=formatRupiah(this.value)" 
-                                        onkeydown="return onlyNumber(event)">
-                                    <label class="form-labeljo">Harga</label>
-                                </div>
-                            </div>
-                            <div class="col-6" style="flex: 1;margin-left: -35px;">
-                                <div class="form-group">
-                                    <input type="text" class="form-controljo pemakaian" placeholder=" " required
-                                        value="${item.qty ? formatRupiah(item.qty.toString()) : ''}" 
-                                        oninput="this.value=formatRupiah(this.value)" 
-                                        onkeydown="return onlyNumber(event)">
-                                    <label class="form-labeljo">Pemakaian Bulanan</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            formContainer.insertAdjacentHTML('beforeend', formHTML);
-        });
+        if (lokasi.details && lokasi.details.length > 0) {
+            addFormsFromData(lokasi.details);
+        }
     
         if (endKunjungan) {
             document.querySelector('.recr').classList.add('hide');
@@ -1039,7 +956,7 @@ export let renderListItem = () => {
             formContainer.appendChild(reasonPart);
     
             document.querySelectorAll('.tbdone').forEach(btn => btn.classList.add('disabled'));
-        }else{
+        } else {
             document.querySelector('.recr').classList.remove('hide');
             createForm();
         }
@@ -1047,7 +964,7 @@ export let renderListItem = () => {
         let searchRes = await fetch(urlbe + 'tanyaalamat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ method: 'search', address, city,CardCode:cust_code })
+            body: JSON.stringify({ method: 'search', address, city, CardCode: cust_code })
         });
         let searchData = await searchRes.json();
     
@@ -1072,22 +989,26 @@ export let renderListItem = () => {
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '' }).addTo(map);
     
                     let iconHtml = '<img class="icon" src="./assets/images/svg/location-fill.svg" width="40" height="40" alt="location">';
-                    let customIcon = L.divIcon({ html: iconHtml, className: 'custom-icon', iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30] });
+                    let customIcon = L.divIcon({
+                        html: iconHtml,
+                        className: 'custom-icon',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 30],
+                        popupAnchor: [0, -30]
+                    });
     
                     let marker = L.marker([lat, lon], { icon: customIcon }).addTo(map);
-                    marker.bindPopup(`<strong>${full_name+' '+Job_Position}</strong><p>${reverseData.data.display_name}</p>`).openPopup();
+                    marker.bindPopup(`<strong>${full_name} ${Job_Position}</strong><p>${reverseData.data.display_name}</p>`).openPopup();
     
-                    let marker2 = L.marker([firstLat, firstLon], { icon: customIcon }).addTo(map);
-                    marker2.bindPopup(`<strong>${cust_name}</strong><p>${address+' '+city}</p>`);
+                    if (firstLat && firstLon) {
+                        let marker2 = L.marker([firstLat, firstLon], { icon: customIcon }).addTo(map);
+                        marker2.bindPopup(`<strong>${cust_name}</strong><p>${address} ${city}</p>`);
+                    }
                 }
             });
-        } 
-    }).catch(() => { });
+        }
+    }).catch(() => {});
     
-    
-    let formCount = 0
-    let formContainer = document.getElementById('formContainer')
-
     window.formatRupiah = function(val){
         let number = val.replace(/\D/g, '')
         return number.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
@@ -1201,14 +1122,14 @@ export let renderListItem = () => {
     
     
     window.deleteForm = function(el){
-        el.closest('.form-wrapper').remove()
-        let wrappers = document.querySelectorAll('#formContainer .form-wrapper')
-        formCount = 0
+        el.closest('.form-wrapper').remove();
+        let wrappers = document.querySelectorAll('#formContainer .form-wrapper');
+        formCount = 0;
         wrappers.forEach((item) => {
-            formCount++
-            item.querySelector('.offer-head h4').innerText = `SKU #${formCount}`
-        })
-    }
+            formCount++;
+            item.querySelector('.offer-head h4').innerText = `SKU #${formCount}`;
+        });
+    };
 
     window.onlyNumber = function(e){
         if (!/[0-9]|Backspace|ArrowLeft|ArrowRight|Delete|Tab/.test(e.key)) {
@@ -1216,9 +1137,6 @@ export let renderListItem = () => {
             return false
         }
     }
-
-    createForm()
-
 }
 
 export default renderListItem
