@@ -1,50 +1,3 @@
-/*!***************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[0].use[2]!./node_modules/sass-loader/dist/cjs.js!./assets/scss/style.scss ***!
-  \***************************************************************************************************************************************************************************************/
-/*-----------------------------------------------------------------------------------
-
-    Template Name:Taxido App
-    Template URI: https: //themes.pixelstrap.net/pwa/taxido/
-    Description: This is PWA Html Template
-    Author: Pixelstrap
-    Author URL: https://themeforest.net/user/pixelstrap
-
------------------------------------------------------------------------------------ */
-/* 1.1 animation CSS  */
-/* 1.2 variable CSS  */
-/* 2.1 Reset CSS  */
-/* 2.2 Typography CSS */
-/* 3.1 Button CSS  */
-/* 3.2 Calender CSS  */
-/* 3.3 Chatting CSS  */
-/* 3.4 Form CSS  */
-/* 3.5 Modal CSS  */
-/* 3.6 Offcanvas CSS  */
-/* 3.7 Ratio CSS  */
-/* 3.8 Slider CSS  */
-/* 3.8 Tab CSS */
-/* 3.10 Title CSS */
-/* 4.1 Header css */
-/* 4.2 Nav CSS */
-/* 5.1 Authentication CSS */
-/* 5.2 Category CSS */
-/* 5.3 Elements Page CSS */
-/* 5.4 Empty Pages CSS */
-/* 5.5 Home CSS */
-/* 5.7 Location CSS*/
-/* 5.7 Notification CSS */
-/* 5.8 onboarding CSS */
-/* 5.9 Outstation CSS */
-/* 5.10 Page List CSS */
-/* 5.11 Profile CSS */
-/* 5.12 Ride CSS */
-/* 6.1 Dark CSS */
-/*utils scss files */
-/*========================
-  1.2  Variable CSS start
-==========================*/
-/* font family */
-/* color variables */
 :root {
   --theme-color: 197, 63, 63;
   --title-color: 31, 31, 31;
@@ -69,49 +22,6 @@
   --line-color: 65, 65, 65;
 }
 
-/*-----------------------------------------------------------------------------------
-
-    Template Name:Taxido App
-    Template URI: https: //themes.pixelstrap.net/pwa/taxido/
-    Description: This is PWA Html Template
-    Author: Pixelstrap
-    Author URL: https://themeforest.net/user/pixelstrap
-
------------------------------------------------------------------------------------ */
-/* 1.1 animation CSS  */
-/* 1.2 variable CSS  */
-/* 2.1 Reset CSS  */
-/* 2.2 Typography CSS */
-/* 3.1 Button CSS  */
-/* 3.2 Calender CSS  */
-/* 3.3 Chatting CSS  */
-/* 3.4 Form CSS  */
-/* 3.5 Modal CSS  */
-/* 3.6 Offcanvas CSS  */
-/* 3.7 Ratio CSS  */
-/* 3.8 Slider CSS  */
-/* 3.8 Tab CSS */
-/* 3.10 Title CSS */
-/* 4.1 Header css */
-/* 4.2 Nav CSS */
-/* 5.1 Authentication CSS */
-/* 5.2 Category CSS */
-/* 5.3 Elements Page CSS */
-/* 5.4 Empty Pages CSS */
-/* 5.5 Home CSS */
-/* 5.7 Location CSS*/
-/* 5.7 Notification CSS */
-/* 5.8 onboarding CSS */
-/* 5.9 Outstation CSS */
-/* 5.10 Page List CSS */
-/* 5.11 Profile CSS */
-/* 5.12 Ride CSS */
-/* 6.1 Dark CSS */
-/*utils scss files */
-/* base scss files */
-/*=====================
-  2.1  Reset CSS start
-==========================*/
 * {
   margin: 0;
   padding: 0;
@@ -263,9 +173,6 @@ section,
   align-items: center;
 }
 
-/*=====================
-  2.2  Typography CSS start
-==========================*/
 * {
   margin: 0;
   padding: 0;
@@ -340,10 +247,6 @@ li {
   font-size: 14px;
 }
 
-/* components scss files*/
-/*=====================
-  3.1  Button CSS start
-==========================*/
 .btn {
   font-weight: 500;
   font-size: 14px;
@@ -434,9 +337,6 @@ li {
   gap: 15px;
 }
 
-/*=====================
-  3.2  calender CSS start
-==========================*/
 .mbsc-font {
   font-family: "GT Walsheim Pro" !important;
 }
@@ -607,9 +507,6 @@ li {
   transform: translateX(-50%);
 }
 
-/*=====================
-  3.3  chatting CSS start
-==========================*/
 .msger {
   margin-top: 10px;
 }
@@ -809,9 +706,6 @@ li {
   background-color: rgba(var(--theme-color), 1);
 }
 
-/*=====================
-  3.4  form CSS start
-==========================*/
 .auth-form {
   margin-top: 20px;
 }
@@ -1524,9 +1418,6 @@ body.dark .auth-form .google-btn .google.apple {
   color: rgba(var(--title-color), 1);
 }
 
-/*=====================
-  3.5  modal CSS start
-==========================*/
 .delete-modal .modal-content {
   position: relative;
   background-color: rgba(var(--white), 1);
@@ -1745,9 +1636,6 @@ body.dark .auth-form .google-btn .google.apple {
   border-top: none;
 }
 
-/*=====================
-  3.6  offcanvas CSS start
-==========================*/
 .offcanvas.addtohome-popup {
   width: 100%;
   max-width: 600px;
@@ -2286,9 +2174,6 @@ body.dark .offcanvas.sidebar-offcanvas .offcanvas-header .sidebar-logo .logo-dar
   padding: 20px;
 }
 
-/*=====================
-  3.7  Ratio CSS start
-==========================*/
 .ratio_40 .bg-size:before {
   padding-top: 40%;
   content: "";
@@ -2379,9 +2264,6 @@ body.dark .offcanvas.sidebar-offcanvas .offcanvas-header .sidebar-logo .logo-dar
   background-size: contain !important;
 }
 
-/*===================== 
-  3.8  slider CSS start 
-==========================*/
 .review-listing li {
   margin-bottom: 15px;
 }
@@ -2428,9 +2310,6 @@ body.dark .offcanvas.sidebar-offcanvas .offcanvas-header .sidebar-logo .logo-dar
   }
 }
 
-/*=============================
-  3.9  tab CSS start
-===============================*/
 .ride-tab {
   width: 100%;
   margin: 15px auto 0;
@@ -2621,9 +2500,6 @@ body.dark .offcanvas.sidebar-offcanvas .offcanvas-header .sidebar-logo .logo-dar
   color: rgba(var(--content-color), 1);
 }
 
-/*===================== 
-  3.10  Title CSS start 
-==========================*/
 .title {
   display: flex;
   justify-content: space-between;
@@ -2652,10 +2528,6 @@ body.dark .offcanvas.sidebar-offcanvas .offcanvas-header .sidebar-logo .logo-dar
   font-weight: 500;
 }
 
-/* layout scss files */
-/*=====================
-  4.1  Header CSS start
-==========================*/
 .auth-header {
   position: sticky;
   top: 0;
@@ -3084,9 +2956,6 @@ body.dark .main-header .header-panel .logo-dark {
   color: rgba(var(--white), 1);
 }
 
-/*=====================
-  4.2  Nav CSS start
-=======================*/
 .navbar-menu {
   position: fixed;
   width: 100%;
@@ -3170,10 +3039,6 @@ body.dark .main-header .header-panel .logo-dark {
   font-weight: 500;
 }
 
-/* pages */
-/*=============================
-  5.1  Authentication CSS start
-===============================*/
 .auth-location-bg {
   position: relative !important;
   min-height: unset !important;
@@ -3575,9 +3440,6 @@ body.dark .auth-bg-image-box .auth-bg-image {
   border: 1px solid rgba(var(--theme-color), 1);
 }
 
-/*========================
-  5.2  category CSS start
-==========================*/
 .main-categories-list {
   display: grid;
   gap: 15px;
@@ -3643,9 +3505,6 @@ body.dark .auth-bg-image-box .auth-bg-image {
   padding-top: 12px;
 }
 
-/*=====================
-    5.3  elements CSS start
-==========================*/
 .app-title {
   margin-top: 30px;
   padding: 10px;
@@ -4055,9 +3914,6 @@ body.dark .auth-bg-image-box .auth-bg-image {
   background-color: rgba(var(--theme-color), 1);
 }
 
-/*=============================
-    5.4 empty-page CSS start
-===============================*/
 .empty-images {
   width: 100%;
   height: calc(100vh - 96px - 85px);
@@ -4126,9 +3982,6 @@ body.dark .auth-bg-image-box .auth-bg-image {
   margin-top: -15px;
 }
 
-/*=====================
-  5.5  home CSS start
-==========================*/
 .home-profile-section {
   background-color: rgba(var(--theme-color), 1);
 }
@@ -4468,9 +4321,6 @@ body.dark .auth-bg-image-box .auth-bg-image {
   z-index: 1;
 }
 
-/*=====================
-  5.6  location CSS start
-==========================*/
 .location-section {
   background-color: rgba(var(--white), 1);
   padding-bottom: 20px;
@@ -4725,9 +4575,6 @@ body.dark .auth-bg-image-box .auth-bg-image {
   }
 }
 
-/*=============================
-  5.7  notification CSS start
-===============================*/
 .notification-list li {
   width: 100%;
   margin-bottom: 15px;
@@ -4776,9 +4623,6 @@ body.dark .auth-bg-image-box .auth-bg-image {
   --Iconsax-Size: 20px;
 }
 
-/*========================
-   5.9 outstation CSS start
-==========================*/
 .notes-part {
   margin: 15px 20px;
   padding: 10px;
@@ -4968,9 +4812,6 @@ body.dark .auth-bg-image-box .auth-bg-image {
   border-radius: 10px;
 }
 
-/*=============================
-  5.8  onboarding CSS start
-===============================*/
 .onboarding-bg {
   background-color: rgba(var(--box-bg), 1);
 }
@@ -5199,9 +5040,6 @@ body.dark .onboarding-section .driver-main-slider .poster-image .image-dark {
   cursor: pointer !important;
 }
 
-/*=============================
-  5.10  Page-listing CSS start
-===============================*/
 .element-title {
   margin-top: 20px;
   background-color: rgba(var(--theme-color), 0.1);
@@ -5264,9 +5102,6 @@ body.dark .onboarding-section .driver-main-slider .poster-image .image-dark {
   transform: scaleX(-1);
 }
 
-/*========================
-   5.11 profile CSS start
-==========================*/
 .profile-setting-section .profile-section .profile-bg {
   border-radius: 6px;
 }
@@ -6102,9 +5937,6 @@ body.dark .onboarding-section .driver-main-slider .poster-image .image-dark {
   border-top: 1px dashed rgba(var(--line-color), 1);
 }
 
-/*========================
-  5.12  ride CSS start
-==========================*/
 .theme-content-bg {
   position: fixed;
   bottom: 0;
@@ -7876,11 +7708,6 @@ body.dark .onboarding-section .driver-main-slider .poster-image .image-dark {
   background-color: rgba(var(--box-bg), 1);
   border: none;
 }
-
-/* themes */
-/*=====================
-   6.1 Dark CSS start
-==========================*/
 body.dark .offcanvas.addtohome-popup .btn-close {
   filter: invert(1);
 }
@@ -8140,9 +7967,14 @@ body.dark .vehicle-content .content-title .members {
   100% { transform: translateX(100%); }
 }
 
+.overtext{
+  white-space: nowrap;
+  width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .skeleton-line[width="85%"] { width: 85%; }
 .skeleton-line[width="100%"] { width: 100%; }
-
 .success { background-color: #28a745; }
 .danger { background-color: #dc3545; }
 #headerx .search-bar, .hide{display:none;}

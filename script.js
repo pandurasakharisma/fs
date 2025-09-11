@@ -273,9 +273,6 @@ let router = async () => {
 };
 
 
-/* ==========================================
-   INIT
-========================================== */
 window.onload = async () => {
     renderHeadContent()
     await main()
@@ -283,15 +280,14 @@ window.onload = async () => {
 }
 
 window.onhashchange = router
-
 let main = async () => {
     checkAuth()
     createSpinner()
     let scripts = [
-        './assets/js/sticky-header.js',
         './assets/js/bootstrap.bundle.min.js',
         './assets/js/template-setting.js'
     ]
+
     try {
         await Promise.all(scripts.map(loadScript))
         initRatioJS()
@@ -301,5 +297,4 @@ let main = async () => {
     } finally {
         removeSpinner()
     }
-    
 }

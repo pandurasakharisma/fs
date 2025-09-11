@@ -453,7 +453,7 @@ export let renderListItem = () => {
             .clay .strong {
                 position: absolute;
                 bottom: 15px;
-                left: 15px;
+                left: 0;
                 color: #fff;
                 font-size: 13px;
                 background: #0000008a;
@@ -668,15 +668,9 @@ export let renderListItem = () => {
 
     recognition.onresult = e => {
         let transcript = Array.from(e.results).slice(e.resultIndex).map(r => r[0].transcript).join('');
-        activeTarget === 'hasilx' ? hasilInput?.focus() : textarea?.blur();
-        activeTarget === 'speechText' 
-            ? textarea && (textarea.value = transcript) 
-            : hasilInput && (hasilInput.value = transcript);
-    
-        if (activeTarget === 'speechText') {
-            fetchTimeout && clearTimeout(fetchTimeout);
-            fetchTimeout = setTimeout(() => processSpeech(transcript), 1000);
-        }
+        textarea && (textarea.value = transcript);
+        fetchTimeout && clearTimeout(fetchTimeout);
+        fetchTimeout = setTimeout(() => processSpeech(transcript), 1000);
     };
     
     
@@ -691,16 +685,68 @@ export let renderListItem = () => {
     let toggleRecording = (btn, target) => {
         activeTarget = target;
         isRecording = !isRecording;
-        btn === recrBtn 
-            ? btn.classList.toggle('onrecord', isRecording) 
-            : btn.classList.toggle('onrecordr', isRecording);
+        btn.classList.toggle('onrecord', isRecording)
         statrecr && (statrecr.textContent = isRecording ? 'Kamu sedang merekam' : 'Ketuk untuk merekam');
         isRecording ? recognition.start() : recognition.stop();
     };
     
     recrBtn && (recrBtn.onclick = () => toggleRecording(recrBtn, 'speechText'));
-    remarkBtn && (remarkBtn.onclick = () => toggleRecording(remarkBtn, 'hasilx'));
 
+    let stream, mediaRecorder, audioChunks = [];
+    let startAudioRecording = async () => {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+    
+            mediaRecorder.ondataavailable = e => e.data.size > 0 && audioChunks.push(e.data);
+    
+            mediaRecorder.onstop = async () => {
+                const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                await uploadAudioToBackend(blob);
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            };
+    
+            mediaRecorder.start();
+            console.log('Recording started...');
+        } catch (err) {
+            alert('Tidak bisa mengakses mikrofon.');
+        }
+    };
+    
+    let stopAudioRecording = () => mediaRecorder?.state === 'recording' && mediaRecorder.stop();
+    let uploadAudioToBackend = async blob => {
+        if (!id) return alert('ID tidak ditemukan di URL!');
+    
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('audio', blob, `recording_${Date.now()}.webm`); 
+    
+        try {
+            const res = await fetch(urlbe + 'transcribe', { method: 'POST', body: formData });
+            const result = await res.json();
+    
+            if (result.status === 'success') {
+                hasilInput.value = result.transcript?.map(t => t.text).join('\n') || '';
+                alert('Audio berhasil diunggah dan ditranskrip!');
+            } else {
+                alert('Gagal memproses audio: ' + result.message);
+            }
+        } catch (err) {
+            alert('Terjadi kesalahan saat mengunggah audio.');
+            console.error(err);
+        }
+    };
+    
+    remarkBtn.onclick = async () => {
+        activeTarget = 'hasilx';
+        isRecording = !isRecording;
+        remarkBtn.classList.toggle('onrecordr', isRecording);
+        statrecr.textContent = isRecording ? 'Sedang merekam audio...' : 'Ketuk untuk merekam';
+        isRecording ? await startAudioRecording() : stopAudioRecording();
+    };
+    
     let processSpeech = async text => {
         let cleanText = text.trim();
         if (!cleanText || cleanText === lastText) return;
@@ -722,14 +768,10 @@ export let renderListItem = () => {
         }
     };
 
-    let mediaRecorder = null,
-    audioChunks = [],
-    stream = null;
     
-    let imagedata = [];
-    let gallery = document.getElementById('gallery');
-    let clay, viewer, viewerimage, closebtn, prevbtn, nextbtn, currentindex = 0;
-    let touchstartx = 0, touchendx = 0;
+    let imagedata = [],gallery = document.getElementById('gallery'),
+    clay, viewer, viewerimage, closebtn, prevbtn, nextbtn, currentindex = 0,
+    touchstartx = 0, touchendx = 0;
     
     let rendergaleryview = () => {
         viewer = document.createElement('div');
@@ -743,12 +785,13 @@ export let renderListItem = () => {
                 <i class="iconsax icon error-icon" data-icon="chevron-left"></i>
             </span>
             <img id="viewerimage" src="" alt="">
+            <div class="clay"></div>
             <span class="nav-btn next-btn" id="nextbtn">
                 <i class="iconsax icon error-icon" data-icon="chevron-right"></i>
             </span>
         `;
         document.querySelector("#app").appendChild(viewer);
-        
+    
         init_iconsax();
         clay = document.querySelector('.clay');
         viewerimage = document.getElementById('viewerimage');
@@ -771,49 +814,36 @@ export let renderListItem = () => {
         ).join('');
     };
     
-    
-    let infofoto = (dataimg) =>{
-        let fileName = dataimg.split('/').pop().replace('.webp', '');
-        console.log(fileName);
-        
-        // fetch(urlbe + 'ambilinfofoto', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ id })
-        // })
-        // .then(res => res.json())
-        // .then(async resData => {
-            
-        // });
-        
-        // let parts = fileName.split('_');
-    
-        // let cardName = parts[1];
-        // let city = parts[4] !== 'Null' ? parts[4] + ' ' + parts[5].replace(/([A-Z])/g, ' $1').trim() : parts[5].replace(/([A-Z])/g, ' $1').trim();
-        // let province = parts[6];
-        // let fullName = parts[7].replace(/([A-Z])/g, ' $1').trim();
-        // let jobPosition = parts[8].replace(/([A-Z])/g, ' $1').trim();
-        // clay.innerHTML = ` <div class="strong">
-        // <strong>${cardName}</strong><br>${city}<br>${fullName}</div>`;
+    let infofoto = (imageObj) => {
+        clay.innerHTML = `
+            <div class="strong">
+                <strong>${imageObj.namatoko}</strong><br>
+                ${imageObj.alamat}<br>
+                ${imageObj.nama} (${imageObj.jam_menit})
+            </div>
+        `;
     };
-
+    
     let openviewer = index => {
         currentindex = index;
-        let dataimg = imagedata[currentindex].src;
-        viewerimage.src = dataimg
+        let imageObj = imagedata[currentindex];
+        viewerimage.src = imageObj.src;
         viewer.classList.add('active');
-        infofoto(dataimg);
+        infofoto(imageObj);
     };
-    
     
     let closeviewer = () => viewer.classList.remove('active');
     let showprev = () => {
         currentindex = (currentindex - 1 + imagedata.length) % imagedata.length;
-        viewerimage.src = imagedata[currentindex].src;
+        let imageObj = imagedata[currentindex];
+        viewerimage.src = imageObj.src;
+        infofoto(imageObj);
     };
     let shownext = () => {
         currentindex = (currentindex + 1) % imagedata.length;
-        viewerimage.src = imagedata[currentindex].src;
+        let imageObj = imagedata[currentindex];
+        viewerimage.src = imageObj.src;
+        infofoto(imageObj);
     };
     
     let initgalery = () => {
@@ -835,7 +865,7 @@ export let renderListItem = () => {
         viewer.addEventListener('touchstart', e => {
             touchstartx = e.changedTouches[0].screenX;
         }, { passive: true });
-        
+    
         viewer.addEventListener('touchend', e => {
             touchendx = e.changedTouches[0].screenX;
             let diff = touchendx - touchstartx;
@@ -850,8 +880,6 @@ export let renderListItem = () => {
     })
     .then(res => res.json())
     .then(async resData => {
-        
-
         let lokasi = resData?.data || {};
         let lat = lokasi.lat ? parseFloat(lokasi.lat) : null;
         let lon = lokasi.lon ? parseFloat(lokasi.lon) : null;
@@ -861,9 +889,17 @@ export let renderListItem = () => {
         let address = lokasi.Address || '';
         let cust_code = lokasi.cust_code || '';
         let city = lokasi.City || '';
-        let foto = lokasi.foto || null;
     
-        imagedata = (lokasi.fotos || []).map((src, i) => ({ src: urlbe2 + 'upload/gambar/' + src, alt: `Foto ${i + 1}` }));
+        imagedata = (lokasi.fotos || []).map((item, i) => ({
+            src: urlbe2 + 'upload/gambar/' + item.foto,
+            alt: `Foto ${i + 1}`,
+            nama: item.nama,
+            namatoko: item.namatoko,
+            alamat: item.alamat,
+            tanggal: item.tanggal,
+            jam_menit: item.jam_menit
+        }));
+    
         rendergaleryview();
         setgallerylayout(imagedata);
         initgalery();
@@ -1046,8 +1082,7 @@ export let renderListItem = () => {
                 }
             });
         } 
-    })
-    .catch(() => { });
+    }).catch(() => { });
     
     
     let formCount = 0
