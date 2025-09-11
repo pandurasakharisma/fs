@@ -229,10 +229,10 @@ export let renderKamera = () => {
                     `;
                     captureButton.style.animation = 'pulse 2s infinite';
                     isCapturing = false;
-                    video.srcObject.getTracks().forEach(track => track.stop());
-                    if (gpsWatchId !== null) {navigator.geolocation.clearWatch(gpsWatchId);gpsWatchId = null;}
                 });
         }, 'image/webp', 1);
+
+        video.srcObject.getTracks().forEach(track => track.stop());
     };
 
     captureButton.onclick = () => {
