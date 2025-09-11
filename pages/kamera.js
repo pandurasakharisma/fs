@@ -220,11 +220,6 @@ export let renderKamera = () => {
                     showToast('Gambar Berhasil diUpload', 'success');
                     let redirectParams = new URLSearchParams();
                     expectedKeys.forEach(key => params.has(key) && redirectParams.set(key, params.get(key)));
-                    video.srcObject.getTracks().forEach(track => track.stop());
-                    if (gpsWatchId !== null) {
-                        navigator.geolocation.clearWatch(gpsWatchId);
-                        gpsWatchId = null;
-                    }
                     window.location.hash = 'listitem?' + redirectParams.toString();
                 })
                 .catch(() => console.log('Gagal Mengirim Foto'))
@@ -234,6 +229,8 @@ export let renderKamera = () => {
                     `;
                     captureButton.style.animation = 'pulse 2s infinite';
                     isCapturing = false;
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                    if (gpsWatchId !== null) {navigator.geolocation.clearWatch(gpsWatchId);gpsWatchId = null;}
                 });
         }, 'image/webp', 1);
     };
