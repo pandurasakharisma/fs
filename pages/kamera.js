@@ -220,6 +220,11 @@ export let renderKamera = () => {
                     showToast('Gambar Berhasil diUpload', 'success');
                     let redirectParams = new URLSearchParams();
                     expectedKeys.forEach(key => params.has(key) && redirectParams.set(key, params.get(key)));
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                    if (gpsWatchId !== null) {
+                        navigator.geolocation.clearWatch(gpsWatchId);
+                        gpsWatchId = null;
+                    }
                     window.location.hash = 'listitem?' + redirectParams.toString();
                 })
                 .catch(() => console.log('Gagal Mengirim Foto'))
@@ -238,7 +243,6 @@ export let renderKamera = () => {
         isCapturing = true;
         captureButton.innerHTML = '<div class="spinner"></div>';
         captureButton.style.animation = 'none';
-
         navigator.geolocation.getCurrentPosition(
             pos => sendCapture(pos.coords.latitude, pos.coords.longitude),
             () => sendCapture(null, null)

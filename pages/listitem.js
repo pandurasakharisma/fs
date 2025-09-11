@@ -254,8 +254,8 @@ export let renderListItem = () => {
 
             .recr {
                 display: block;
-                margin: 5px 10px 20px;
-                width: calc(100% - 20px);
+                margin: 5px 0 20px;
+                width: 100%;
                 text-align: center;
                 background: #f9ebeb;
                 border-radius: 8px;
@@ -812,7 +812,7 @@ export let renderListItem = () => {
         gallery.className = `gallery ${layout}`;
         gallery.innerHTML = images.map((img, index) =>
             `<div class="gallery-item" data-index="${index}">
-                <img src="${img.src}" alt="${img.alt}" onerror="this.style.display='none'">
+                <img src="${img.src}" alt="${img.alt}">
             </div>`
         ).join('');
     };
@@ -966,19 +966,18 @@ export let renderListItem = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ method: 'search', address, city, CardCode: cust_code })
         });
+
         let searchData = await searchRes.json();
-    
         if (searchData?.status === 'success') {
             let firstLat = searchData.data?.lat;
             let firstLon = searchData.data?.lon;
-    
             let reverseRes = await fetch(urlbe + 'carialamatlatlon', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ method: 'reverse', lat: lat, lon: lon })
             });
+
             let reverseData = await reverseRes.json();
-    
             if (reverseData?.status === 'success') {
                 document.querySelector('#alamat2').innerText = reverseData.data.display_name;
             }
