@@ -27,7 +27,7 @@ window.setUserCode = () => {
 let init_iconsax = () => {
     document.querySelectorAll(".iconsax").forEach(iconsax => {
         let TuT = iconsax.getAttribute("data-icon").toLowerCase().trim();
-        fetch("https://glenthemes.github.io/iconsax/icons/" + TuT + ".svg")
+        fetch("https://pandurasakharisma.github.io/icon/icons/" + TuT + ".svg")
             .then(res => res.text())
             .then(svg => iconsax.innerHTML = svg)
             .catch(error => console.error(`Gagal memuat ikon: ${TuT}`, error));
@@ -237,11 +237,6 @@ let renderHeadContent = () => {
         head.appendChild(element)
     })
 }
-
-
-/* ==========================================
-   DYNAMIC ROUTER DENGAN DYNAMIC IMPORT
-========================================== */
 
 let router = async () => {
     checkAuth();

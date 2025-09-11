@@ -722,7 +722,10 @@ export let renderListItem = () => {
         }
     };
 
-
+    let mediaRecorder = null,
+    audioChunks = [],
+    stream = null;
+    
     let imagedata = [];
     let gallery = document.getElementById('gallery');
     let clay, viewer, viewerimage, closebtn, prevbtn, nextbtn, currentindex = 0;
