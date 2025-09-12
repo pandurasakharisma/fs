@@ -243,8 +243,8 @@ export const renderHome = () => {
                 color: #fff;
             }
             .seclist {
-                background: #fff;
-                border-radius: 8px 8px 0 0;
+                background: #f5f5f5;
+                border-radius: 16px 16px 0 0;
                 overflow: hidden;
                 margin-top: -20px;
                 z-index: +1;
@@ -320,15 +320,13 @@ export const renderHome = () => {
                 color: #6c757d;
             }
 
-            .location-box svg {
-                fill: #c53f3f;
-                stroke: #c53f3f;
-            }
+            .location-box svg {stroke: #c53f3f;}
 
             .left-box {
                 border-right: 1px solid #dee2e6;
                 padding-right: 15px;
             }
+            .total-ride-list li{min-width:40%;}
 
             @media (max-width: 576px) {
                 .left-box {
@@ -338,16 +336,73 @@ export const renderHome = () => {
         </style>
 
         <header id="header" class="main-header"
-            style="background:#fff;padding:10px 0;box-shadow: 3px -2px 10px rgb(0 0 0 / 47%);">
+            style="background:#fff;padding:10px 0 0;">
             <div class="custom-container">
                 <div id="headerx"></div>
             </div>
         </header>
-
-        <div id="absenkeluar"></div>
-
+        <section id="piltanggal" class="location-section pt-0" style="padding-bottom: 40px;"></section>
+        <div id="absenkeluar" class="hide"></div>
         <section class="seclist">
             <div class="custom-container">
+                <ul class="total-ride-list mt-0 p-0" style="display: inline-flex;white-space: nowrap;margin: 10px 0 20px; gap:10px;overflow-x: scroll;max-width: 100%;">
+                    <li>
+                        <a href="wallet.html" class="ride-box">
+                            <div class="flex-spacing gap-1">
+                                <h4>$3100</h4>
+                                <div class="ride-icon">
+                                    <i class="iconsax icon" data-icon="wallet-open"></i>
+                                </div>
+                            </div>
+                            <div class="flex-spacing gap-1 mt-1">
+                                <h6 class="d-flex flex-wrap">Total Earnings</h6>
+                                <i class="iconsax arrow-icon" data-icon="arrow-right"></i>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="my-rides.html" class="ride-box">
+                            <div class="flex-spacing gap-1">
+                                <h4>16</h4>
+                                <div class="ride-icon">
+                                    <i class="iconsax icon" data-icon="smart-car"></i>
+                                </div>
+                            </div>
+                            <div class="flex-spacing gap-1 mt-1">
+                                <h6 class="d-flex flex-wrap">Complete Ride</h6>
+                                <i class="iconsax arrow-icon" data-icon="arrow-right"></i>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="my-rides.html" class="ride-box">
+                            <div class="flex-spacing gap-1">
+                                <h4>02</h4>
+                                <div class="ride-icon">
+                                    <i class="iconsax icon" data-icon="car"></i>
+                                </div>
+                            </div>
+                            <div class="flex-spacing gap-1 mt-1">
+                                <h6 class="d-flex flex-wrap">Pending Ride</h6>
+                                <i class="iconsax arrow-icon" data-icon="arrow-right"></i>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="my-rides.html" class="ride-box">
+                            <div class="flex-spacing gap-1">
+                                <h4>04</h4>
+                                <div class="ride-icon">
+                                    <i class="iconsax icon" data-icon="driving"></i>
+                                </div>
+                            </div>
+                            <div class="flex-spacing gap-1 mt-1">
+                                <h6 class="d-flex flex-wrap">Cancel Ride</h6>
+                                <i class="iconsax arrow-icon" data-icon="arrow-right"></i>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
                 <ul class="my-ride-list" style="margin-top: 0;"></ul>
             </div>
         </section>
@@ -362,11 +417,52 @@ export const renderHome = () => {
     removeSkeleton(document.querySelector("#app"));
     let placeList = document.querySelector('.my-ride-list');
     showSkeleton(placeList, 10);
-
+    renderpiltanggal()
     renderHeader()
     panelkeluar()
     waitForUserCode()
 }
+
+let renderpiltanggal = () => {
+    document.getElementById('piltanggal').innerHTML = `
+    <div class="custom-container">
+        <ul class="pickup-location-listing">
+            <li>
+                <div class="location-box" style="position:relative;">
+                    <i class="iconsax icon" data-icon="calendar-1" style="--Iconsax-Color: #c53f3f;"></i>
+                    <input type="text" id="dateDisplay" class="form-control border-0" placeholder="Pilih tanggal mulai - akhir" readonly>
+                    <input type="date" id="startDate" class="form-control border-0 hide" style="width:100%;position:relative;opacity:1;">
+                    <input type="date" id="endDate" class="form-control border-0 hide" style="width:100%;position:relative;opacity:1;">
+                </div>
+            </li>
+        </ul>
+    </div>
+    `;
+
+    const display = document.getElementById('dateDisplay');
+    const start = document.getElementById('startDate');
+    const end = document.getElementById('endDate');
+
+    end.style.display = 'none'; 
+    display.onclick = () => {
+        start.click();
+        start.focus();
+    }
+    start.onchange = () => {
+        end.min = start.value;
+        end.style.display = 'block';
+        end.value = '';
+        end.focus();
+    };
+
+    end.onchange = () => {
+        if(new Date(end.value) < new Date(start.value)) {
+            alert('Tanggal akhir tidak boleh lebih kecil dari tanggal awal.');
+            end.value = start.value;
+        }
+        display.value = `${start.value} s/d ${end.value}`;
+    };
+};
 
 
 let renderHeader = () => {
