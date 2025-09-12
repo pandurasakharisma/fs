@@ -157,14 +157,13 @@ const getMingguKe = (d) => {
     return Math.floor((offset + d.getDate() - 1) / 7) + 1;
 };
 
-let getMingguHari = () => {
-    let now = new Date()
-    let tanggal = now.getDate()
-    let hari = now.getDay() 
-    hari = hari === 0 ? 7 : hari 
-    let minggu = Math.ceil(tanggal / 7) 
-    return { minggu, hari }
-}
+let getMingguHari = (date = new Date()) => {
+    let tanggal = date.getDate();
+    let hari = date.getDay();
+    hari = hari === 0 ? 7 : hari;
+    let minggu = Math.ceil(tanggal / 7);
+    return { minggu, hari };
+};
 
 
 const fmtDateTime = (d) => {

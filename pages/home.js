@@ -327,7 +327,14 @@ export const renderHome = () => {
                 padding-right: 15px;
             }
             .total-ride-list li{min-width:40%;}
-
+            .hidden-date {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 1px;
+                height: 1px;
+                visibility: hidden; 
+            }
             @media (max-width: 576px) {
                 .left-box {
                     padding-bottom: 0;
@@ -430,9 +437,21 @@ let renderpiltanggal = () => {
             <li>
                 <div class="location-box" style="position:relative;">
                     <i class="iconsax icon" data-icon="calendar-1" style="--Iconsax-Color: #c53f3f;"></i>
-                    <input type="text" id="dateDisplay" class="form-control border-0" placeholder="Pilih tanggal mulai - akhir" readonly>
-                    <input type="date" id="startDate" class="form-control border-0 hide" style="width:100%;position:relative;opacity:1;">
-                    <input type="date" id="endDate" class="form-control border-0 hide" style="width:100%;position:relative;opacity:1;">
+                    <input 
+                        type="text" 
+                        id="dateDisplay" 
+                        class="form-control border-0" 
+                        placeholder="Pilih tanggal" 
+                        readonly
+                        style="padding-left:0px; cursor:pointer;"
+                    >
+                    <input 
+                        type="date" 
+                        id="hiddenDate" 
+                        class="form-control border-0" 
+                        style="position:absolute; opacity:0; pointer-events:none;"
+                    >
+                    <i class="iconsax add-stop" data-icon="add"></i>
                 </div>
             </li>
         </ul>
@@ -440,30 +459,30 @@ let renderpiltanggal = () => {
     `;
 
     const display = document.getElementById('dateDisplay');
-    const start = document.getElementById('startDate');
-    const end = document.getElementById('endDate');
+    const hiddenDate = document.getElementById('hiddenDate');
 
-    end.style.display = 'none'; 
     display.onclick = () => {
-        start.click();
-        start.focus();
-    }
-    start.onchange = () => {
-        end.min = start.value;
-        end.style.display = 'block';
-        end.value = '';
-        end.focus();
+        hiddenDate.showPicker?.();
+        hiddenDate.click();
     };
 
-    end.onchange = () => {
-        if(new Date(end.value) < new Date(start.value)) {
-            alert('Tanggal akhir tidak boleh lebih kecil dari tanggal awal.');
-            end.value = start.value;
+    hiddenDate.onchange = () => {
+        if (hiddenDate.value) {
+            const selectedDate = new Date(hiddenDate.value);
+            const formattedDate = selectedDate.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            display.value = formattedDate;
+            const result = getMingguHari(selectedDate);
+            
+            const usercode = document.getElementById("usercode")
+            loadJadwal(usercode.value, result.minggu, result.hari)
+
         }
-        display.value = `${start.value} s/d ${end.value}`;
     };
 };
-
 
 let renderHeader = () => {
     
@@ -609,8 +628,14 @@ window.delitjdw = (id, el) => {
         }, 10); 
     };
 };
-let loadJadwal = usercode => {
-    let { minggu, hari } = getMingguHari();
+let loadJadwal = (usercode, minggu = null, hari = null) => {
+
+    if (!minggu || !hari) {
+        const today = getMingguHari();
+        minggu = today.minggu;
+        hari = today.hari;
+    }
+    
     fetch(urlbe + "listjadwal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
