@@ -352,6 +352,7 @@ export const renderHome = () => {
         <div id="absenkeluar" class="hide"></div>
         <section class="seclist">
             <div class="custom-container">
+                <h3 class="m-2" id="h3info">Summary</h3>
                 <ul class="total-ride-list mt-0 p-0" style="display: inline-flex;white-space: nowrap;margin: 10px 0 20px; gap:10px;overflow-x: scroll;max-width: 100%;">
                     <li>
                         <a href="wallet.html" class="ride-box">
@@ -410,7 +411,9 @@ export const renderHome = () => {
                         </a>
                     </li>
                 </ul>
-                <ul class="my-ride-list" style="margin-top: 0;"></ul>
+                
+                <h3 class="m-2" id="h3schedule">Schedule</h3>
+                <ul class="my-ride-list" style="margin-top: 0;padding-bottom: 40px;"></ul>
             </div>
         </section>
 
