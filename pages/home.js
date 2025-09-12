@@ -430,10 +430,10 @@ export const renderHome = () => {
     renderpiltanggal()
     renderHeader()
     panelkeluar()
-    waitForUserCode()
 }
 
 let renderpiltanggal = () => {
+
     document.getElementById('piltanggal').innerHTML = `
     <div class="custom-container">
         <ul class="pickup-location-listing">
@@ -469,20 +469,50 @@ let renderpiltanggal = () => {
         hiddenDate.click();
     };
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlTanggal = urlParams.get('tanggal');
+    const urlMinggu = urlParams.get('minggu');
+    const urlHari = urlParams.get('hari');
+
+    if (urlTanggal) {
+        const selectedDate = new Date(urlTanggal);
+        const formattedDate = selectedDate.toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+
+        display.value = formattedDate;
+        hiddenDate.value = urlTanggal; 
+        const usercode = document.getElementById("usercode");
+        loadJadwal(usercode.value, urlMinggu, urlHari);
+        document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${urlParams}')`)
+    }else{
+        waitForUserCode();
+    }
+
     hiddenDate.onchange = () => {
         if (hiddenDate.value) {
+
             const selectedDate = new Date(hiddenDate.value);
             const formattedDate = selectedDate.toLocaleDateString('id-ID', {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'
             });
+
             display.value = formattedDate;
             const result = getMingguHari(selectedDate);
+            const params = new URLSearchParams(window.location.search);
+            params.set('tanggal', hiddenDate.value); 
+            params.set('minggu', result.minggu);
+            params.set('hari', result.hari);
             
-            const usercode = document.getElementById("usercode")
-            loadJadwal(usercode.value, result.minggu, result.hari)
-
+            window.history.replaceState({}, '', `#home?${params.toString()}`);
+            document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${params.toString()}')`)
+    
+            const usercode = document.getElementById("usercode");
+            loadJadwal(usercode.value, result.minggu, result.hari);
         }
     };
 };
