@@ -165,6 +165,7 @@ export let renderKamera = () => {
         permissionButton.style.display = 'block';
         document.getElementById('messageText').textContent = msg;
     };
+    
 
     let startCameraStream = async () => {
         try {
@@ -204,7 +205,6 @@ export let renderKamera = () => {
             navigator.geolocation.clearWatch(watchId);
             watchId = null;
         }
-        window.cameraState.isGPSActive = false;
     };
 
     let sendCapture = (lat, lon) => {

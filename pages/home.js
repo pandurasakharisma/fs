@@ -495,6 +495,8 @@ let renderpiltanggal = () => {
         }else{
             waitForUserCode();
         }
+    }else{
+        waitForUserCode();
     }
 
     hiddenDate.onchange = () => {
