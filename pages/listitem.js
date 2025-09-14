@@ -763,7 +763,6 @@ export let renderListItem = () => {
             let result = await res.json();
             if (result.status === "success" && result.data) {
                 let items = Array.isArray(result.data) ? result.data : [result.data];
-                formContainer.innerHTML = '';
                 addFormsFromData(items);
             }
         } catch (err) {

@@ -76,7 +76,7 @@ let panelkeluar = () => {
     setInterval(updateClock, 100);
 };
 
-export const renderHome = () => {
+export let renderHome = () => {
     document.querySelector('#app').innerHTML = `
         <style>
             .addcust svg {
@@ -461,49 +461,55 @@ let renderpiltanggal = () => {
     </div>
     `;
 
-    const display = document.getElementById('dateDisplay');
-    const hiddenDate = document.getElementById('hiddenDate');
+    let display = document.getElementById('dateDisplay');
+    let hiddenDate = document.getElementById('hiddenDate');
 
     display.onclick = () => {
         hiddenDate.showPicker?.();
         hiddenDate.click();
     };
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlTanggal = urlParams.get('tanggal');
-    const urlMinggu = urlParams.get('minggu');
-    const urlHari = urlParams.get('hari');
+    let hash = window.location.hash.substring(1);
+    let [route, queryString] = hash.split('?');
+    
+    if (queryString) {
+        let urlParams = new URLSearchParams(queryString);
+        let urlTanggal = urlParams.get('tanggal');
+        let urlMinggu = urlParams.get('minggu');
+        let urlHari = urlParams.get('hari');
+        
+        if (urlMinggu && urlHari) {
+            let selectedDate = new Date(urlTanggal);
+            let formattedDate = selectedDate.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
 
-    if (urlTanggal) {
-        const selectedDate = new Date(urlTanggal);
-        const formattedDate = selectedDate.toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
 
-        display.value = formattedDate;
-        hiddenDate.value = urlTanggal; 
-        const usercode = document.getElementById("usercode");
-        loadJadwal(usercode.value, urlMinggu, urlHari);
-        document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${urlParams}')`)
-    }else{
-        waitForUserCode();
+            display.value = formattedDate;
+            hiddenDate.value = urlTanggal; 
+            let usercode = document.getElementById("usercode");
+            loadJadwal(usercode.value, urlMinggu, urlHari);
+            document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${urlParams}')`)
+        }else{
+            waitForUserCode();
+        }
     }
 
     hiddenDate.onchange = () => {
         if (hiddenDate.value) {
 
-            const selectedDate = new Date(hiddenDate.value);
-            const formattedDate = selectedDate.toLocaleDateString('id-ID', {
+            let selectedDate = new Date(hiddenDate.value);
+            let formattedDate = selectedDate.toLocaleDateString('id-ID', {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'
             });
 
             display.value = formattedDate;
-            const result = getMingguHari(selectedDate);
-            const params = new URLSearchParams(window.location.search);
+            let result = getMingguHari(selectedDate);
+            let params = new URLSearchParams(window.location.search);
             params.set('tanggal', hiddenDate.value); 
             params.set('minggu', result.minggu);
             params.set('hari', result.hari);
@@ -511,7 +517,7 @@ let renderpiltanggal = () => {
             window.history.replaceState({}, '', `#home?${params.toString()}`);
             document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${params.toString()}')`)
     
-            const usercode = document.getElementById("usercode");
+            let usercode = document.getElementById("usercode");
             loadJadwal(usercode.value, result.minggu, result.hari);
         }
     };
@@ -592,9 +598,9 @@ let renderHeader = () => {
 };
 
 
-const waitForUserCode = () => {
-    const interval = setInterval(() => {
-        const el = document.getElementById("usercode")
+let waitForUserCode = () => {
+    let interval = setInterval(() => {
+        let el = document.getElementById("usercode")
         if (el) {
             clearInterval(interval)
             setTimeout(() => loadJadwal(el.value), 60)
@@ -664,7 +670,7 @@ window.delitjdw = (id, el) => {
 let loadJadwal = (usercode, minggu = null, hari = null) => {
 
     if (!minggu || !hari) {
-        const today = getMingguHari();
+        let today = getMingguHari();
         minggu = today.minggu;
         hari = today.hari;
     }
