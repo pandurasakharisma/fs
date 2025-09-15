@@ -169,7 +169,7 @@ export let renderKamera = () => {
     let stream = null,  watchId = null, isCameraActive = false; 
     let startCameraStream = async () => {
         try {
-            let stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
             video.srcObject = stream;
             isCameraActive = true;
             video.style.display = captureButton.style.display = switchButton.style.display = 'flex';
