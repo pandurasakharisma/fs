@@ -454,11 +454,11 @@ window.gantiuserh =(el)=>{
     document.querySelector('#pilihuser').innerHTML = elfull_name.toUpperCase();
 
     params.set('usercode', selectedUserCode);
+    document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${params.toString()}')`);
     window.history.replaceState({}, '', `#home?${params.toString()}`);
 
     let dateToUse = selectedDate || new Date();
     let mh = getMingguHari(dateToUse);
-    console.log('wombat0');
     loadJadwal(selectedUserCode, mh.minggu, mh.hari);
 
 };
@@ -552,10 +552,13 @@ window.piluser = () => {
 
 let renderpiltanggal = () => {
 
+    let userData = localStorage.getItem('user_data');
+    let isAdmin = userData ? JSON.parse(userData).is_admin : false;
+    let gtusrx = (isAdmin) ? '' : 'hide'
     document.getElementById('piltanggal').innerHTML = `
     <div class="custom-container">
         <ul class="pickup-location-listing">
-            <li>
+            <li id="gtuser" class="${gtusrx}">
                 <div class="location-box" style="position:relative;">
                     <i class="iconsax icon" data-icon="user-2-circle" style="--Iconsax-Color: #c53f3f;"></i>
                     <span 
@@ -575,7 +578,7 @@ let renderpiltanggal = () => {
                         class="form-control border-0" 
                         placeholder="Pilih tanggal" 
                         readonly
-                        style="padding-left:0px; cursor:pointer;"
+                        style="padding-left:0px; cursor:pointer;text-transform:uppercase;"
                     >
                     <input 
                         type="date" 
@@ -629,13 +632,11 @@ let renderpiltanggal = () => {
             display.value = formattedDate;
             hiddenDate.value = urlTanggal; 
             const userToUse = selectedUserCode || document.getElementById('usercode').value;
-            console.log('wombat01');
             loadJadwal(userToUse, urlMinggu, urlHari);
             document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${urlParams}')`)
         } else {
             let userToUse = selectedUserCode ?? document.getElementById("usercode").value;
             let today = getMingguHari();
-            console.log('wombat02');
             loadJadwal(userToUse, today.minggu, today.hari);
         }
     }else{
@@ -663,7 +664,6 @@ let renderpiltanggal = () => {
             document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${params.toString()}')`)
     
             let usercode = document.getElementById("usercode");
-            console.log('wombat03');
             loadJadwal(usercode.value, result.minggu, result.hari);
         }
     };
@@ -749,7 +749,6 @@ let waitForUserCode = () => {
         let el = document.getElementById("usercode")
         if (el) {
             clearInterval(interval)
-            console.log('wombat4');
             setTimeout(() => loadJadwal(el.value), 60)
         }
     }, 60)

@@ -1,4 +1,4 @@
-export const renderlistpelanggan = () => {
+export let renderlistpelanggan = () => {
     let selectedStores = [];
     let hash = window.location.hash.substring(1);
     let [route, queryString] = hash.split('?');
@@ -9,6 +9,7 @@ export const renderlistpelanggan = () => {
     let usercode = urlParams.get('usercode') || null;  
     let mingguUrl = urlParams.get('minggu') || null;
     let hariUrl = urlParams.get('hari') || null;
+    let tanggal = urlParams.get('hari') || null;
 
     document.querySelector('#app').innerHTML = `
         <style>
@@ -162,7 +163,7 @@ export const renderlistpelanggan = () => {
             <div class="custom-container">
                 <div class="header-panel">
                 <div class="flex-spacing gap-2 w-100" style="align-items: center; display: flex;">
-                    <a onclick="hrefs('home')" class="back-btn">
+                    <a class="back-btn backcp">
                         <i class="iconsax icon-btn" data-icon="chevron-left" height="40" width="40" style="border: none;margin-left: -10px;"></i>
                     </a>
                     <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 8px;">
@@ -254,6 +255,15 @@ export const renderlistpelanggan = () => {
         <section class="panel-space"></section>
     `
 
+    let backcp = document.querySelector('.backcp');
+    if(backcp){        
+        let now = new Date();
+        let minggu = mingguUrl || String(getMingguKe(now));
+        let hari = hariUrl || String(getHariMon1(now));
+        let nurl = `home?tanggal=${tanggal}&minggu=${minggu}&hari=${hari}&usercode=${usercode}`;
+        backcp.setAttribute('onclick',`hrefs('${nurl}')`);
+    }
+    
     let openPopup = () => document.getElementById('modpop').classList.add('show');
     let closePopup = () => document.getElementById('modpop').classList.remove('show');
 
@@ -266,16 +276,16 @@ export const renderlistpelanggan = () => {
     let currentPage = 1;
     let isLoading = false;
     let hasMore = true;
-    const limit = 20;
+    let limit = 20;
     let currentSearch = '';
     let searchTimeout = null;
 
-    const addToJadwal = async (store) => {
-        const now = new Date();
-        const minggu = mingguUrl || String(getMingguKe(now));
-        const hari = hariUrl || String(getHariMon1(now));
+    let addToJadwal = async (store) => {
+        let now = new Date();
+        let minggu = mingguUrl || String(getMingguKe(now));
+        let hari = hariUrl || String(getHariMon1(now));
 
-        const payload = {
+        let payload = {
             cardcode: store.CardCode,
             cardname: store.CardName,
             usercode,
@@ -290,8 +300,9 @@ export const renderlistpelanggan = () => {
             result: null,
             created_at: fmtDateTime(now)
         };
+
         try {
-            const response = await fetch(urlbe + "addtojadwal", {
+            let response = await fetch(urlbe + "addtojadwal", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
@@ -307,8 +318,8 @@ export const renderlistpelanggan = () => {
     };
 
     let updateTbf2Visibility = () => {
-        const readyItems = document.querySelectorAll('#placeList li[data-ready="1"]');
-        const tbf2 = document.querySelector('.tbf2');
+        let readyItems = document.querySelectorAll('#placeList li[data-ready="1"]');
+        let tbf2 = document.querySelector('.tbf2');
         if (tbf2) {
             if (readyItems.length > 0) {
                 tbf2.classList.remove('hide'); 
@@ -317,9 +328,9 @@ export const renderlistpelanggan = () => {
             else {tbf2.classList.add('hide');}
         }
     };
-    const renderStores = (stores, placeList, templateItem) => {
+    let renderStores = (stores, placeList, templateItem) => {
         stores.forEach(store => {
-            const li = templateItem.cloneNode(true);
+            let li = templateItem.cloneNode(true);
             li.style.display = 'block';
             li.querySelector('.card-name').textContent = store.CardName;
             li.querySelector('.address').textContent = 
@@ -327,11 +338,11 @@ export const renderlistpelanggan = () => {
               ? `${store.Address} - ${store.City}`
               : store.City;
           
-            const icon = li.querySelector('.icon');
+            let icon = li.querySelector('.icon');
             li.dataset.ready = "0"; 
             li.dataset.store = JSON.stringify(store);
             li.onclick = () => {
-                const storeData = JSON.parse(li.dataset.store);
+                let storeData = JSON.parse(li.dataset.store);
             
                 if (li.dataset.ready === "0") {
                     li.dataset.ready = "1";
@@ -356,21 +367,30 @@ export const renderlistpelanggan = () => {
     };
     
     document.querySelector(".addcustx").onclick = async () => {
+        let now = new Date();
+        let minggu = mingguUrl || String(getMingguKe(now));
+        let hari = hariUrl || String(getHariMon1(now));
+        
         if (selectedStores.length === 0) {showToast("Tidak ada pelanggan yang dipilih.", "danger");return;}
     
 
-        for (const store of selectedStores) {
+        for (let store of selectedStores) {
             await addToJadwal(store);
         }
 
         showToast(`${selectedStores.length} pelanggan berhasil ditambahkan ke jadwal.`, "success");
         selectedStores = [];
         setTimeout(() => {
-            window.location.hash = '/home'
-        }, 800);
+            window.location.hash = `home?tanggal=${tanggal}&minggu=${minggu}&hari=${hari}&usercode=${usercode}`;
+        }, 100);
     };
 
     document.querySelector(".simpancust").onclick = async function () {
+        
+        let now = new Date();
+        let minggu = mingguUrl || String(getMingguKe(now));
+        let hari = hariUrl || String(getHariMon1(now));
+
         let form = document.querySelector(".jotheme-form");
         let formData = new FormData(form);
         let data = {};
@@ -381,14 +401,12 @@ export const renderlistpelanggan = () => {
         });
 
         data["usercode"] = userCode;
-
         closePopup();
         if (kosong) {
             showToast("Semua field harus diisi.", "danger");
             openPopup();
             return;
         }
-
         try {
             let response = await fetch(urlbe + "addpelanggan", {
                 method: "POST",
@@ -398,7 +416,7 @@ export const renderlistpelanggan = () => {
             if (response.ok) {
                 showToast("Data pelanggan berhasil disimpan.", "success");
                 form.reset();
-                window.location.hash = '/home'
+                window.location.hash = `home?tanggal=${tanggal}&minggu=${minggu}&hari=${hari}&usercode=${usercode}`;
             } else {
                 showToast("Terjadi kesalahan saat menyimpan data.", "danger");
             }
@@ -407,13 +425,16 @@ export const renderlistpelanggan = () => {
         }
     };
 
-    const placeList = document.getElementById('placeList');
-    const templateItem = document.querySelector('.recent-place-item');
+    let placeList = document.getElementById('placeList');
+    let templateItem = document.querySelector('.recent-place-item');
 
     showSkeleton(placeList, limit);
 
-    const fetchAndRenderStores = async (reset = false) => {
-        let { minggu, hari } = getMingguHari();
+    let fetchAndRenderStores = async (reset = false) => {
+        
+        let now = new Date();
+        let minggu = mingguUrl || String(getMingguKe(now));
+        let hari = hariUrl || String(getHariMon1(now));
         if (!usercode) {
             console.log("Usercode belum tersedia.");
             return;
@@ -437,12 +458,12 @@ export const renderlistpelanggan = () => {
             }
     
             try {
-                const response = await fetch(urlbe + 'caripelanggan', {
+                let response = await fetch(urlbe + 'caripelanggan', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ usercode, minggu, hari, search: currentSearch, page: currentPage, limit })
                 });
-                const result = await response.json();
+                let result = await response.json();
     
                 removeSkeleton(placeList);
     
@@ -469,7 +490,7 @@ export const renderlistpelanggan = () => {
         isLoading = false;
     };
 
-    const handleSearch = e => {
+    let handleSearch = e => {
         currentSearch = e.target.value.trim();
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
