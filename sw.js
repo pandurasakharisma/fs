@@ -46,12 +46,20 @@ self.addEventListener("activate", event => {
   self.clients.claim();
 });
 
-self.addEventListener("fetch", event => {
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') {return;}
   event.respondWith(
-    fetch(event.request).then(response => {
-      let clone = response.clone();
-      caches.open(cacheName).then(cache => cache.put(event.request, clone));
-      return response;
-    }).catch(() => caches.match(event.request).then(cachedResponse => cachedResponse || caches.match("./index.html")))
+    fetch(event.request)
+      .then(response => {
+        const clone = response.clone();
+        caches.open(cacheName).then(cache => {
+          cache.put(event.request, clone);
+        });
+        return response;
+      })
+      .catch(() => {
+        return caches.match(event.request)
+          .then(cachedResponse => cachedResponse || caches.match('./index.html'));
+      })
   );
 });

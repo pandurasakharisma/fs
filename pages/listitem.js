@@ -320,6 +320,7 @@ export let renderListItem = () => {
                 position: relative;
                 overflow: hidden;
                 cursor: pointer;
+                background: #ddd;
             }
 
             .gallery-item img {
@@ -811,7 +812,7 @@ export let renderListItem = () => {
         gallery.className = `gallery ${layout}`;
         gallery.innerHTML = images.map((img, index) =>
             `<div class="gallery-item" data-index="${index}">
-                <img src="${img.src}" alt="${img.alt}">
+                <img src="${img.src}" alt="${img.alt}"  onerror="this.style.display='none';">
             </div>`
         ).join('');
     };

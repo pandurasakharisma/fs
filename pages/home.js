@@ -472,6 +472,7 @@ let renderpiltanggal = () => {
     let hash = window.location.hash.substring(1);
     let [route, queryString] = hash.split('?');
     
+    waitForUserCode();
     if (queryString) {
         let urlParams = new URLSearchParams(queryString);
         let urlTanggal = urlParams.get('tanggal');
@@ -486,17 +487,12 @@ let renderpiltanggal = () => {
                 year: 'numeric'
             });
 
-
             display.value = formattedDate;
             hiddenDate.value = urlTanggal; 
             let usercode = document.getElementById("usercode");
             loadJadwal(usercode.value, urlMinggu, urlHari);
             document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${urlParams}')`)
-        }else{
-            waitForUserCode();
         }
-    }else{
-        waitForUserCode();
     }
 
     hiddenDate.onchange = () => {
