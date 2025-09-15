@@ -1,4 +1,6 @@
 
+    
+window.params = new URLSearchParams(window.location.search);
 let panelkeluar = () => {
     showSkeleton(document.querySelector('#app'), 5);
     let createDashboardUI = () => {
@@ -86,7 +88,7 @@ export let renderHome = () => {
                 width: 48px;
                 height: 48px;
                 cursor: pointer;
-                z-index: 9999;
+                z-index: +2;
                 border-radius: 50%;
                 background: #c53f3f;
                 padding: 10px;
@@ -335,6 +337,9 @@ export let renderHome = () => {
                 height: 1px;
                 visibility: hidden; 
             }
+            #listuserx{padding:20px 10px;}
+            .contact-list li .contact-box i{ --Iconsax-Color: #c53f3f;}
+            .contact-list li .contact-box .igb svg{width: 25px;height: 25px;}
             @media (max-width: 576px) {
                 .left-box {
                     padding-bottom: 0;
@@ -412,15 +417,19 @@ export let renderHome = () => {
                     </li>
                 </ul>
                 
+                <a onclick="hrefs('listpelanggan')" class="iconsax addcust" data-icon="add" id="addform"></a>
                 <h3 class="m-2" id="h3schedule">Schedule</h3>
                 <ul class="my-ride-list" style="margin-top: 0;padding-bottom: 40px;"></ul>
+                <div class="offcanvas element-offcanvas offcanvas-bottom" id="offcanvasBottom" style="max-height: 80vh;height: fit-content;">
+                    <div class="offcanvas-header ">
+                        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Pilih User</h5>
+                        <button type="button" class="btn-close closec" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body"></div>
+                </div>
             </div>
         </section>
-
         <section class="panel-space"></section>
-
-        <a onclick="hrefs('listpelanggan')" class="iconsax addcust" data-icon="add" id="addform"></a>
-
     `
 
     
@@ -432,11 +441,114 @@ export let renderHome = () => {
     panelkeluar()
 }
 
+window.gantiuserh =(el)=>{
+    let elcard_id = el.getAttribute('data-card_id'),
+    elfull_name = el.getAttribute('data-full_name');
+    document.querySelector('.closec').click();
+    document.querySelector('#usercode').value = elcard_id;
+    document.querySelector('#usercode').setAttribute('value',elcard_id);
+    document.querySelector('#pilihuser').innerHTML = elfull_name.toUpperCase();
+
+    params.set('usercode', elcard_id);
+    window.history.replaceState({}, '', `#home?${params.toString()}`);
+};
+
+window.piluser = () => {
+    document.querySelector('#offcanvasBottom .offcanvas-body').innerHTML = `
+        <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 8px;">
+            <img class="icon" src="./assets/images/user-0.svg" style="width: 24px;margin-right: 10px;">
+            <input type="text" id="searchInputc" class="form-control border-0 p-0" placeholder="Cari Team" style="background: none;flex:1; box-shadow:none;">
+            <i id="clearBtnc" class="iconsax clear-btn hide" data-icon="close-circle"></i>
+        </div>
+        <div id="listuserx">
+            <ul class="contact-list pt-0" style="max-height: calc(80vh - 200px);overflow-x: scroll;"></ul>
+        </div>
+    `;
+
+    let searchInputc = document.querySelector('#searchInputc'),
+    clearBtnc= document.querySelector('#clearBtnc');
+    searchInputc.focus();
+    
+    showSkeleton(document.querySelector('#listuserx ul'), 10);
+    fetch(urlbe + "listuser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(r => r.json())
+    .then(res => {
+        let listContainer = document.querySelector('#listuserx ul');
+        if (res.status === 'success' && Array.isArray(res.data)) {
+            let html = '';
+            res.data.forEach(user => {
+                removeSkeleton(document.querySelector("#listuserx ul"));
+                html += `
+                    <li onclick="gantiuserh(this);" 
+                        data-Full_Name="${user.Full_Name}"
+                        data-usercode="${user.Card_ID}"
+                        data-Card_ID="${user.Card_ID}"
+                    >
+                        <span class="contact-box">
+                            <div class="contact-details">
+                                <i class="iconsax igb" data-icon="user-2-circle"></i>
+                                <div>
+                                    <h5 style="text-transform:uppercase;white-space: nowrap;max-width:95%;overflow: hidden;text-overflow: ellipsis;line-height: 1.5;">${user.Full_Name}</h5>
+                                    <small style="color: #c53f3f;font-size: 9px;">${user.Job_Position} #${user.Card_ID}</small>
+                                </div>
+                            </div>
+                            <i class="iconsax" data-icon="chevron-right"></i>
+                        </span>
+                    </li>
+                `;
+            });
+            listContainer.innerHTML = html;
+
+
+            searchInputc.addEventListener('input', () => {
+                let filter = searchInputc.value.toUpperCase();
+                if(filter != ''){ clearBtnc.classList.remove('hide');}
+                let items = document.querySelectorAll('#listuserx ul li');
+                items.forEach(item => {
+                    let name = item.querySelector('h5').innerText.toUpperCase();
+                    item.style.display = name.includes(filter) ? '' : 'none';
+                });
+            });
+        
+            clearBtnc.onclick =()=> {
+                searchInputc.value = '';
+                clearBtnc.classList.add('hide');
+                searchInputc.dispatchEvent(new Event('input'));
+            };
+            
+            init_iconsax();
+        } else {
+            listContainer.innerHTML = `<li><div class="contact-box">Data tidak tersedia</div></li>`;
+        }
+    })
+    .catch(() => {
+        document.querySelector('#listuserx ul').innerHTML = `<li><div class="contact-box">Terjadi kesalahan saat mengambil data</div></li>`;
+    });
+
+    document.querySelector('#offcanvasBottomLabel').innerHTML = 'Pilih User';
+};
+
+
 let renderpiltanggal = () => {
 
     document.getElementById('piltanggal').innerHTML = `
     <div class="custom-container">
         <ul class="pickup-location-listing">
+            <li>
+                <div class="location-box" style="position:relative;">
+                    <i class="iconsax icon" data-icon="user-2-circle" style="--Iconsax-Color: #c53f3f;"></i>
+                    <span 
+                        id="pilihuser" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasBottom" 
+                        class="form-control border-0" 
+                        onclick="piluser();"
+                        style="padding-left:0px; cursor:pointer;">Pilih User</span>
+                    >
+                </div>
+            </li>
             <li>
                 <div class="location-box" style="position:relative;">
                     <i class="iconsax icon" data-icon="calendar-1" style="--Iconsax-Color: #c53f3f;"></i>
@@ -478,6 +590,7 @@ let renderpiltanggal = () => {
         let urlTanggal = urlParams.get('tanggal');
         let urlMinggu = urlParams.get('minggu');
         let urlHari = urlParams.get('hari');
+        let usercodex = urlParams.get('usercode');
         
         if (urlMinggu && urlHari) {
             let selectedDate = new Date(urlTanggal);
@@ -489,8 +602,8 @@ let renderpiltanggal = () => {
 
             display.value = formattedDate;
             hiddenDate.value = urlTanggal; 
-            let usercode = document.getElementById("usercode");
-            loadJadwal(usercode.value, urlMinggu, urlHari);
+            let usercode = usercodex ?? document.getElementById("usercode").value;
+            loadJadwal(usercode, urlMinggu, urlHari);
             document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${urlParams}')`)
         }
     }
@@ -507,7 +620,6 @@ let renderpiltanggal = () => {
 
             display.value = formattedDate;
             let result = getMingguHari(selectedDate);
-            let params = new URLSearchParams(window.location.search);
             params.set('tanggal', hiddenDate.value); 
             params.set('minggu', result.minggu);
             params.set('hari', result.hari);

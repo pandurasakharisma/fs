@@ -13,462 +13,12 @@ export let renderListItem = () => {
 
     init_iconsax();
     document.querySelector('#app').innerHTML = `
-        <link rel="stylesheet" href="./assets/css/leaflet.css" />
-        <style>
-            .categories-place-box {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-                padding: 10px 15px;
-                background-color: rgba(var(--white), 1);
-                border: 1px solid rgba(var(--line-color), 1);
-                border-radius: 6px;
-            }
-            .offer-head .delete-btn {
-                background: #f9ebeb;
-                stroke: #c53f3f;
-                border: none;
-                border-radius: 50%;
-                width: 36px;
-                height: 36px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-            }
-            .offer-head .delete-btn:hover {background: #fff;}
-            .recent-icon img {
-                width: 26px;
-                height: 48px;
-                margin-right: 5px;
-            }
-            #header{
-                position: fixed;
-                width: 100%;
-                max-width: 600px;
-                margin-top: 0;
-                padding-top: 10px;
-                z-index: +2;
-            }
-            #modpop {
-                position: fixed;
-                inset: 0;
-                display: flex;
-                justify-content: center;
-                align-items: flex-end;
-                visibility: hidden;
-                opacity: 0;
-                transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-                z-index: 9999;
-            }
-            #olay {
-                position: absolute;
-                inset: 0;
-                background: #000;
-                opacity: .6;
-            }
-            #modpop .theme-content-bg {
-                background: #fff;
-                width: 100%;
-                max-width: 500px;
-                border-radius: 16px 16px 0 0;
-                overflow-y: auto;
-                max-height: 80vh;
-                transition: transform 0.4s ease-in-out;
-                z-index: 10000;
-                padding: 0 20px;
-                position: relative;
-            }
-            #modpop.show {
-                visibility: visible;
-                opacity: 1;
-            }
-            .addcust svg {
-                position: fixed;
-                bottom: 110px;
-                right: 20px;
-                width: 48px;
-                height: 48px;
-                cursor: pointer;
-                z-index: +3;
-                border-radius: 50%;
-                background: #c53f3f;
-                padding: 10px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                animation: pulse 1.5s infinite;
-                transition: transform 0.2s ease-in-out;
-            }
-            .addcust svg path {stroke: #fff!important;}
-            .addcust svg:hover {transform: scale(1.15);}
-            #modpop .tbf{
-                position: fixed;
-                bottom: 0;
-                margin-bottom: 10px;
-                z-index: +2;
-                width: calc(100% - 20px);
-                background: #fff;
-                max-width: 450px;
-            }
-            .tbf2{
-                position: fixed;
-                bottom: 0;
-                margin: 0 auto;
-                z-index: +2;
-                width: calc(100%);
-                background: #fff;
-                max-width: calc(600px);
-                padding: 20px 10px 9px;
-            }
-            .bgm{
-                padding: 100px 20px 190px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-                position: absolute;
-            }
-            .pntoko {
-                position: absolute;
-                top: 18px;
-                width: 100%;
-                background: #fff;
-                left: 0;
-                border-radius: 20px 20px 0px 0px;
-                padding: 20px 20px 0 20px;
-            }
-            .profile-content {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                gap: 5px;
-                justify-content: space-between;
-            }
-            .shadow-sm{box-shadow:0px 0px 18px #efefef;}
-            .card-absen {
-                background: #fff;
-                border-radius: 8px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            }
-            .card::before {
-                background: linear-gradient(135deg, #f8f9fa 25%, #e8f5e9 100%);
-                background-image: url(./assets/images/bg2.svg);
-                background-size: cover;
-                border: none;
-                content: "";
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-            }
-            .seclist {
-                background: #fff;
-                z-index: +1;
-                position: absolute;
-                border: none;
-                width: 100%;
-                min-height: 400px;
-            }
-            #formContainer {margin-bottom: 120px;}
-            .form-wrapper {
-                padding: 15px;
-                background-color: rgba(var(--white), 1);
-                border-radius: 10px;
-                margin-bottom: 10px;
-                box-shadow: 0px 4px 20px 0px rgba(var(--title-color), 0.06);
-            }
-            .offer-head {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding-bottom: 15px;
-                border-bottom: 1px dashed rgba(var(--line-color), 1);
-            }
-            .offer-head h4 {
-                font-weight: 600;
-                padding: 8px 16px;
-                color: rgba(var(--theme-color), 1);
-                background-color: rgba(var(--theme-color), 0.1);
-                border-radius: 4px;
-            }
-            .profile-content {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                gap: 5px;
-                justify-content: space-between;
-            }
-            .profile-content h5 {
-                font-weight: 500;
-                line-height: 1.5;
-                color: rgba(var(--title-color), 1);
-                display: -webkit-box;
-                -webkit-line-clamp: 1;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            .comm-icon {
-                width: 35px;
-                height: 35px;
-                padding: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: rgba(var(--box-bg), 1);
-                border-radius: 100%;
-            }
-            .location-part {
-                width: 100%;
-                margin-top: 20px;
-                padding: 15px;
-                border-radius: 6px;
-                background-color: rgba(var(--box-bg), 1);
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-            .cix {width: 60%;margin-left: 10px;}
-            #cix {
-                font-size: 20px;
-                font-weight: bold;
-                color: #ae3333;
-            }
-            .tbdone{
-                background: #ae3333;
-                color: #fff;
-                font-weight: bold;
-                width: 30%;
-                margin-left: auto;
-                display: block;
-                padding: 13px 20px;
-                height: max-content;
-            }
-            #remarks i svg {
-                background: #c53f3f;
-                stroke: #fff;
-                position: absolute;
-                top: -15px;
-                right: 20px;
-                padding: 8px;
-                border-radius: 18px;
-                cursor: pointer;
-            }
-
-            .recr {
-                display: block;
-                margin: 5px 0 20px;
-                width: 100%;
-                text-align: center;
-                background: #f9ebeb;
-                border-radius: 8px;
-                padding: 10px 0;
-                color: #ae3333;
-            }
-
-            .recr svg{
-                background: #c53f3f;
-                stroke: #fff;
-                padding: 8px;
-                border-radius: 18px;
-                margin: 10px auto;
-                display: block;
-            }
-            .recr.onrecord, .onrecordr svg {background: #1996751a;color:#199675;}    
-            .recr.onrecord svg, #remarks i.onrecordr svg{animation: pulse 1s infinite;background:#199675;}
-            .iatas{
-                position: absolute;
-                top: -12px;
-                stroke: #fff;
-                background: #ae3333;
-                fill: #fff;
-                width: 28px;
-                height: 28;
-                padding: 7px;
-                border-radius: 50%;
-                left: 48%;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            }
-            .iatas svg{width: 14px;height: 14px;}
-            #recordel svg {
-                width: 40px;
-                height: 40px;
-                margin: 30px auto;
-                border-radius: 18px;
-                padding: 2px;
-                stroke: #fff;
-                background: #c53f3f;
-                animation: pulse 1s infinite;
-            }
-            .backform {
-                margin: 15px 0;
-                width: 100%;
-                color: #ae3333;
-            }
-            .igall {
-                margin: 10px 0 20px;
-                border-radius: 8px;
-                overflow: hidden;
-            }
-
-            .gallery {
-                display: grid;
-                gap: 5px;
-                border-radius: 8px;
-                width: 100%;
-                height: 145px;
-            }
-
-            .gallery-item {
-                position: relative;
-                overflow: hidden;
-                cursor: pointer;
-                background: #ddd;
-            }
-
-            .gallery-item img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                display: block;
-                transition: transform 0.3s ease;
-            }
-
-            .gallery-item:hover img {
-                transform: scale(1.05);
-            }
-
-            .layout-1 {
-                grid-template-columns: 1fr;
-            }
-            .layout-1 .gallery-item {
-                height: 145px;
-            }
-
-            .layout-2 {
-                grid-template-columns: 1fr 1fr;
-                grid-auto-rows: 145px;
-            }
-            .layout-2 .gallery-item {
-                height: 100%;
-            }
-
-            .layout-3 {
-                grid-template-columns: 2fr 1fr;
-                grid-template-rows: 1fr 1fr;
-                grid-template-areas: "big small1" "big small2";
-            }
-            .layout-3 .gallery-item:nth-child(1) {
-                grid-area: big;
-                height: 100%;
-            }
-            .layout-3 .gallery-item:nth-child(2) {
-                grid-area: small1;
-                height: 72px;
-            }
-            .layout-3 .gallery-item:nth-child(3) {
-                grid-area: small2;
-                height: 72px;
-            }
-
-            .layout-4 {
-                grid-template-columns: 1fr 1fr;
-                grid-template-rows: 1fr 1fr;
-            }
-            .layout-4 .gallery-item {
-                height: 72px;
-            }
-
-            .layout-5 {
-                grid-template-columns: 2fr 1fr 1fr;
-                grid-template-rows: 1fr 1fr;
-                grid-template-areas: "big mid1 right1" "big mid2 right2";
-            }
-            .layout-5 .gallery-item:nth-child(1) { grid-area: big; height: 100%; }
-            .layout-5 .gallery-item:nth-child(2) { grid-area: mid1; height: 72px; }
-            .layout-5 .gallery-item:nth-child(3) { grid-area: mid2; height: 72px; }
-            .layout-5 .gallery-item:nth-child(4) { grid-area: right1; height: 72px; }
-            .layout-5 .gallery-item:nth-child(5) { grid-area: right2; height: 72px; }
-
-            @media(max-width:600px){
-                .layout-2, .layout-3, .layout-4, .layout-5 {
-                    grid-template-rows: auto;
-                }
-                .gallery-item { height: 80px; }
-            }
-
-            .viewer {
-                position: fixed;
-                top: 0; left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.9);
-                display: none;
-                justify-content: center;
-                align-items: center;
-                z-index: 9999;
-            }
-            .viewer.active {display: flex;}
-            .viewer img {
-                transition: transform 0.3s ease;
-                height: 100vh;
-                top: 0;
-                left: 0;
-                object-fit: cover;
-            }
-
-            .viewer .close-btn,
-            .viewer .nav-btn {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                font-size: 40px;
-                color: white;
-                cursor: pointer;
-                user-select: none;
-                padding: 10px;
-            }
-            .viewer .close-btn {
-                top: 20px;
-                right: 20px;
-                font-size: 35px;
-                transform: none;
-                z-index: +2;
-            }
-            .viewer .prev-btn { left: 20px; }
-            .viewer .next-btn { right: 20px; }
-            .viewer svg {
-                background: #000;
-                width: 34px;
-                height: 35px;
-                border-radius: 50%;
-                stroke: #fff;
-                padding: 8px;
-                z-index: +2;
-            }
-            .clay {
-                width: 100%;
-                height: 100%;
-                background:linear-gradient(0deg, #00000096 0%, rgb(0 0 0 / 12%) 20%);
-                position: absolute;
-                top: 0;z-index:0;
-            }
-            .clay strong {font-size: 16px;text-transform: uppercase;}
-            .clay .strong {
-                position: absolute;
-                bottom: 15px;
-                left: 0;
-                color: #fff;
-                font-size: 13px;
-                background: #0000008a;
-                padding: 10px;
-                border-radius: 8px;
-                margin: 8px;
-            }
-            #closebtn svg {padding: 0;}
-            .hide{display:none!important;}
-        </style>
+        <link rel="stylesheet" href="./assets/css/leaflet.css"/>
+        <link rel="stylesheet" href="./assets/css/listitem.css"/>
         <header id="header" class="main-header inner-page-header position-absolute bg-transparent" style="position: fixed!important;z-index: +9;">
             <div class="custom-container">
                 <div class="header-panel p-0">
-                    <a onclick="hrefs('home')" >
+                    <a id="backbtn">
                         <i class="iconsax icon-btn" data-icon="chevron-left"> </i>
                     </a>
                 </div>
@@ -575,10 +125,7 @@ export let renderListItem = () => {
     
     let loadLeaflet = () => {
         return new Promise((resolve, reject) => {
-            if (window.L) {
-                resolve(window.L)
-                return
-            }
+            if (window.L) { resolve(window.L); return;}
             let script = document.createElement('script')
             script.src = "./assets/js/leaflet.js"
             script.async = true
@@ -598,9 +145,9 @@ export let renderListItem = () => {
         
     let formCount = 0, formContainer = document.getElementById('formContainer');
     let createFormTemplate = (data = {}, idx = null) => {
-        let hargaValue = data.harga ? formatRupiah(String(data.harga)) : '';
+        let hargaValue = data.price ? formatRupiah(String(data.price)) : '';
         let qtyValue = data.qty ? formatRupiah(String(data.qty)) : '';
-        let produk = data.namaproduk || '';
+        let produk = data.sku || '';
         return `
             <div class="form-wrapper">
                 <div class="offer-head" style="margin-bottom: 15px;padding-bottom: 8px;">
@@ -642,6 +189,7 @@ export let renderListItem = () => {
             </div>
         `;
     };
+
 
     window.createForm = () => {
         formCount++;
@@ -713,7 +261,6 @@ export let renderListItem = () => {
             };
     
             mediaRecorder.start();
-            console.log('Recording started...');
         } catch (err) {
             showToast("Tidak bisa mengakses mikrofon.", "danger");
         }
@@ -876,6 +423,8 @@ export let renderListItem = () => {
         }, { passive: true });
     };
 
+    
+
     fetch(urlbe + 'listjadwalid', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -884,12 +433,15 @@ export let renderListItem = () => {
     .then(res => res.json())
     .then(async resData => {
         let lokasi = resData?.data || {};
+        let start_date = resData?.start_date || new Date().toISOString().split('T')[0];
+        let minggu = resData?.data?.minggu || getMingguHari()[0];
+        let hari = resData?.data?.hari || getMingguHari()[1];        
         let lat = lokasi.lat ? parseFloat(lokasi.lat) : null;
         let lon = lokasi.lon ? parseFloat(lokasi.lon) : null;
-        let cust_name = lokasi.cust_name || '';
-        let full_name = lokasi.Full_Name || '';
+        cust_name = lokasi.cust_name || '';
+        full_name = lokasi.Full_Name || '';
         let Job_Position = lokasi.Job_Position || '';
-        let address = lokasi.Address || '';
+        address = lokasi.Address || '';
         let cust_code = lokasi.cust_code || '';
         let city = lokasi.City || '';
     
@@ -906,6 +458,10 @@ export let renderListItem = () => {
         setgallerylayout(imagedata);
         initgalery();
     
+        let backurl = `#home?tanggal=${start_date}&minggu=${minggu}&hari=${hari}`,
+        backbtn = document.querySelector('#backbtn');
+        backbtn.onclick = ()=>hrefs(backurl);
+
         document.querySelector('#cardname').innerHTML = cust_name;
         document.querySelector('#Address').innerHTML = address;
         document.querySelector('#Full_Name').innerHTML = `${full_name} ${Job_Position}`;
@@ -913,23 +469,39 @@ export let renderListItem = () => {
     
         let startKunjungan = lokasi.start_kunjungan || null;
         let endKunjungan = lokasi.end_kunjungan || null;
+        let startTime = lokasi.start_time || null;
+        let endTime = lokasi.end_time || null;
         let cixEl = document.querySelector('#cix');
     
-        if (startKunjungan) {
+        if (startTime) {
             document.querySelector('#cin').innerText = startKunjungan.slice(11, 16);
             let updateElapsedTime = () => {
-                let startDate = new Date(startKunjungan);
-                let endDate = endKunjungan ? new Date(endKunjungan) : new Date();
-                let elapsedMs = Math.max(0, endDate - startDate);
-                let totalSeconds = Math.floor(elapsedMs / 1000);
-                let hh = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-                let mm = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-                let ss = String(totalSeconds % 60).padStart(2, '0');
+                let toSeconds = (timeStr) => {
+                    let [hh, mm, ss] = timeStr.split(':').map(Number);
+                    return hh * 3600 + mm * 60 + ss;
+                };
+        
+                let now = new Date();
+                let currentTimeStr = [
+                    String(now.getHours()).padStart(2, '0'),
+                    String(now.getMinutes()).padStart(2, '0'),
+                    String(now.getSeconds()).padStart(2, '0')
+                ].join(':');
+        
+                let end = endTime || currentTimeStr;
+                let startSeconds = toSeconds(startTime);
+                let endSeconds = toSeconds(end);
+        
+                let elapsedSeconds = Math.max(0, endSeconds - startSeconds);
+                let hh = String(Math.floor(elapsedSeconds / 3600)).padStart(2, '0');
+                let mm = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2, '0');
+                let ss = String(elapsedSeconds % 60).padStart(2, '0');
                 cixEl.innerText = `${hh}:${mm}:${ss}`;
-                if (endKunjungan) clearInterval(timerInterval);
+                if (endTime) clearInterval(timerInterval); 
             };
+        
+            let timerInterval = setInterval(updateElapsedTime, 1000);
             updateElapsedTime();
-            var timerInterval = setInterval(updateElapsedTime, 1000);
         }
     
         let formContainer = document.getElementById('formContainer');
@@ -942,7 +514,7 @@ export let renderListItem = () => {
         if (endKunjungan) {
             document.querySelector('.recr').classList.add('hide');
             document.querySelectorAll('.delete-btn').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('#formContainer input').forEach(input => input.disabled = true);
+            document.querySelectorAll('#formContainer input').forEach(input => {input.disabled = true});
     
             let addBtn = document.getElementById('addFormBtn');
             if (addBtn) addBtn.style.display = 'none';
@@ -1069,11 +641,11 @@ export let renderListItem = () => {
         let id = params.get('id') || '';
         let cardname = params.get('cardname') || '';
         let cust_code = params.get('cust_code') || '';
-        let cust_name = params.get('cust_name') || '';
-        let address = params.get('Address') || '';
+        cust_name = params.get('cust_name') || '';
+        address = params.get('Address') || '';
         let city = params.get('City') || '';
         let province = params.get('Province') || '';
-        let full_name = params.get('Full_Name') || '';
+        full_name = params.get('Full_Name') || '';
         let job_position = params.get('Job_Position') || '';
         let minggu = params.get('minggu') || '';
         let hari = params.get('hari') || '';

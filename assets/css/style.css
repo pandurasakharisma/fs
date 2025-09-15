@@ -4336,12 +4336,12 @@ body.dark .auth-bg-image-box .auth-bg-image {
 .location-section .pickup-location-listing li::before {
   content: "";
   position: absolute;
-  top: 30px;
-  left: 25px;
+  top: 36px;
+  left: 23px;
   z-index: -1;
   width: 2px;
-  height: calc(100% - 20px);
-  border-left: 1px dashed rgba(var(--title-color), 1);
+  height: calc(100% - 30px);
+  border-left: 1px dashed rgb(197 63 63);
 }
 [dir=rtl] .location-section .pickup-location-listing li::before {
   left: unset;
