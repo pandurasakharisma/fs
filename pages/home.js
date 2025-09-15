@@ -1,6 +1,7 @@
+let hash = window.location.hash.substring(1);
+let [route, queryString] = hash.split('?');
+window.params = new URLSearchParams(queryString);
 
-    
-window.params = new URLSearchParams(window.location.search);
 let panelkeluar = () => {
     showSkeleton(document.querySelector('#app'), 5);
     let createDashboardUI = () => {
@@ -441,20 +442,82 @@ export let renderHome = () => {
     panelkeluar()
 }
 
+let selectedUserCode = null;
+let selectedDate = null;
+
 window.gantiuserh =(el)=>{
-    let elcard_id = el.getAttribute('data-card_id'),
-    elfull_name = el.getAttribute('data-full_name');
+    selectedUserCode = el.getAttribute('data-card_id');
+    let elfull_name = el.getAttribute('data-full_name');
+
     document.querySelector('.closec').click();
-    document.querySelector('#usercode').value = elcard_id;
-    document.querySelector('#usercode').setAttribute('value',elcard_id);
+    document.querySelector('#usercode').value = selectedUserCode;
     document.querySelector('#pilihuser').innerHTML = elfull_name.toUpperCase();
 
-    params.set('usercode', elcard_id);
+    params.set('usercode', selectedUserCode);
     window.history.replaceState({}, '', `#home?${params.toString()}`);
+
+    let dateToUse = selectedDate || new Date();
+    let mh = getMingguHari(dateToUse);
+    console.log('wombat0');
+    loadJadwal(selectedUserCode, mh.minggu, mh.hari);
+
 };
 
+let listUserData = [];
+
+const renderListUser = (users) => {
+    const ul = document.querySelector('#listuserx ul');
+    if (!ul) return;
+    ul.innerHTML = users.length
+        ? users.map(user => `
+            <li onclick="gantiuserh(this);" 
+                data-Full_Name="${user.Full_Name}"
+                data-usercode="${user.Card_ID}"
+                data-Card_ID="${user.Card_ID}">
+                <span class="contact-box">
+                    <div class="contact-details">
+                        <i class="iconsax igb" data-icon="user-2-circle"></i>
+                        <div>
+                            <h5 style="text-transform:uppercase;white-space: nowrap;max-width:95%;overflow: hidden;text-overflow: ellipsis;line-height: 1.5;">
+                                ${user.Full_Name}
+                            </h5>
+                            <small style="color: #c53f3f;font-size: 9px;">${user.Job_Position} #${user.Card_ID}</small>
+                        </div>
+                    </div>
+                    <i class="iconsax" data-icon="chevron-right"></i>
+                </span>
+            </li>
+        `).join('')
+        : `<li><div class="contact-box">Data tidak tersedia</div></li>`;
+    
+    init_iconsax();
+};
+
+const loadListUser = async () => {
+    try {
+        const res = await fetch(urlbe + "listuser", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+        const data = await res.json();
+        if (data.status === 'success' && Array.isArray(data.data)) {
+            listUserData = data.data;
+            renderListUser(listUserData); 
+        } else {
+            listUserData = [];
+            renderListUser([]);
+        }
+    } catch (err) {
+        listUserData = [];
+        renderListUser([]);
+    }
+};
+
+await loadListUser();
+
 window.piluser = () => {
-    document.querySelector('#offcanvasBottom .offcanvas-body').innerHTML = `
+    const offcanvasBody = document.querySelector('#offcanvasBottom .offcanvas-body');
+    offcanvasBody.innerHTML = `
         <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 8px;">
             <img class="icon" src="./assets/images/user-0.svg" style="width: 24px;margin-right: 10px;">
             <input type="text" id="searchInputc" class="form-control border-0 p-0" placeholder="Cari Team" style="background: none;flex:1; box-shadow:none;">
@@ -464,71 +527,26 @@ window.piluser = () => {
             <ul class="contact-list pt-0" style="max-height: calc(80vh - 200px);overflow-x: scroll;"></ul>
         </div>
     `;
-
-    let searchInputc = document.querySelector('#searchInputc'),
-    clearBtnc= document.querySelector('#clearBtnc');
+    
+    renderListUser(listUserData);
+    const searchInputc = document.querySelector('#searchInputc');
+    const clearBtnc = document.querySelector('#clearBtnc');
     searchInputc.focus();
     
-    showSkeleton(document.querySelector('#listuserx ul'), 10);
-    fetch(urlbe + "listuser", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" }
-    })
-    .then(r => r.json())
-    .then(res => {
-        let listContainer = document.querySelector('#listuserx ul');
-        if (res.status === 'success' && Array.isArray(res.data)) {
-            let html = '';
-            res.data.forEach(user => {
-                removeSkeleton(document.querySelector("#listuserx ul"));
-                html += `
-                    <li onclick="gantiuserh(this);" 
-                        data-Full_Name="${user.Full_Name}"
-                        data-usercode="${user.Card_ID}"
-                        data-Card_ID="${user.Card_ID}"
-                    >
-                        <span class="contact-box">
-                            <div class="contact-details">
-                                <i class="iconsax igb" data-icon="user-2-circle"></i>
-                                <div>
-                                    <h5 style="text-transform:uppercase;white-space: nowrap;max-width:95%;overflow: hidden;text-overflow: ellipsis;line-height: 1.5;">${user.Full_Name}</h5>
-                                    <small style="color: #c53f3f;font-size: 9px;">${user.Job_Position} #${user.Card_ID}</small>
-                                </div>
-                            </div>
-                            <i class="iconsax" data-icon="chevron-right"></i>
-                        </span>
-                    </li>
-                `;
-            });
-            listContainer.innerHTML = html;
-
-
-            searchInputc.addEventListener('input', () => {
-                let filter = searchInputc.value.toUpperCase();
-                if(filter != ''){ clearBtnc.classList.remove('hide');}
-                let items = document.querySelectorAll('#listuserx ul li');
-                items.forEach(item => {
-                    let name = item.querySelector('h5').innerText.toUpperCase();
-                    item.style.display = name.includes(filter) ? '' : 'none';
-                });
-            });
-        
-            clearBtnc.onclick =()=> {
-                searchInputc.value = '';
-                clearBtnc.classList.add('hide');
-                searchInputc.dispatchEvent(new Event('input'));
-            };
-            
-            init_iconsax();
-        } else {
-            listContainer.innerHTML = `<li><div class="contact-box">Data tidak tersedia</div></li>`;
-        }
-    })
-    .catch(() => {
-        document.querySelector('#listuserx ul').innerHTML = `<li><div class="contact-box">Terjadi kesalahan saat mengambil data</div></li>`;
+    searchInputc.addEventListener('input', () => {
+        const filter = searchInputc.value.toUpperCase();
+        clearBtnc.classList.toggle('hide', !filter);
+        document.querySelectorAll('#listuserx ul li').forEach(item => {
+            const name = item.querySelector('h5').innerText.toUpperCase();
+            item.style.display = name.includes(filter) ? '' : 'none';
+        });
     });
 
-    document.querySelector('#offcanvasBottomLabel').innerHTML = 'Pilih User';
+    clearBtnc.onclick = () => {
+        searchInputc.value = '';
+        clearBtnc.classList.add('hide');
+        searchInputc.dispatchEvent(new Event('input'));
+    };
 };
 
 
@@ -546,7 +564,6 @@ let renderpiltanggal = () => {
                         class="form-control border-0" 
                         onclick="piluser();"
                         style="padding-left:0px; cursor:pointer;">Pilih User</span>
-                    >
                 </div>
             </li>
             <li>
@@ -584,29 +601,47 @@ let renderpiltanggal = () => {
     let hash = window.location.hash.substring(1);
     let [route, queryString] = hash.split('?');
     
-    waitForUserCode();
     if (queryString) {
         let urlParams = new URLSearchParams(queryString);
         let urlTanggal = urlParams.get('tanggal');
         let urlMinggu = urlParams.get('minggu');
         let urlHari = urlParams.get('hari');
-        let usercodex = urlParams.get('usercode');
-        
-        if (urlMinggu && urlHari) {
-            let selectedDate = new Date(urlTanggal);
+
+        selectedUserCode = urlParams.get('usercode') || selectedUserCode;
+        selectedDate = urlParams.get('tanggal') || selectedDate;
+
+        if (selectedUserCode && listUserData.length > 0) {
+            let selectedUser = listUserData.find(u => u.Card_ID == selectedUserCode);
+            if (selectedUser) {
+                document.getElementById('pilihuser').innerText = selectedUser.Full_Name.toUpperCase();
+                document.getElementById('usercode').value = selectedUserCode;
+            }
+        }
+    
+        if (selectedDate  && urlMinggu && urlHari) {
+            selectedDate = new Date(urlTanggal);
             let formattedDate = selectedDate.toLocaleDateString('id-ID', {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'
             });
-
+    
             display.value = formattedDate;
             hiddenDate.value = urlTanggal; 
-            let usercode = usercodex ?? document.getElementById("usercode").value;
-            loadJadwal(usercode, urlMinggu, urlHari);
+            const userToUse = selectedUserCode || document.getElementById('usercode').value;
+            console.log('wombat01');
+            loadJadwal(userToUse, urlMinggu, urlHari);
             document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${urlParams}')`)
+        } else {
+            let userToUse = selectedUserCode ?? document.getElementById("usercode").value;
+            let today = getMingguHari();
+            console.log('wombat02');
+            loadJadwal(userToUse, today.minggu, today.hari);
         }
+    }else{
+        waitForUserCode();
     }
+    
 
     hiddenDate.onchange = () => {
         if (hiddenDate.value) {
@@ -628,6 +663,7 @@ let renderpiltanggal = () => {
             document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${params.toString()}')`)
     
             let usercode = document.getElementById("usercode");
+            console.log('wombat03');
             loadJadwal(usercode.value, result.minggu, result.hari);
         }
     };
@@ -713,6 +749,7 @@ let waitForUserCode = () => {
         let el = document.getElementById("usercode")
         if (el) {
             clearInterval(interval)
+            console.log('wombat4');
             setTimeout(() => loadJadwal(el.value), 60)
         }
     }, 60)

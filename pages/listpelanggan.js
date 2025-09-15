@@ -1,5 +1,15 @@
-export const renderLogin = () => {
+export const renderlistpelanggan = () => {
     let selectedStores = [];
+    let hash = window.location.hash.substring(1);
+    let [route, queryString] = hash.split('?');
+    
+    let urlParams = new URLSearchParams(queryString);    
+
+
+    let usercode = urlParams.get('usercode') || null;  
+    let mingguUrl = urlParams.get('minggu') || null;
+    let hariUrl = urlParams.get('hari') || null;
+
     document.querySelector('#app').innerHTML = `
         <style>
             .categories-place-box {
@@ -258,23 +268,23 @@ export const renderLogin = () => {
     let hasMore = true;
     const limit = 20;
     let currentSearch = '';
-    let searchTimeout = null, usercode = null;
+    let searchTimeout = null;
 
     const addToJadwal = async (store) => {
         const now = new Date();
-        const minggu = String(getMingguKe(now));
-        const hari = String(getHariMon1(now));
-        const userCode = document.getElementById("usercode")?.value || "";
+        const minggu = mingguUrl || String(getMingguKe(now));
+        const hari = hariUrl || String(getHariMon1(now));
+
         const payload = {
             cardcode: store.CardCode,
             cardname: store.CardName,
-            usercode: userCode,
+            usercode,
             foto: null,
             lat: null,
             lon: null,
             start_kunjungan: null,
             end_kunjungan: null,
-            created_by: userCode,
+            created_by: usercode,
             minggu,
             hari,
             result: null,
@@ -369,7 +379,7 @@ export const renderLogin = () => {
             data[key] = value.trim();
             if (!value.trim()) kosong = true;
         });
-        let userCode = document.getElementById("usercode")?.value || "";
+
         data["usercode"] = userCode;
 
         closePopup();
@@ -416,7 +426,6 @@ export const renderLogin = () => {
         if(document.getElementById("searchInput")){
 
             currentSearch = document.getElementById("searchInput").value.trim();
-            usercode = document.getElementById("usercode").value.trim();
     
             if (reset) {
                 placeList.innerHTML = '';
@@ -431,7 +440,7 @@ export const renderLogin = () => {
                 const response = await fetch(urlbe + 'caripelanggan', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ usercode: usercode, minggu, hari, search: currentSearch, page: currentPage, limit })
+                    body: JSON.stringify({ usercode, minggu, hari, search: currentSearch, page: currentPage, limit })
                 });
                 const result = await response.json();
     
@@ -505,7 +514,7 @@ export const renderLogin = () => {
         let el = document.getElementById("usercode");
         if (el && el.value) {
             clearInterval(waitUsercode);
-            usercode = el.value;
+            usercode = usercode ?? el.value;
             setTimeout(() => {
                 hasMore = true;
                 fetchAndRenderStores();
@@ -515,4 +524,4 @@ export const renderLogin = () => {
 }
 
 
-export default renderLogin
+export default renderlistpelanggan 
