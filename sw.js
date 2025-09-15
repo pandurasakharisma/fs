@@ -54,17 +54,12 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        const clone = response.clone();
-        caches.open(cacheName).then(cache => {
-          if (response.status === 200) {
-            cache.put(event.request, clone);
-          }
-        });
+        if (response.status === 200) {
+          const clone = response.clone();
+          caches.open(cacheName).then(cache => cache.put(event.request, clone));
+        }
         return response;
       })
-      .catch(() => {
-        return caches.match(event.request)
-          .then(cachedResponse => cachedResponse || caches.match('./index.html'));
-      })
+      .catch(() => caches.match(event.request).then(res => res || caches.match('./index.html')))
   );
 });

@@ -166,11 +166,12 @@ export let renderKamera = () => {
         document.getElementById('messageText').textContent = msg;
     };
     
-    let stream = null,  watchId = null; 
+    let stream = null,  watchId = null, isCameraActive = false; 
     let startCameraStream = async () => {
         try {
             let stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
             video.srcObject = stream;
+            isCameraActive = true;
             video.style.display = captureButton.style.display = switchButton.style.display = 'flex';
             permissionMessage.style.display = 'none';
             permissionButton.style.display = 'none';
@@ -197,7 +198,7 @@ export let renderKamera = () => {
             stream.getTracks().forEach(track => track.stop());
             stream = null;
         }
-        window.cameraState.isCameraActive = false;
+        isCameraActive = false;
     };
 
     let stopGPS = () => {
@@ -244,7 +245,7 @@ export let renderKamera = () => {
         isCapturing=true;
         captureButton.innerHTML='<div class="spinner"></div>';
         captureButton.style.animation='none';
-        
+
         watchId = navigator.geolocation.getCurrentPosition(
             pos=>sendCapture(pos.coords.latitude,pos.coords.longitude),
             ()=>sendCapture(null,null)
