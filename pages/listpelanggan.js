@@ -9,7 +9,7 @@ export let renderlistpelanggan = () => {
     let usercode = urlParams.get('usercode') || null;  
     let mingguUrl = urlParams.get('minggu') || null;
     let hariUrl = urlParams.get('hari') || null;
-    let tanggal = urlParams.get('hari') || null;
+    let tanggal = urlParams.get('tanggal') || null;
 
     document.querySelector('#app').innerHTML = `
         <style>
@@ -241,17 +241,14 @@ export let renderlistpelanggan = () => {
                         </div>
 
                         <div class="order-type"></div>
-                        </form>
-
+                    </form>
                     <div class="offcanvas-footer tbf flex-align-center flex-nowrap gap-3 border-0 pt-3 px-0 pb-0" style='border-bottom:1px solid rgba(var(--line-color), 1);'>
                         <span class="btn theme-btn w-100 mt-0 pulse simpancust">Simpan</span>
                         <span class="btn white-btn title-color w-100 mt-0 closepopup" onclick="closePopup()">Cancel</a>
                     </div>
                 </div>
             </div>
-
         </main>
-
         <section class="panel-space"></section>
     `
 
@@ -284,6 +281,10 @@ export let renderlistpelanggan = () => {
         let now = new Date();
         let minggu = mingguUrl || String(getMingguKe(now));
         let hari = hariUrl || String(getHariMon1(now));
+        let data = localStorage.getItem('user_data'),
+        obj = data ? JSON.parse(data) : null,
+        cardId = obj && obj.Card_ID ? String(obj.Card_ID) : '',
+        code = cardId.includes(',') ? cardId.split(',')[0].trim() : cardId;
 
         let payload = {
             cardcode: store.CardCode,
@@ -294,7 +295,7 @@ export let renderlistpelanggan = () => {
             lon: null,
             start_kunjungan: null,
             end_kunjungan: null,
-            created_by: usercode,
+            created_by: code,
             minggu,
             hari,
             result: null,
@@ -386,11 +387,9 @@ export let renderlistpelanggan = () => {
     };
 
     document.querySelector(".simpancust").onclick = async function () {
-        
         let now = new Date();
         let minggu = mingguUrl || String(getMingguKe(now));
         let hari = hariUrl || String(getHariMon1(now));
-
         let form = document.querySelector(".jotheme-form");
         let formData = new FormData(form);
         let data = {};
@@ -399,7 +398,6 @@ export let renderlistpelanggan = () => {
             data[key] = value.trim();
             if (!value.trim()) kosong = true;
         });
-
         data["usercode"] = userCode;
         closePopup();
         if (kosong) {
@@ -420,9 +418,7 @@ export let renderlistpelanggan = () => {
             } else {
                 showToast("Terjadi kesalahan saat menyimpan data.", "danger");
             }
-        } catch {
-            showToast("Tidak dapat terhubung ke server.", "danger");
-        }
+        } catch {showToast("Tidak dapat terhubung ke server.", "danger");}
     };
 
     let placeList = document.getElementById('placeList');

@@ -36,18 +36,38 @@ export const renderLogin = () => {
                 background-size: cover;
                 height: calc(100vh - 360px);
             }
+            .bg {
+                animation:slidebg 3s ease-in-out infinite alternate;
+                background-image:linear-gradient(-60deg, #6d2a25 50%, #c53f3f 50%);
+                bottom:0;
+                left:-50%;
+                opacity:.5;
+                position:fixed;
+                right:-50%;
+                top:0;
+                z-index:-1;
+            }
+            .bg2 {animation-direction:alternate-reverse;animation-duration:4s;}
+            .bg3 {animation-duration:5s;}
+            .auth-bg-image-box, .auth-content-bg{z-index:0;}
+            @keyframes slidebg {
+                0% {transform:translateX(-25%);}
+                100% {transform:translateX(25%);}
+            }
         </style>
-
-        <header id="header" class="auth-header">
+        <header id="header" class="auth-header" style="background:unset;">
             <div class="custom-container">
                 <div class="header-panel pb-0">
-                    <img class="img-fluid mx-auto logo user-logo" src="./assets/images/logo/user/logo-utama.svg" alt="logo">
+                    <img class="img-fluid mx-auto logo user-logo" src="./assets/images/logo/user/logo-white.svg" alt="logo">
                 </div>
             </div>
         </header>
-
         <div class="auth-bg-image-box">
-            <div class="auth-bg-image"></div>
+            <div class="auth-bg-image">
+                <div class="bg"></div>
+                <div class="bg bg2"></div>
+                <div class="bg bg3"></div>
+            </div>
             <div class="auth-content-bg auth-content-bg-bottom">
                 <div class="custom-container white-background pb-2" style="margin:0 10px;">
                     <div class="auth-title mt-0">
@@ -109,7 +129,7 @@ export const renderLogin = () => {
     let userToken = localStorage.getItem('user_token');
     if (userToken) {
         showToast('Kamu Berhasil Login', 'success');
-        window.location.hash = '/home';
+        window.location.hash = 'home';
     }
 };
 

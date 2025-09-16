@@ -338,7 +338,7 @@ export let renderHome = () => {
                 height: 1px;
                 visibility: hidden; 
             }
-            #listuserx{padding:20px 10px;}
+            #listuserx{padding:20px 0 5px;}
             .contact-list li .contact-box i{ --Iconsax-Color: #c53f3f;}
             .contact-list li .contact-box .igb svg{width: 25px;height: 25px;}
             @media (max-width: 576px) {
@@ -358,7 +358,6 @@ export let renderHome = () => {
         <div id="absenkeluar" class="hide"></div>
         <section class="seclist">
             <div class="custom-container">
-                <h3 class="m-2" id="h3info">Summary</h3>
                 <ul class="total-ride-list mt-0 p-0" style="display: inline-flex;white-space: nowrap;margin: 10px 0 20px; gap:10px;overflow-x: scroll;max-width: 100%;">
                     <li>
                         <a href="wallet.html" class="ride-box">
@@ -417,15 +416,9 @@ export let renderHome = () => {
                         </a>
                     </li>
                 </ul>
-                
                 <a onclick="hrefs('listpelanggan')" class="iconsax addcust" data-icon="add" id="addform"></a>
-                <h3 class="m-2" id="h3schedule">Schedule</h3>
                 <ul class="my-ride-list" style="margin-top: 0;padding-bottom: 40px;"></ul>
-                <div class="offcanvas element-offcanvas offcanvas-bottom" id="offcanvasBottom" style="max-height: 80vh;height: fit-content;">
-                    <div class="offcanvas-header ">
-                        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Pilih User</h5>
-                        <button type="button" class="btn-close closec" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                    </div>
+                <div class="offcanvas element-offcanvas offcanvas-bottom" id="offcanvasBottom" style="max-height: 95vh;height: fit-content;">
                     <div class="offcanvas-body"></div>
                 </div>
             </div>
@@ -446,12 +439,12 @@ let selectedUserCode = null;
 let selectedDate = null;
 
 window.gantiuserh =(el)=>{
+    document.querySelector('.closec').click();
     selectedUserCode = el.getAttribute('data-card_id');
     let elfull_name = el.getAttribute('data-full_name');
 
-    document.querySelector('.closec').click();
     document.querySelector('#usercode').value = selectedUserCode;
-    document.querySelector('#pilihuser').innerHTML = elfull_name.toUpperCase();
+    document.querySelector('#pilihuser').innerHTML = elfull_name;
 
     params.set('usercode', selectedUserCode);
     document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${params.toString()}')`);
@@ -478,7 +471,7 @@ const renderListUser = (users) => {
                     <div class="contact-details">
                         <i class="iconsax igb" data-icon="user-2-circle"></i>
                         <div>
-                            <h5 style="text-transform:uppercase;white-space: nowrap;max-width:95%;overflow: hidden;text-overflow: ellipsis;line-height: 1.5;">
+                            <h5 style="min-width: 250px;text-transform:uppercase;white-space: nowrap;max-width:95%;overflow: hidden;text-overflow: ellipsis;line-height: 1.5;">
                                 ${user.Full_Name}
                             </h5>
                             <small style="color: #c53f3f;font-size: 9px;">${user.Job_Position} #${user.Card_ID}</small>
@@ -518,13 +511,14 @@ await loadListUser();
 window.piluser = () => {
     const offcanvasBody = document.querySelector('#offcanvasBottom .offcanvas-body');
     offcanvasBody.innerHTML = `
+        <button type="button" class="btn-close closec hide" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 8px;">
-            <img class="icon" src="./assets/images/user-0.svg" style="width: 24px;margin-right: 10px;">
-            <input type="text" id="searchInputc" class="form-control border-0 p-0" placeholder="Cari Team" style="background: none;flex:1; box-shadow:none;">
+            <i class="iconsax clear-btn" data-icon="search-normal-2"></i>
+            <input type="text" id="searchInputc" class="form-control border-0" placeholder="Cari Team" style="background: none;flex:1; box-shadow:none;padding-left: 15px;">
             <i id="clearBtnc" class="iconsax clear-btn hide" data-icon="close-circle"></i>
         </div>
         <div id="listuserx">
-            <ul class="contact-list pt-0" style="max-height: calc(80vh - 200px);overflow-x: scroll;"></ul>
+            <ul class="contact-list pt-0" style="height: calc(95vh - 200px);overflow-x: scroll;"></ul>
         </div>
     `;
     
@@ -534,10 +528,10 @@ window.piluser = () => {
     searchInputc.focus();
     
     searchInputc.addEventListener('input', () => {
-        const filter = searchInputc.value.toUpperCase();
+        const filter = searchInputc.value.toLowerCase();
         clearBtnc.classList.toggle('hide', !filter);
         document.querySelectorAll('#listuserx ul li').forEach(item => {
-            const name = item.querySelector('h5').innerText.toUpperCase();
+            const name = item.querySelector('h5').innerText.toLowerCase();
             item.style.display = name.includes(filter) ? '' : 'none';
         });
     });
@@ -578,7 +572,7 @@ let renderpiltanggal = () => {
                         class="form-control border-0" 
                         placeholder="Pilih tanggal" 
                         readonly
-                        style="padding-left:0px; cursor:pointer;text-transform:uppercase;"
+                        style="padding-left:0px; cursor:pointer;"
                     >
                     <input 
                         type="date" 
@@ -616,7 +610,7 @@ let renderpiltanggal = () => {
         if (selectedUserCode && listUserData.length > 0) {
             let selectedUser = listUserData.find(u => u.Card_ID == selectedUserCode);
             if (selectedUser) {
-                document.getElementById('pilihuser').innerText = selectedUser.Full_Name.toUpperCase();
+                document.getElementById('pilihuser').innerText = selectedUser.Full_Name;
                 document.getElementById('usercode').value = selectedUserCode;
             }
         }
