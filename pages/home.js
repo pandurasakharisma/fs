@@ -748,6 +748,50 @@ let waitForUserCode = () => {
     }, 60)
 }
 
+window.sedangon = (id, el,itemData) => {
+    let existingModal = document.getElementById('dynamicsedangon');
+    if (!existingModal) {
+        let modalDiv = document.createElement('div');
+        modalDiv.className = 'modal fade';
+        modalDiv.id = 'dynamicsedangon';
+        modalDiv.tabIndex = -1;
+        modalDiv.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <img class="img-fluid icon" src="./assets/images/svg/alert.svg" style="stroke: #c53f3f;width: 100px!important;margin-bottom: 10px;" alt="alert">
+                        <h4>Toko Lain Sedang Active</h4>
+                        <p>Wajin Menyelesaikan Kunjungan Toko yang Active !!</p>
+                    </div>
+                    <div class="modal-footer" style="gap: 10px;display: flex;flex-wrap: nowrap;white-space: nowrap;">
+                        <button type="button" class="btn gray-btn w-50 m-0" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn theme-btn w-50 m-0" id="konfirmasitoko">Selesaikan</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalDiv);
+    }
+
+    let modalElement = document.getElementById('dynamicsedangon');
+    let hrefTarget, modal = new bootstrap.Modal(modalElement);
+    modal.show();
+    document.getElementById('konfirmasitoko').onclick = (e) => {
+        e.target.blur();
+        if (itemData) {
+            let hrefParams = `id=${itemData.on_active}&cardname=${encodeURIComponent(itemData.cardname || '')}&cust_code=${encodeURIComponent(itemData.cust_code || '')}&cust_name=${encodeURIComponent(itemData.cust_name || '')}&Address=${encodeURIComponent(itemData.Address || '')}&City=${encodeURIComponent(itemData.City || '')}&Province=${encodeURIComponent(itemData.Province || '')}&Full_Name=${encodeURIComponent(itemData.Full_Name || '')}&Job_Position=${encodeURIComponent(itemData.Job_Position || '')}&minggu=${itemData.minggu}&hari=${itemData.hari}`;
+            if (!itemData.start_kunjungan) {
+                hrefTarget = `kamera?${hrefParams}`;
+            } else if (itemData.start_kunjungan && itemData.foto) {
+                hrefParams += `&foto=${encodeURIComponent(itemData.foto || '')}&start_kunjungan=${encodeURIComponent(itemData.start_kunjungan || '')}&usercode=${encodeURIComponent(itemData.usercode || '')}`;
+                hrefTarget = `listitem?${hrefParams}`;
+            }
+            modal.hide();
+            window.location.hash = hrefTarget;
+        }
+    };
+};
+
     
 window.delitjdw = (id, el) => {
     let existingModal = document.getElementById('dynamicDeleteModal');
@@ -807,6 +851,7 @@ window.delitjdw = (id, el) => {
         }, 10); 
     };
 };
+
 let loadJadwal = (usercode, minggu = null, hari = null) => {
 
     if (!minggu || !hari) {
@@ -931,16 +976,19 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                 let itemData = data.find(x => x.id == id);
                 if (itemData) {
                     let hrefTarget = '';
-                    let hrefParams = `id=${itemData.id}&cardname=${encodeURIComponent(itemData.cardname || '')}&cust_code=${encodeURIComponent(itemData.cust_code || '')}&cust_name=${encodeURIComponent(itemData.cust_name || '')}&Address=${encodeURIComponent(itemData.Address || '')}&City=${encodeURIComponent(itemData.City || '')}&Province=${encodeURIComponent(itemData.Province || '')}&Full_Name=${encodeURIComponent(itemData.Full_Name || '')}&Job_Position=${encodeURIComponent(itemData.Job_Position || '')}&minggu=${itemData.minggu}&hari=${itemData.hari}`;
-                    
-                    if (!itemData.start_kunjungan) {
-                        hrefTarget = `kamera?${hrefParams}`;
-                    } else if (itemData.start_kunjungan && itemData.foto) {
-                        hrefParams += `&foto=${encodeURIComponent(itemData.foto || '')}&start_kunjungan=${encodeURIComponent(itemData.start_kunjungan || '')}&usercode=${encodeURIComponent(itemData.usercode || '')}`;
-                        hrefTarget = `listitem?${hrefParams}`;
+                    if(itemData.on_active != itemData.id){
+                        let nitemData = data.find(x => x.id == itemData.on_active);
+                        sedangon(itemData.id, this,nitemData);
+                    }else{
+                        let hrefParams = `id=${itemData.id}&cardname=${encodeURIComponent(itemData.cardname || '')}&cust_code=${encodeURIComponent(itemData.cust_code || '')}&cust_name=${encodeURIComponent(itemData.cust_name || '')}&Address=${encodeURIComponent(itemData.Address || '')}&City=${encodeURIComponent(itemData.City || '')}&Province=${encodeURIComponent(itemData.Province || '')}&Full_Name=${encodeURIComponent(itemData.Full_Name || '')}&Job_Position=${encodeURIComponent(itemData.Job_Position || '')}&minggu=${itemData.minggu}&hari=${itemData.hari}`;
+                        if (!itemData.start_kunjungan) {
+                            hrefTarget = `kamera?${hrefParams}`;
+                        } else if (itemData.start_kunjungan && itemData.foto) {
+                            hrefParams += `&foto=${encodeURIComponent(itemData.foto || '')}&start_kunjungan=${encodeURIComponent(itemData.start_kunjungan || '')}&usercode=${encodeURIComponent(itemData.usercode || '')}`;
+                            hrefTarget = `listitem?${hrefParams}`;
+                        }
+                        window.location.hash = hrefTarget;
                     }
-                    
-                    window.location.hash = hrefTarget;
                 }
             };
         });
