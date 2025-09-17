@@ -10,6 +10,7 @@ export let renderListItem = () => {
     let cust_name = params.get('cust_name') ? decodeURIComponent(params.get('cust_name')) : ''
     let address = params.get('Address') ? decodeURIComponent(params.get('Address')) : ''
     let full_name = params.get('Full_Name') ? decodeURIComponent(params.get('Full_Name')) : ''
+    let tanggal = params.get('tanggal') ? decodeURIComponent(params.get('tanggal')) : new Date().toISOString().split('T')[0]
 
     init_iconsax();
     document.querySelector('#app').innerHTML = `
@@ -110,13 +111,17 @@ export let renderListItem = () => {
                 <i class="iconsax icon-btn recremark" data-icon="mic-1"> </i>
                 <div class="jotheme-form" style="margin-top: 15px;">
                     <div class="form-group">
+                        <input type="text" class="form-controljo" id="Phone" name="Phone" inputmode="numeric" pattern="[0-9]*" onkeydown="return onlyNumber(event)" placeholder=" " required="">
+                        <label class="form-labeljo" for="Phone">No. Telepon</label>
+                    </div>
+                    <div class="form-group">
                         <textarea class="form-controljo hasilx" id="hasilx" placeholder="Masukkan remarks..." style="width: 100%; height: 140px;" required></textarea>
                         <label class="form-labeljo">Remarks</label>
                     </div>
                 </div>
             </div>
             <div class="offcanvas-footer flex-align-center flex-nowrap gap-3 border-0 pt-3 px-0 pb-0">
-                <span data-bs-dismiss="offcanvas"class="btn gray-btn title-color w-100 mt-0">Batal</span>
+                <span data-bs-dismiss="offcanvas"class="btn gray-btn title-color w-100 mt-0 bbatal">Batal</span>
                 <span id="simpankujungan" onclick="saveKunjungan()" class="btn theme-btn w-100 mt-0">Simpan</span>
             </div>
         </div>
@@ -424,7 +429,7 @@ export let renderListItem = () => {
     };
 
     
-
+    let json_jadwalid = [];
     fetch(urlbe + 'listjadwalid', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -432,6 +437,7 @@ export let renderListItem = () => {
     })
     .then(res => res.json())
     .then(async resData => {
+        json_jadwalid = resData;
         let lokasi = resData?.data || {};
         let start_date = resData?.start_date || new Date().toISOString().split('T')[0];
         let minggu = resData?.data?.minggu || getMingguHari()[0];
@@ -441,6 +447,7 @@ export let renderListItem = () => {
         cust_name = lokasi.cust_name || '';
         full_name = lokasi.Full_Name || '';
         let Job_Position = lokasi.Job_Position || '';
+        let Phone = lokasi.Phone || '';
         address = lokasi.Address || '';
         let cust_code = lokasi.cust_code || '';
         let city = lokasi.City || '';
@@ -461,6 +468,12 @@ export let renderListItem = () => {
         let backurl = `#home?tanggal=${start_date}&minggu=${minggu}&hari=${hari}`,
         backbtn = document.querySelector('#backbtn');
         backbtn.onclick = ()=>hrefs(backurl);
+
+        document.querySelector('#Phone').value = Phone;
+        if(Phone){
+            document.querySelector('#Phone').classList.add('.hide');
+        }
+
 
         document.querySelector('#cardname').innerHTML = cust_name;
         document.querySelector('#Address').innerHTML = address;
@@ -632,32 +645,46 @@ export let renderListItem = () => {
     
         if (items.length === 0) {
             showToast("Data Tidak Boleh Kosong.", "danger");
+            document.querySelector("#formContainer").scrollIntoView();
+            document.querySelector(".form-controljo.brand").focus();
+            document.querySelector(".bbatal").click();
             return;
         }
-    
+
         let hash = window.location.hash.split('?')[1] || '';
         let params = new URLSearchParams(hash);
-    
-        let id = params.get('id') || '';
-        let cardname = params.get('cardname') || '';
-        let cust_code = params.get('cust_code') || '';
-        cust_name = params.get('cust_name') || '';
-        address = params.get('Address') || '';
-        let city = params.get('City') || '';
-        let province = params.get('Province') || '';
-        full_name = params.get('Full_Name') || '';
-        let job_position = params.get('Job_Position') || '';
-        let minggu = params.get('minggu') || '';
-        let hari = params.get('hari') || '';
-        let foto = params.get('foto') || '';
-        let start_kunjungan = params.get('start_kunjungan') || '';
-        let usercode = params.get('usercode') || '';
-    
+
+        const getValue = (paramName, jsonKey) => {
+            let urlValue = params.get(paramName);
+            if (urlValue !== null && urlValue !== '') {
+                return urlValue;
+            }
+            return json_jadwalid?.data?.[jsonKey] || '';
+        };
+
+        let id = getValue('id', 'id');
+        let cardname = getValue('cardname', 'cardname');
+        let cust_code = getValue('cust_code', 'cust_code');
+        let cust_name = getValue('cust_name', 'cust_name');
+        let address = getValue('Address', 'Address');
+        let city = getValue('City', 'City');
+        let province = getValue('Province', 'Province');
+        let full_name = getValue('Full_Name', 'Full_Name');
+        let job_position = getValue('Job_Position', 'Job_Position');
+        let minggu = getValue('minggu', 'minggu');
+        let hari = getValue('hari', 'hari');
+        let foto = getValue('foto', 'foto');
+        let start_kunjungan = getValue('start_kunjungan', 'start_kunjungan');
+        let usercode = getValue('usercode', 'usercode');
+        let phone = document.querySelector('#Phone').value.trim();
+        let durasi = document.querySelector("#cix").innerHTML;
         try {
             let response = await fetch(urlbe + 'simpankunjungan', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    durasi,
+                    phone,
                     remark,
                     data: items,
                     id,
@@ -681,12 +708,11 @@ export let renderListItem = () => {
                 showToast("Data Berhasil di Simpan", "success");
                 document.getElementById('hasilx').value = '';
                 document.getElementById('formContainer').innerHTML = '';
-                window.location.hash = 'home'
+                window.location.hash = `home?tanggal=${tanggal}&usercode=${usercode}&minggu=${minggu}&hari=${hari}`;
             } else {
                 showToast("Gagal menyimpan data", "danger");
             }
         } catch (error) {
-            console.error(error);
             showToast("Terjadi kesalahan saat menyimpan data", "danger");
         }
     };

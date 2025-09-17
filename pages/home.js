@@ -640,7 +640,6 @@ let renderpiltanggal = () => {
 
     hiddenDate.onchange = () => {
         if (hiddenDate.value) {
-
             let selectedDate = new Date(hiddenDate.value);
             let formattedDate = selectedDate.toLocaleDateString('id-ID', {
                 day: 'numeric',
@@ -664,8 +663,6 @@ let renderpiltanggal = () => {
 };
 
 let renderHeader = () => {
-    
-
     document.getElementById('headerx').innerHTML = `
         <div class="header" id="mainHeader">
             <div class="header-title">
@@ -747,6 +744,52 @@ let waitForUserCode = () => {
         }
     }, 60)
 }
+
+
+window.tukarjd = (event, id, el) => {
+    event.preventDefault();
+    let tukarcanc = document.getElementById('tukarcanc');
+    if (!tukarcanc) {
+        let modalDiv = document.createElement('div');
+        modalDiv.className = 'modal fade';
+        modalDiv.id = 'tukarcanc';
+        modalDiv.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <div class="jotheme-form" style="margin-top: 15px;">
+                            <div class="form-group">
+                                <input type="text" class="form-controljo" id="tokox" name="tokox" placeholder=" " required="">
+                                <label class="form-labeljo" for="tokox">Toko Pengganti</label>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-controljo reasonx" id="reasonx" placeholder="Masukkan Reason..." style="width: 100%; height: 140px;" required></textarea>
+                                <label class="form-labeljo" for="reasonx">Reason</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="gap: 10px;display: flex;flex-wrap: nowrap;white-space: nowrap;">
+                        <button type="button" class="btn gray-btn w-50 m-0" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn theme-btn w-50 m-0" id="tukartoko">Hapus</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modalDiv);
+    }
+
+    tukarcanc = document.getElementById('tukarcanc');
+    let modalt = new bootstrap.Modal(tukarcanc);
+    modalt.show();
+
+    let tukartoko = document.getElementById('tukartoko');
+    if(tukartoko){
+        tukartoko.onclick = (e) => {
+            e.target.blur();
+        };
+    }
+};
+
 
 window.sedangon = (id, el,itemData) => {
     let existingModal = document.getElementById('dynamicsedangon');
@@ -867,12 +910,11 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
     })
     .then(r => r.json())
     .then(res => {
-        let list = document.querySelector(".my-ride-list");
-        let data = res.data || [];
-        let mapCust = {};
-        
-        let userData = localStorage.getItem('user_data');
-        let isAdmin = userData ? JSON.parse(userData).is_admin : false;
+        let list = document.querySelector(".my-ride-list"),
+        data = res.data || [],
+        mapCust = {},
+        userData = localStorage.getItem('user_data'),
+        isAdmin = userData ? JSON.parse(userData).is_admin : false;
 
         data.forEach(d => {
             let key = d.cust_name || '-';
@@ -883,12 +925,12 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
 
         let distinctData = Object.values(mapCust);
         list.innerHTML = distinctData.map(d => {
-            let status = d.end_kunjungan ? "done" : "waiting";
-            let tanggal = d.created_at ? formatDateIndo(d.created_at.split('T')[0]) : '';
-            let start = formatTime(d.start_kunjungan);
-            let end = formatTime(d.end_kunjungan);
-            let jam = (start && end) ? `${start} - ${end}` : '';
-            let jamClass = jam ? '' : 'hide';
+            let status = d.end_kunjungan ? "done" : "waiting",
+            tanggal = d.created_at ? formatDateIndo(d.created_at.split('T')[0]) : '',
+            start = formatTime(d.start_kunjungan),
+            end = formatTime(d.end_kunjungan),
+            jam = (start && end) ? `${start} - ${end}` : '',
+            jamClass = jam ? '' : 'hide';
             
             let hrefTarget = '';
             let hrefParams = `id=${d.id}&cardname=${encodeURIComponent(d.cardname || '')}&cust_code=${encodeURIComponent(d.cust_code || '')}&cust_name=${encodeURIComponent(d.cust_name || '')}&Address=${encodeURIComponent(d.Address || '')}&City=${encodeURIComponent(d.City || '')}&Province=${encodeURIComponent(d.Province || '')}&Full_Name=${encodeURIComponent(d.Full_Name || '')}&Job_Position=${encodeURIComponent(d.Job_Position || '')}&minggu=${d.minggu}&hari=${d.hari}`;
@@ -917,9 +959,8 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                 `;
             }
             
-            let showEditButton = isAdmin ? '' : 'hide';
-            let showDeleteButton = (isAdmin || d.created_by === usercode) ? '' : 'hide';
-
+            let showEditButton = isAdmin ? '' : 'hide',
+            showDeleteButton = (isAdmin || d.created_by === usercode) ? '' : 'hide';
             return `
                 <li class="ride-item" data-id="${d.id}">
                     <div class="my-ride-box">
@@ -941,9 +982,9 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                                     <div style='font-size: 10px;margin: 6px;' class="fw-normal content-color mt-1">${d.Job_Position || ''}</div>
                                 </div>` : ''}
                                 <div class="flex-align-center gap-2">
-                                    <a class="${showEditButton}" href="edit-offer.html"> 
-                                        <i class="iconsax icon" data-icon="edit-2"></i> 
-                                    </a> 
+                                    <span class="${showEditButton} tukarjd" onclick="tukarjd(event,${d.id}, this)"> 
+                                        <i class="iconsax icon  error-icon" data-icon="gps-slash"></i> 
+                                    </span> 
                                     <span class="delitjdw ${showDeleteButton}" onclick="delitjdw(${d.id}, this)">
                                         <i class="iconsax icon error-icon" data-icon="trash"></i> 
                                     </span> 
@@ -964,12 +1005,11 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                 </li>
             `;
         }).join('');
-
         init_iconsax();
         removeSkeleton(document.querySelector(".my-ride-list"));
         document.querySelectorAll(".ride-item").forEach(item => {
             item.onclick = (e) => {
-                if (e.target.closest('.delitjdw') || e.target.closest('a[href="edit-offer.html"]')) {
+                if (e.target.closest('.delitjdw') || e.target.closest('.tukarjd') || e.target.closest('a[href="edit-offer.html"]')) {
                     return;
                 }
                 let id = item.getAttribute('data-id');
@@ -979,6 +1019,9 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                     if(itemData.on_active != itemData.id){
                         let nitemData = data.find(x => x.id == itemData.on_active);
                         sedangon(itemData.id, this,nitemData);
+                        item.querySelectorAll('a').forEach((ea)=>{
+                            ea.removeAttribute('onclick');
+                        });
                     }else{
                         let hrefParams = `id=${itemData.id}&cardname=${encodeURIComponent(itemData.cardname || '')}&cust_code=${encodeURIComponent(itemData.cust_code || '')}&cust_name=${encodeURIComponent(itemData.cust_name || '')}&Address=${encodeURIComponent(itemData.Address || '')}&City=${encodeURIComponent(itemData.City || '')}&Province=${encodeURIComponent(itemData.Province || '')}&Full_Name=${encodeURIComponent(itemData.Full_Name || '')}&Job_Position=${encodeURIComponent(itemData.Job_Position || '')}&minggu=${itemData.minggu}&hari=${itemData.hari}`;
                         if (!itemData.start_kunjungan) {
