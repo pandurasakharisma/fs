@@ -1,4 +1,4 @@
-export let renderlistpelanggan = () => {
+export let rendertukarpelanggan = () => {
     let selectedStores = [];
     let hash = window.location.hash.substring(1);
     let [route, queryString] = hash.split('?');
@@ -251,7 +251,7 @@ export let renderlistpelanggan = () => {
         </main>
         <section class="panel-space"></section>
     `
-    document.querySelector('body').removeAttribute('style');
+
     let backcp = document.querySelector('.backcp');
     if(backcp){        
         let now = new Date();
@@ -541,4 +541,4 @@ export let renderlistpelanggan = () => {
 }
 
 
-export default renderlistpelanggan 
+export default rendertukarpelanggan 
