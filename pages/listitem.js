@@ -110,7 +110,7 @@ export let renderListItem = () => {
                 <h3>Berikan Kesimpulan Hasil Diskusi</h3>
                 <i class="iconsax icon-btn recremark" data-icon="mic-1"> </i>
                 <div class="jotheme-form" style="margin-top: 15px;">
-                    <div class="form-group">
+                    <div class="form-group hide">
                         <input type="text" class="form-controljo" id="Phone" name="Phone" inputmode="numeric" pattern="[0-9]*" onkeydown="return onlyNumber(event)" placeholder=" " required="">
                         <label class="form-labeljo" for="Phone">No. Telepon</label>
                     </div>

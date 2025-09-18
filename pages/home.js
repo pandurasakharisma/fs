@@ -748,6 +748,7 @@ let waitForUserCode = () => {
 
 window.tukarjd = (event, id, el) => {
     event.preventDefault();
+
     let tukarcanc = document.getElementById('tukarcanc');
     if (!tukarcanc) {
         let modalDiv = document.createElement('div');
@@ -758,7 +759,7 @@ window.tukarjd = (event, id, el) => {
                 <div class="modal-content">
                     <div class="modal-body text-center">
                         <div class="jotheme-form" style="margin-top: 15px;">
-                            <div class="form-group">
+                            <div class="form-group hide">
                                 <input type="text" class="form-controljo" id="tokox" name="tokox" placeholder=" " required="">
                                 <label class="form-labeljo" for="tokox">Toko Pengganti</label>
                             </div>
@@ -769,8 +770,8 @@ window.tukarjd = (event, id, el) => {
                         </div>
                     </div>
                     <div class="modal-footer" style="gap: 10px;display: flex;flex-wrap: nowrap;white-space: nowrap;">
-                        <button type="button" class="btn gray-btn w-50 m-0" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn theme-btn w-50 m-0" id="tukartoko">Hapus</button>
+                        <button type="button" class="btn gray-btn w-50 m-0" data-bs-dismiss="modal">Tutup</button>
+                        <button type="button" class="btn theme-btn w-50 m-0" id="canceltoko">Cancel Jadwal</button>
                     </div>
                 </div>
             </div>
@@ -782,10 +783,38 @@ window.tukarjd = (event, id, el) => {
     let modalt = new bootstrap.Modal(tukarcanc);
     modalt.show();
 
-    let tukartoko = document.getElementById('tukartoko');
-    if(tukartoko){
-        tukartoko.onclick = (e) => {
-            e.target.blur();
+    let tukartoko = document.getElementById('canceltoko');
+    if (tukartoko) {
+        tukartoko.onclick = null;
+        tukartoko.onclick = () => {
+            const reason = document.getElementById('reasonx').value;
+            if (!reason) {
+                showToast('Reason tidak boleh kosong', 'error');
+                return;
+            }
+
+            fetch(urlbe + "canceljadwal", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, reason })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.success) {
+                    let targetItem = document.querySelector(`[data-id="${id}"]`);
+                    if (targetItem) targetItem.remove();
+                    let li = el.closest('li.ride-item');
+                    if (li) li.remove();
+                    showToast('Jadwal berhasil dibatalkan', 'success');
+                } else {
+                    showToast('Gagal membatalkan jadwal', 'error');
+                }
+                modalt.hide();
+            })
+            .catch(() => {
+                showToast('Terjadi kesalahan saat membatalkan jadwal', 'error');
+                modalt.hide();
+            });
         };
     }
 };
