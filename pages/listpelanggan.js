@@ -10,6 +10,7 @@ export let renderlistpelanggan = () => {
     let mingguUrl = urlParams.get('minggu') || null;
     let hariUrl = urlParams.get('hari') || null;
     let tanggal = urlParams.get('tanggal') || null;
+    let reff_id = urlParams.get('reff_id') || null;
 
     document.querySelector('#app').innerHTML = `
         <style>
@@ -342,9 +343,8 @@ export let renderlistpelanggan = () => {
             let icon = li.querySelector('.icon');
             li.dataset.ready = "0"; 
             li.dataset.store = JSON.stringify(store);
-            li.onclick = () => {
+            li.onclick = async () => {
                 let storeData = JSON.parse(li.dataset.store);
-            
                 if (li.dataset.ready === "0") {
                     li.dataset.ready = "1";
                     li.classList.add('ready');
@@ -359,7 +359,23 @@ export let renderlistpelanggan = () => {
                     selectedStores = selectedStores.filter(s => s.CardCode !== storeData.CardCode);
                 }
 
-                updateTbf2Visibility();
+                if(reff_id){
+                    let now = new Date();
+                    let minggu = mingguUrl || String(getMingguKe(now)),
+                    hari = hariUrl || String(getHariMon1(now));
+                    
+                    
+                    let store = selectedStores[0];
+                    await addToJadwal(store);
+                    
+                    showToast(`1 pelanggan berhasil ditambahkan ke jadwal.`, "success");
+                    selectedStores = [];
+                    setTimeout(() => {
+                        window.location.hash = `home?tanggal=${tanggal}&minggu=${minggu}&hari=${hari}&usercode=${usercode}`;
+                    }, 100);
+                }else{
+                    updateTbf2Visibility();   
+                }
             };
             
 
@@ -386,7 +402,7 @@ export let renderlistpelanggan = () => {
         }, 100);
     };
 
-    document.querySelector(".simpancust").onclick = async function () {
+    document.querySelector(".simpancust").onclick = async ()=> {
         let now = new Date();
         let minggu = mingguUrl || String(getMingguKe(now));
         let hari = hariUrl || String(getHariMon1(now));

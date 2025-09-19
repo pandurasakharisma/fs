@@ -339,13 +339,42 @@ export let renderHome = () => {
                 visibility: hidden; 
             }
             #listuserx{padding:20px 0 5px;}
+            .my-ride-list li .my-ride-box {background: #fff;border-radius: 8px 8px 0 0;z-index:+1;position: relative;}
             .contact-list li .contact-box i{ --Iconsax-Color: #c53f3f;}
             .contact-list li .contact-box .igb svg{width: 25px;height: 25px;}
+            .bg-successx{background: #4caf50;color: #fff;}
+            .bg-waitingx, .bg-gagalx{background: #c53f3f;color: #fff;}
+            .br-successx{border:2px solid #4caf50!important;position: relative;}
+            .br-gagalx{border:2px solid #c53f3f!important;position: relative;}
+            .br-gagalx:before, .br-successx:before{
+                position: absolute;
+                top: -8px;
+                content: "";
+                left: 0;
+                width: 100%;
+                height: 40px;
+                background: #c53f3f;
+                z-index: +1;
+                color: #fff;
+                border-radius: 8px 8px 0 0;
+            }
+            .seclist .total-ride-list{display:inline-flex;}  
+            .br-successx:before{background:#4caf50;}
+            .status{
+                list-style: none;
+                padding: 5px 10px;
+                border-radius: 8px;
+                position: absolute;
+                right: -8px;
+                top: -5px;
+                font-size:9px;
+            }
             @media (max-width: 576px) {
                 .left-box {
                     padding-bottom: 0;
                 }
             }
+            .hide{display:none;}
         </style>
 
         <header id="header" class="main-header"
@@ -358,64 +387,7 @@ export let renderHome = () => {
         <div id="absenkeluar" class="hide"></div>
         <section class="seclist">
             <div class="custom-container">
-                <ul class="total-ride-list mt-0 p-0" style="display: inline-flex;white-space: nowrap;margin: 10px 0 20px; gap:10px;overflow-x: scroll;max-width: 100%;">
-                    <li>
-                        <a href="wallet.html" class="ride-box">
-                            <div class="flex-spacing gap-1">
-                                <h4>$3100</h4>
-                                <div class="ride-icon">
-                                    <i class="iconsax icon" data-icon="wallet-open"></i>
-                                </div>
-                            </div>
-                            <div class="flex-spacing gap-1 mt-1">
-                                <h6 class="d-flex flex-wrap">Total Earnings</h6>
-                                <i class="iconsax arrow-icon" data-icon="arrow-right"></i>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="my-rides.html" class="ride-box">
-                            <div class="flex-spacing gap-1">
-                                <h4>16</h4>
-                                <div class="ride-icon">
-                                    <i class="iconsax icon" data-icon="smart-car"></i>
-                                </div>
-                            </div>
-                            <div class="flex-spacing gap-1 mt-1">
-                                <h6 class="d-flex flex-wrap">Complete Ride</h6>
-                                <i class="iconsax arrow-icon" data-icon="arrow-right"></i>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="my-rides.html" class="ride-box">
-                            <div class="flex-spacing gap-1">
-                                <h4>02</h4>
-                                <div class="ride-icon">
-                                    <i class="iconsax icon" data-icon="car"></i>
-                                </div>
-                            </div>
-                            <div class="flex-spacing gap-1 mt-1">
-                                <h6 class="d-flex flex-wrap">Pending Ride</h6>
-                                <i class="iconsax arrow-icon" data-icon="arrow-right"></i>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="my-rides.html" class="ride-box">
-                            <div class="flex-spacing gap-1">
-                                <h4>04</h4>
-                                <div class="ride-icon">
-                                    <i class="iconsax icon" data-icon="driving"></i>
-                                </div>
-                            </div>
-                            <div class="flex-spacing gap-1 mt-1">
-                                <h6 class="d-flex flex-wrap">Cancel Ride</h6>
-                                <i class="iconsax arrow-icon" data-icon="arrow-right"></i>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
+                <ul class="total-ride-list mt-0 p-0" style="white-space: nowrap;margin: 10px 0 20px; gap:10px;overflow-x: scroll;max-width: 100%;"></ul>
                 <a onclick="hrefs('listpelanggan')" class="iconsax addcust" data-icon="add" id="addform"></a>
                 <ul class="my-ride-list" style="margin-top: 0;padding-bottom: 40px;"></ul>
                 <div class="offcanvas element-offcanvas offcanvas-bottom" id="offcanvasBottom" style="max-height: 95vh;height: fit-content;">
@@ -456,7 +428,49 @@ window.gantiuserh =(el)=>{
 
 };
 
+
 let listUserData = [];
+let renderlistslide = (ridesData)=>{
+    let totalRideList = document.querySelector('.total-ride-list');
+    if(totalRideList) { totalRideList.innerHTML = '';  }
+    ridesData.forEach(ride => {
+        let li = document.createElement('li'),
+        a = document.createElement('div'),
+        div1 = document.createElement('div'),
+        h4 = document.createElement('h4'),
+        div2 = document.createElement('div'),
+        i1 = document.createElement('i'),
+        div3 = document.createElement('div'),
+        h6 = document.createElement('h6'),
+        i2 = document.createElement('i');
+        
+        a.className = 'ride-box';
+      
+        div1.className = 'flex-spacing gap-1';
+        h4.textContent = ride.value;
+        div2.className = 'ride-icon';
+        i1.className = `iconsax icon`;
+        i1.setAttribute('data-icon', ride.icon);
+      
+        div3.className = 'flex-spacing gap-1 mt-1';
+        h6.className = 'd-flex flex-wrap';
+        h6.textContent = ride.text;
+        
+        div2.appendChild(i1);
+        div1.appendChild(h4);
+        div1.appendChild(div2);
+    
+        div3.appendChild(h6);
+      
+        a.appendChild(div1);
+        a.appendChild(div3);
+      
+        li.appendChild(a);
+        totalRideList.appendChild(li);
+    });  
+    
+    init_iconsax();  
+};
 
 const renderListUser = (users) => {
     const ul = document.querySelector('#listuserx ul');
@@ -757,14 +771,18 @@ window.tukarjd = (event, id, el) => {
         modalDiv.innerHTML = `
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-body text-center">
+                    <div class="modal-header p-2" style="border: none;">
+                        <h2 class="modal-title" id="exampleModalLabel" style="padding-left:10px;">Cancel Jadwal Kunjungan</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center" style="padding:0 20px 0;">
                         <div class="jotheme-form" style="margin-top: 15px;">
                             <div class="form-group hide">
                                 <input type="text" class="form-controljo" id="tokox" name="tokox" placeholder=" " required="">
                                 <label class="form-labeljo" for="tokox">Toko Pengganti</label>
                             </div>
-                            <div class="form-group">
-                                <textarea class="form-controljo reasonx" id="reasonx" placeholder="Masukkan Reason..." style="width: 100%; height: 140px;" required></textarea>
+                            <div class="form-group" style="margin-bottom:0!important;">
+                                <textarea class="form-controljo reasonx" id="reasonx" placeholder="Masukkan Reason..." style="width: 100%; height:60px;border:none!important;" required></textarea>
                                 <label class="form-labeljo" for="reasonx">Reason</label>
                             </div>
                         </div>
@@ -782,6 +800,7 @@ window.tukarjd = (event, id, el) => {
     tukarcanc = document.getElementById('tukarcanc');
     let modalt = new bootstrap.Modal(tukarcanc);
     modalt.show();
+    document.querySelector("#reasonx").focus();
 
     let tukartoko = document.getElementById('canceltoko');
     if (tukartoko) {
@@ -793,6 +812,7 @@ window.tukarjd = (event, id, el) => {
                 return;
             }
 
+            let newhref = `listpelanggan?${params.toString()}&reff_id=${id}`;
             fetch(urlbe + "canceljadwal", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -810,6 +830,7 @@ window.tukarjd = (event, id, el) => {
                     showToast('Gagal membatalkan jadwal', 'error');
                 }
                 modalt.hide();
+                window.location.hash = newhref;
             })
             .catch(() => {
                 showToast('Terjadi kesalahan saat membatalkan jadwal', 'error');
@@ -924,8 +945,20 @@ window.delitjdw = (id, el) => {
     };
 };
 
+let hitungdurasi = (totalminutes) => {
+    if (typeof totalminutes !== 'number' || totalminutes < 0) {return "00:00";}
+
+    let hours = Math.floor(totalminutes / 60),
+        minutes = Math.floor(totalminutes % 60),
+        formatted_hours = String(hours).padStart(2, '0'),
+        formatted_minutes = String(minutes).padStart(2, '0');
+
+    return `${formatted_hours}:${formatted_minutes}`;
+};
+
 let loadJadwal = (usercode, minggu = null, hari = null) => {
 
+    let selesaix,cancelx, totaldurasi =  0, totaltitik = 0, totalselesai = 0, totalcancel = 0;
     if (!minggu || !hari) {
         let today = getMingguHari();
         minggu = today.minggu;
@@ -939,6 +972,7 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
     })
     .then(r => r.json())
     .then(res => {
+
         let list = document.querySelector(".my-ride-list"),
         data = res.data || [],
         mapCust = {},
@@ -946,6 +980,12 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
         isAdmin = userData ? JSON.parse(userData).is_admin : false;
 
         data.forEach(d => {
+            selesaix = (d.statusx) ? ((d.statusx == 2) ? 1 : 0) : 0;
+            cancelx = (d.statusx) ? ((d.statusx == 1) ? 1 : 0) : 0;
+            totalselesai += selesaix;
+            totalcancel += cancelx;
+            totaldurasi += d.durasi;
+            totaltitik ++;
             let key = d.cust_name || '-';
             if (!mapCust[key] || new Date(d.created_at) > new Date(mapCust[key].created_at)) {
                 mapCust[key] = d;
@@ -954,8 +994,20 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
 
         let distinctData = Object.values(mapCust);
         list.innerHTML = distinctData.map(d => {
-            let status = d.end_kunjungan ? "done" : "waiting",
-            tanggal = d.created_at ? formatDateIndo(d.created_at.split('T')[0]) : '',
+            let status, bgstatus;
+            if (d.statusx === null) {
+                status = "waiting";
+                bgstatus = "waitingx";
+            } else {
+                switch (d.statusx) {
+                    case 0:status = "canceled";bgstatus = "gagalx";break;
+                    case 1:status = "active";bgstatus = "waitingx";break;
+                    case 2:status = "done";bgstatus = "successx";break;
+                    default:status = "waiting";bgstatus = "waitingx";break;
+                }
+            }
+
+            let tanggal = d.created_at ? formatDateIndo(d.created_at.split('T')[0]) : '',
             start = formatTime(d.start_kunjungan),
             end = formatTime(d.end_kunjungan),
             jam = (start && end) ? `${start} - ${end}` : '',
@@ -988,16 +1040,16 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                 `;
             }
             
-            let showEditButton = isAdmin ? '' : 'hide',
-            showDeleteButton = (isAdmin || d.created_by === usercode) ? '' : 'hide';
+            let showEditButton = (!d.statusx && isAdmin) ? '' : 'hide',
+            showDeleteButton = (!d.statusx && !d.start_kunjungan && (isAdmin || d.created_by === usercode)) ? '' : 'hide';
             return `
-                <li class="ride-item" data-id="${d.id}">
+                <li class="ride-item br-${bgstatus}" data-id="${d.id}">
                     <div class="my-ride-box">
                         <div class="my-ride-head">
                             <div class="my-ride-content flex-column" style="width:100%;margin:0 5px 0;">
-                                <div class="flex-spacing">
+                                <div class="flex-spacing" style="position:relative">
                                     <a onclick="${hrefTarget}"><h6 style="max-width:93%;" class="title-color fw-medium">${d.cust_name || '-'}</h6></a>
-                                    <span class="status accent-color fw-normal">${status}</span>
+                                    <span class="status fw-normal bg-${bgstatus}">${status}</span>
                                 </div>
                             </div>
                         </div>
@@ -1012,9 +1064,9 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                                 </div>` : ''}
                                 <div class="flex-align-center gap-2">
                                     <span class="${showEditButton} tukarjd" onclick="tukarjd(event,${d.id}, this)"> 
-                                        <i class="iconsax icon  error-icon" data-icon="gps-slash"></i> 
+                                        <i class="iconsax icon  error-icon" data-icon="trash"></i> 
                                     </span> 
-                                    <span class="delitjdw ${showDeleteButton}" onclick="delitjdw(${d.id}, this)">
+                                    <span class="delitjdw ${showDeleteButton}" onclick="delitjdw(${d.id}, this)" style="display:none;">
                                         <i class="iconsax icon error-icon" data-icon="trash"></i> 
                                     </span> 
                                 </div> 
@@ -1025,7 +1077,7 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                                     <i class="iconsax icon" data-icon="gps"></i> 
                                     <div class="flex-spacing" style="width:100%;">
                                         <span class="fw-light title-color border-0">${tanggal}</span>
-                                        <span class="fw-light title-color border-0 ml-auto ${jamClass}">${jam}</span>
+                                        <span class="status fw-normal ${jamClass} bg-${bgstatus}  border-0 ml-auto" style="top: 4px;position: relative;right: auto;">${hitungdurasi(d.durasi)}</span>
                                     </div>
                                 </li>
                             </ul>
@@ -1034,7 +1086,6 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                 </li>
             `;
         }).join('');
-        init_iconsax();
         removeSkeleton(document.querySelector(".my-ride-list"));
         document.querySelectorAll(".ride-item").forEach(item => {
             item.onclick = (e) => {
@@ -1064,6 +1115,37 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                 }
             };
         });
+
+        let ridesData = [{
+            value: hitungdurasi(totaldurasi),
+            icon: 'stopwatch-play',
+            text: 'Total Durasi'
+        },
+        {
+            href: 'my-rides.html',
+            value: totaltitik+' Toko',
+            icon: 'smart-car',
+            text: 'Total Kunjungan'
+        },
+        {
+            value: totalselesai+' Toko',
+            icon: 'car',
+            text: 'Kunjungan Selesai'
+        },
+        {
+            value: totalcancel+' Toko',
+            icon: 'driving',
+            text: 'Batal Kunjungan'
+        }];
+
+        if(totaltitik < 1){
+            document.querySelector('.total-ride-list').classList.add('hide');
+        }else{
+            document.querySelector('.total-ride-list').classList.remove('hide');
+        }
+
+        renderlistslide(ridesData);
+        init_iconsax();
     });
 };
 
