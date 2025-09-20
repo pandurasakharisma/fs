@@ -1184,9 +1184,13 @@ let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
         month = String(today.getMonth() + 1).padStart(2, '0'),
         day = String(today.getDate()).padStart(2, '0'),
         formattedDate = `${year}-${month}-${day}`;
-        
-        if(tanggal < formattedDate){ addform.classList.add('hide');  }
-        else{ addform.classList.remove('hide');  }
+
+        if(tanggal){
+            if(tanggal < formattedDate){ addform.classList.add('hide');  }
+            else{ addform.classList.remove('hide');  }
+        }else{
+            addform.classList.remove('hide');  
+        }
 
         renderlistslide(ridesData);
         init_iconsax();
