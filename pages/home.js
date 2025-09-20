@@ -479,8 +479,8 @@ let renderlistslide = (ridesData)=>{
     init_iconsax();  
 };
 
-const renderListUser = (users) => {
-    const ul = document.querySelector('#listuserx ul');
+let renderListUser = (users) => {
+    let ul = document.querySelector('#listuserx ul');
     if (!ul) return;
     ul.innerHTML = users.length
         ? users.map(user => `
@@ -507,13 +507,13 @@ const renderListUser = (users) => {
     init_iconsax();
 };
 
-const loadListUser = async () => {
+let loadListUser = async () => {
     try {
-        const res = await fetch(urlbe + "listuser", {
+        let res = await fetch(urlbe + "listuser", {
             method: "POST",
             headers: { "Content-Type": "application/json" }
         });
-        const data = await res.json();
+        let data = await res.json();
         if (data.status === 'success' && Array.isArray(data.data)) {
             listUserData = data.data;
             renderListUser(listUserData); 
@@ -530,7 +530,7 @@ const loadListUser = async () => {
 await loadListUser();
 
 window.piluser = () => {
-    const offcanvasBody = document.querySelector('#offcanvasBottom .offcanvas-body');
+    let offcanvasBody = document.querySelector('#offcanvasBottom .offcanvas-body');
     offcanvasBody.innerHTML = `
         <button type="button" class="btn-close closec hide" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 0 10px;">
@@ -544,15 +544,15 @@ window.piluser = () => {
     `;
     
     renderListUser(listUserData);
-    const searchInputc = document.querySelector('#searchInputc');
-    const clearBtnc = document.querySelector('#clearBtnc');
+    let searchInputc = document.querySelector('#searchInputc');
+    let clearBtnc = document.querySelector('#clearBtnc');
     searchInputc.focus();
     
     searchInputc.addEventListener('input', () => {
-        const filter = searchInputc.value.toLowerCase();
+        let filter = searchInputc.value.toLowerCase();
         clearBtnc.classList.toggle('hide', !filter);
         document.querySelectorAll('#listuserx ul li').forEach(item => {
-            const name = item.querySelector('h5').innerText.toLowerCase();
+            let name = item.querySelector('h5').innerText.toLowerCase();
             item.style.display = name.includes(filter) ? '' : 'none';
         });
     });
@@ -646,7 +646,7 @@ let renderpiltanggal = () => {
     
             display.value = formattedDate;
             hiddenDate.value = urlTanggal; 
-            const userToUse = selectedUserCode || document.getElementById('usercode').value;
+            let userToUse = selectedUserCode || document.getElementById('usercode').value;
             loadJadwal(userToUse, urlMinggu, urlHari,urlTanggal);
             document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${urlParams}')`)
         } else {
@@ -818,7 +818,7 @@ window.tukarjd = (event, id, el) => {
     if (tukartoko) {
         tukartoko.onclick = null;
         tukartoko.onclick = () => {
-            const reason = document.getElementById('reasonx').value;
+            let reason = document.getElementById('reasonx').value;
             if (!reason) {
                 showToast('Reason tidak boleh kosong', 'error');
                 return;
@@ -1178,6 +1178,15 @@ let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
         }else{
             document.querySelector('.total-ride-list').classList.remove('hide');
         }
+
+        let addform = document.querySelector("#addform"), today = new Date(),
+        year = today.getFullYear(),
+        month = String(today.getMonth() + 1).padStart(2, '0'),
+        day = String(today.getDate()).padStart(2, '0'),
+        formattedDate = `${year}-${month}-${day}`;
+        
+        if(tanggal < formattedDate){ addform.classList.add('hide');  }
+        else{ addform.classList.remove('hide');  }
 
         renderlistslide(ridesData);
         init_iconsax();
