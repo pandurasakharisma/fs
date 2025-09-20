@@ -339,7 +339,7 @@ export let renderHome = () => {
                 visibility: hidden; 
             }
             #listuserx{padding:20px 0 5px;}
-            .my-ride-list li .my-ride-box {background: #fff;border-radius: 8px 8px 0 0;z-index:+1;position: relative;}
+            .my-ride-list li .my-ride-box {background: #fff;border-radius: 8px;z-index:+1;position: relative;}
             .contact-list li .contact-box i{ --Iconsax-Color: #c53f3f;}
             .contact-list li .contact-box .igb svg{width: 25px;height: 25px;}
             .bg-successx{background: #4caf50;color: #fff;}
@@ -374,7 +374,14 @@ export let renderHome = () => {
                     padding-bottom: 0;
                 }
             }
-            .hide{display:none;}
+            .nodata h5 {
+                font-size:15px;
+                text-align: center;
+                margin: 15px 0;
+                color: #c53f3f;
+            }
+            .putar {rotate: 180deg;}
+            .hide{display:none!important;}
         </style>
 
         <header id="header" class="main-header"
@@ -387,7 +394,7 @@ export let renderHome = () => {
         <div id="absenkeluar" class="hide"></div>
         <section class="seclist">
             <div class="custom-container">
-                <ul class="total-ride-list mt-0 p-0" style="white-space: nowrap;margin: 10px 0 20px; gap:10px;overflow-x: scroll;max-width: 100%;"></ul>
+                <ul class="total-ride-list mt-0 p-0 hide" style="white-space: nowrap;margin: 10px 0 20px; gap:10px;overflow-x: scroll;max-width: 100%;"></ul>
                 <a onclick="hrefs('listpelanggan')" class="iconsax addcust" data-icon="add" id="addform"></a>
                 <ul class="my-ride-list" style="margin-top: 0;padding-bottom: 40px;"></ul>
                 <div class="offcanvas element-offcanvas offcanvas-bottom" id="offcanvasBottom" style="max-height: 95vh;height: fit-content;">
@@ -564,7 +571,7 @@ let renderpiltanggal = () => {
     let isAdmin = userData ? JSON.parse(userData).is_admin : false;
     let gtusrx = (isAdmin) ? '' : 'hide'
     document.getElementById('piltanggal').innerHTML = `
-    <div class="custom-container">
+    <div class="custom-container" style="padding:10px 20px 0;">
         <ul class="pickup-location-listing">
             <li id="gtuser" class="${gtusrx}">
                 <div class="location-box" style="position:relative;">
@@ -956,8 +963,16 @@ let hitungdurasi = (totalminutes) => {
     return `${formatted_hours}:${formatted_minutes}`;
 };
 
-let loadJadwal = (usercode, minggu = null, hari = null) => {
+window.showreason = (event,el) =>{
+    event.preventDefault();
+    el.classList.toggle('putar');
+    let parent = el.parentElement.parentElement.parentElement;
+    if (parent) {
+        parent.querySelector('.sreason').classList.toggle('hide');
+    }
+};
 
+let loadJadwal = (usercode, minggu = null, hari = null) => {
     let selesaix,cancelx, totaldurasi =  0, totaltitik = 0, totalselesai = 0, totalcancel = 0;
     if (!minggu || !hari) {
         let today = getMingguHari();
@@ -1039,11 +1054,12 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                     </li>
                 `;
             }
-            
-            let showEditButton = (!d.statusx && isAdmin) ? '' : 'hide',
-            showDeleteButton = (!d.statusx && !d.start_kunjungan && (isAdmin || d.created_by === usercode)) ? '' : 'hide';
+
+            let showreasonbutton = (d.statusx != null) ? ((d.statusx == 0) ? '' :'hide') : 'hide',
+            showEditButton = (d.statusx != null) ? 'hide' : (!d.start_kunjungan && (isAdmin || d.created_by === usercode) ? '' : 'hide'),
+            showDeleteButton = (d.statusx != null) ? 'hide' : (!d.start_kunjungan && (isAdmin || d.created_by === usercode) ? '' : 'hide');
             return `
-                <li class="ride-item br-${bgstatus}" data-id="${d.id}">
+                <li class="ride-item br-${bgstatus}" data-id="${d.id}" data-statusx="${d.statusx}">
                     <div class="my-ride-box">
                         <div class="my-ride-head">
                             <div class="my-ride-content flex-column" style="width:100%;margin:0 5px 0;">
@@ -1062,14 +1078,20 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                                     </div>
                                     <div style='font-size: 10px;margin: 6px;' class="fw-normal content-color mt-1">${d.Job_Position || ''}</div>
                                 </div>` : ''}
-                                <div class="flex-align-center gap-2">
+                                <div class="flex-align-center gap-2" data-statusx="${d.statusx}">
                                     <span class="${showEditButton} tukarjd" onclick="tukarjd(event,${d.id}, this)"> 
                                         <i class="iconsax icon  error-icon" data-icon="trash"></i> 
+                                    </span> 
+                                    <span class="${showreasonbutton} showreason" onclick="showreason(event, this)"> 
+                                        <i class="iconsax icon  error-icon" data-icon="chevron-down"></i> 
                                     </span> 
                                     <span class="delitjdw ${showDeleteButton}" onclick="delitjdw(${d.id}, this)" style="display:none;">
                                         <i class="iconsax icon error-icon" data-icon="trash"></i> 
                                     </span> 
                                 </div> 
+                            </div>
+                            <div class="reason-part my-2 sreason hide">
+                                <p>Reason : ${d.reason}</p>
                             </div>
                             <ul class="ride-location-listing mt-1">
                                 ${addressDisplay}
@@ -1089,28 +1111,39 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
         removeSkeleton(document.querySelector(".my-ride-list"));
         document.querySelectorAll(".ride-item").forEach(item => {
             item.onclick = (e) => {
-                if (e.target.closest('.delitjdw') || e.target.closest('.tukarjd') || e.target.closest('a[href="edit-offer.html"]')) {
+                if (e.target.closest('.delitjdw') || e.target.closest('.showreason') ||  e.target.closest('.tukarjd') || e.target.closest('a[href="edit-offer.html"]')) {
                     return;
                 }
                 let id = item.getAttribute('data-id');
+                let statusx = item.getAttribute('data-statusx');
                 let itemData = data.find(x => x.id == id);
-                if (itemData) {
-                    let hrefTarget = '';
-                    if(itemData.on_active != itemData.id){
-                        let nitemData = data.find(x => x.id == itemData.on_active);
-                        sedangon(itemData.id, this,nitemData);
-                        item.querySelectorAll('a').forEach((ea)=>{
-                            ea.removeAttribute('onclick');
-                        });
-                    }else{
-                        let hrefParams = `id=${itemData.id}&cardname=${encodeURIComponent(itemData.cardname || '')}&cust_code=${encodeURIComponent(itemData.cust_code || '')}&cust_name=${encodeURIComponent(itemData.cust_name || '')}&Address=${encodeURIComponent(itemData.Address || '')}&City=${encodeURIComponent(itemData.City || '')}&Province=${encodeURIComponent(itemData.Province || '')}&Full_Name=${encodeURIComponent(itemData.Full_Name || '')}&Job_Position=${encodeURIComponent(itemData.Job_Position || '')}&minggu=${itemData.minggu}&hari=${itemData.hari}`;
-                        if (!itemData.start_kunjungan) {
-                            hrefTarget = `kamera?${hrefParams}`;
-                        } else if (itemData.start_kunjungan && itemData.foto) {
-                            hrefParams += `&foto=${encodeURIComponent(itemData.foto || '')}&start_kunjungan=${encodeURIComponent(itemData.start_kunjungan || '')}&usercode=${encodeURIComponent(itemData.usercode || '')}`;
-                            hrefTarget = `listitem?${hrefParams}`;
+                
+                if(statusx == 0){
+                    item.querySelectorAll('a').forEach((ea)=>{
+                        ea.removeAttribute('onclick');
+                    });
+
+                    item.querySelector('.showreason').click();
+                }else{
+
+                    if (itemData) {
+                        let hrefTarget = '';
+                        if(itemData.on_active != itemData.id){
+                            let nitemData = data.find(x => x.id == itemData.on_active);
+                            sedangon(itemData.id, this,nitemData);
+                            item.querySelectorAll('a').forEach((ea)=>{
+                                ea.removeAttribute('onclick');
+                            });
+                        }else{
+                            let hrefParams = `id=${itemData.id}&cardname=${encodeURIComponent(itemData.cardname || '')}&cust_code=${encodeURIComponent(itemData.cust_code || '')}&cust_name=${encodeURIComponent(itemData.cust_name || '')}&Address=${encodeURIComponent(itemData.Address || '')}&City=${encodeURIComponent(itemData.City || '')}&Province=${encodeURIComponent(itemData.Province || '')}&Full_Name=${encodeURIComponent(itemData.Full_Name || '')}&Job_Position=${encodeURIComponent(itemData.Job_Position || '')}&minggu=${itemData.minggu}&hari=${itemData.hari}`;
+                            if (!itemData.start_kunjungan) {
+                                hrefTarget = `kamera?${hrefParams}`;
+                            } else if (itemData.start_kunjungan && itemData.foto) {
+                                hrefParams += `&foto=${encodeURIComponent(itemData.foto || '')}&start_kunjungan=${encodeURIComponent(itemData.start_kunjungan || '')}&usercode=${encodeURIComponent(itemData.usercode || '')}`;
+                                hrefTarget = `listitem?${hrefParams}`;
+                            }
+                            window.location.hash = hrefTarget;
                         }
-                        window.location.hash = hrefTarget;
                     }
                 }
             };
@@ -1140,6 +1173,11 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
 
         if(totaltitik < 1){
             document.querySelector('.total-ride-list').classList.add('hide');
+            list.innerHTML = `<div class="nodata">
+                <img class="nodata" src='./assets/images/nodata.svg'/>
+                <h5>Tidak Ada Jadwal Kunjungan Untuk Hari Ini</h5>
+            </div>
+            `;
         }else{
             document.querySelector('.total-ride-list').classList.remove('hide');
         }
