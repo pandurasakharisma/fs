@@ -393,7 +393,7 @@ export let renderHome = () => {
         <section id="piltanggal" class="location-section pt-0" style="padding-bottom: 40px;"></section>
         <div id="absenkeluar" class="hide"></div>
         <section class="seclist">
-            <div class="custom-container">
+            <div class="custom-container" style="padding:0 15px;">
                 <ul class="total-ride-list mt-0 p-0 hide" style="white-space: nowrap;margin: 10px 0 20px; gap:10px;overflow-x: scroll;max-width: 100%;"></ul>
                 <a onclick="hrefs('listpelanggan')" class="iconsax addcust" data-icon="add" id="addform"></a>
                 <ul class="my-ride-list" style="margin-top: 0;padding-bottom: 40px;"></ul>
@@ -431,7 +431,7 @@ window.gantiuserh =(el)=>{
 
     let dateToUse = selectedDate || new Date();
     let mh = getMingguHari(dateToUse);
-    loadJadwal(selectedUserCode, mh.minggu, mh.hari);
+    loadJadwal(selectedUserCode, mh.minggu, mh.hari, mh.tanggal);
 
 };
 
@@ -533,7 +533,7 @@ window.piluser = () => {
     const offcanvasBody = document.querySelector('#offcanvasBottom .offcanvas-body');
     offcanvasBody.innerHTML = `
         <button type="button" class="btn-close closec hide" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 8px;">
+        <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 0 10px;">
             <i class="iconsax clear-btn" data-icon="search-normal-2"></i>
             <input type="text" id="searchInputc" class="form-control border-0" placeholder="Cari Team" style="background: none;flex:1; box-shadow:none;padding-left: 15px;">
             <i id="clearBtnc" class="iconsax clear-btn hide" data-icon="close-circle"></i>
@@ -647,12 +647,12 @@ let renderpiltanggal = () => {
             display.value = formattedDate;
             hiddenDate.value = urlTanggal; 
             const userToUse = selectedUserCode || document.getElementById('usercode').value;
-            loadJadwal(userToUse, urlMinggu, urlHari);
+            loadJadwal(userToUse, urlMinggu, urlHari,urlTanggal);
             document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${urlParams}')`)
         } else {
             let userToUse = selectedUserCode ?? document.getElementById("usercode").value;
             let today = getMingguHari();
-            loadJadwal(userToUse, today.minggu, today.hari);
+            loadJadwal(userToUse, today.minggu, today.hari,  today.tanggal);
         }
     }else{
         waitForUserCode();
@@ -668,9 +668,14 @@ let renderpiltanggal = () => {
                 year: 'numeric'
             });
 
+            let xyear = selectedDate.getFullYear(),
+            xmonth = String(selectedDate.getMonth() + 1).padStart(2, '0'),
+            xday = String(selectedDate.getDate()).padStart(2, '0');
+            let xformattedDate = `${xyear}-${xmonth}-${xday}`;
+
             display.value = formattedDate;
             let result = getMingguHari(selectedDate);
-            params.set('tanggal', hiddenDate.value); 
+            params.set('tanggal', xformattedDate); 
             params.set('minggu', result.minggu);
             params.set('hari', result.hari);
             
@@ -678,7 +683,7 @@ let renderpiltanggal = () => {
             document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${params.toString()}')`)
     
             let usercode = document.getElementById("usercode");
-            loadJadwal(usercode.value, result.minggu, result.hari);
+            loadJadwal(usercode.value, result.minggu, result.hari,xformattedDate);
         }
     };
 };
@@ -924,14 +929,12 @@ window.delitjdw = (id, el) => {
 
     document.getElementById('confirmDelete').onclick = (e) => {
         e.target.blur();
-
         setTimeout(() => {
             fetch(urlbe + "hapusjadwal", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id })
-            })
-            .then(r => r.json())
+            }).then(r => r.json())
             .then(res => {
                 if (res.success) {
                     let targetItem = document.querySelector(`[data-id="${id}"]`);
@@ -954,12 +957,10 @@ window.delitjdw = (id, el) => {
 
 let hitungdurasi = (totalminutes) => {
     if (typeof totalminutes !== 'number' || totalminutes < 0) {return "00:00";}
-
     let hours = Math.floor(totalminutes / 60),
         minutes = Math.floor(totalminutes % 60),
         formatted_hours = String(hours).padStart(2, '0'),
         formatted_minutes = String(minutes).padStart(2, '0');
-
     return `${formatted_hours}:${formatted_minutes}`;
 };
 
@@ -972,22 +973,21 @@ window.showreason = (event,el) =>{
     }
 };
 
-let loadJadwal = (usercode, minggu = null, hari = null) => {
+let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
     let selesaix,cancelx, totaldurasi =  0, totaltitik = 0, totalselesai = 0, totalcancel = 0;
     if (!minggu || !hari) {
         let today = getMingguHari();
         minggu = today.minggu;
         hari = today.hari;
     }
+
+    tanggal = tanggal ?? getMingguHari().tanggal;
     
     fetch(urlbe + "listjadwal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ usercode, minggu, hari })
-    })
-    .then(r => r.json())
-    .then(res => {
-
+        body: JSON.stringify({ usercode, minggu, hari, tanggal })
+    }).then(r => r.json()).then(res => {
         let list = document.querySelector(".my-ride-list"),
         data = res.data || [],
         mapCust = {},
@@ -1064,7 +1064,7 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                         <div class="my-ride-head">
                             <div class="my-ride-content flex-column" style="width:100%;margin:0 5px 0;">
                                 <div class="flex-spacing" style="position:relative">
-                                    <a onclick="${hrefTarget}"><h6 style="max-width:93%;" class="title-color fw-medium">${d.cust_name || '-'}</h6></a>
+                                    <a><h6 style="max-width:93%;" class="title-color fw-medium">${d.cust_name || '-'}</h6></a>
                                     <span class="status fw-normal bg-${bgstatus}">${status}</span>
                                 </div>
                             </div>
@@ -1114,21 +1114,18 @@ let loadJadwal = (usercode, minggu = null, hari = null) => {
                 if (e.target.closest('.delitjdw') || e.target.closest('.showreason') ||  e.target.closest('.tukarjd') || e.target.closest('a[href="edit-offer.html"]')) {
                     return;
                 }
-                let id = item.getAttribute('data-id');
-                let statusx = item.getAttribute('data-statusx');
-                let itemData = data.find(x => x.id == id);
-                
+                let id = item.getAttribute('data-id'),
+                statusx = item.getAttribute('data-statusx'),
+                itemData = data.find(x => x.id == id);
                 if(statusx == 0){
                     item.querySelectorAll('a').forEach((ea)=>{
                         ea.removeAttribute('onclick');
                     });
-
                     item.querySelector('.showreason').click();
                 }else{
-
                     if (itemData) {
                         let hrefTarget = '';
-                        if(itemData.on_active != itemData.id){
+                        if((itemData.on_active != itemData.id)&&(statusx != 2)){
                             let nitemData = data.find(x => x.id == itemData.on_active);
                             sedangon(itemData.id, this,nitemData);
                             item.querySelectorAll('a').forEach((ea)=>{

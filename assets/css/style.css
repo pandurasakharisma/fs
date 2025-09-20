@@ -6962,9 +6962,7 @@ body.dark .onboarding-section .driver-main-slider .poster-image .image-dark {
   border: 1px solid rgba(var(--line-color), 1);
   border-radius: 8px;
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.04);
-}
-.my-ride-list li + li {
-  margin-top: 15px;
+  margin-top: 18px;
 }
 .my-ride-list li:last-child {
   margin-bottom: 0;

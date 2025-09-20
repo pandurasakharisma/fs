@@ -9,6 +9,7 @@ export let renderlistpelanggan = () => {
     let usercode = urlParams.get('usercode') || null;  
     let mingguUrl = urlParams.get('minggu') || null;
     let hariUrl = urlParams.get('hari') || null;
+    let tanggalurl = urlParams.get('tanggal') || null;
     let tanggal = urlParams.get('tanggal') || null;
     let reff_id = urlParams.get('reff_id') || null;
 
@@ -282,6 +283,8 @@ export let renderlistpelanggan = () => {
         let now = new Date();
         let minggu = mingguUrl || String(getMingguKe(now));
         let hari = hariUrl || String(getHariMon1(now));
+        let tanggal = tanggalurl || String(now.getDate()).padStart(2, '0');
+        
         let data = localStorage.getItem('user_data'),
         obj = data ? JSON.parse(data) : null,
         cardId = obj && obj.Card_ID ? String(obj.Card_ID) : '',
@@ -299,6 +302,7 @@ export let renderlistpelanggan = () => {
             created_by: code,
             minggu,
             hari,
+            tanggal,
             result: null,
             created_at: fmtDateTime(now)
         };
@@ -309,6 +313,7 @@ export let renderlistpelanggan = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
+            
             if (response.ok) {
                 // showToast(`${store.CardName} ditambahkan ke jadwal.`, "success");
             } else {

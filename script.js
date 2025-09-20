@@ -162,7 +162,8 @@ let getMingguHari = (date = new Date()) => {
     let hari = date.getDay();
     hari = hari === 0 ? 7 : hari;
     let minggu = Math.ceil(tanggal / 7);
-    return { minggu, hari };
+    tanggal = String(date.getDate()).padStart(2, '0');
+    return { minggu, hari, tanggal};
 };
 
 

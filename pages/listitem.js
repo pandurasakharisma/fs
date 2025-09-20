@@ -51,7 +51,7 @@ export let renderListItem = () => {
                     <div class="igall"><div class="gallery" id="gallery"></div></div>
                     <div class="d-flex align-items-center gap-2 mb-3 p-2 rounded" style="background:rgba(var(--box-bg), 1);">
                         <img src="./assets/images/svg/location-fill.svg" alt="location" width="24">
-                        <div style="width:calc(100% - 100px);">
+                        <div style="width:calc(100% - 100px);white-space: nowrap;">
                             <strong id="Full_Name">Novenny (Key Account Executive)</strong>
                             <p id="alamat2" class="mb-0 text-muted" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 100%;">JL. Indokarya</p>
                         </div>
@@ -85,12 +85,7 @@ export let renderListItem = () => {
                         </div>
                     </li>
                 </ul>
-                <i class="iconsax addcust" data-icon="add" id="addFormBtn" onclick="createForm()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 12H18" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M12 18V6" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </i>
+                <i class="iconsax addcust" data-icon="add" id="addFormBtn" onclick="createForm()"></i>
                 <div class="offcanvas-footer tbf2 hide flex-align-center flex-nowrap gap-3 border-0 pt-3 " style='border-bottom:1px solid rgba(var(--line-color), 1);'>
                     <span class="btn theme-btn w-100 mt-0 addcustx">Simpan</span>
                 </div>
@@ -534,10 +529,7 @@ export let renderListItem = () => {
     
             let reasonPart = document.createElement('div');
             reasonPart.className = 'reason-part mt-3';
-            reasonPart.innerHTML = `
-                <h4 class="fw-medium error-color">Reason :</h4>
-                <p>${lokasi.result || 'No reason provided.'}</p>
-            `;
+            reasonPart.innerHTML = `<p>Result : ${lokasi.result || 'No reason provided.'}</p>`;
             formContainer.appendChild(reasonPart);
     
             document.querySelectorAll('.tbdone').forEach(btn => btn.classList.add('disabled'));
