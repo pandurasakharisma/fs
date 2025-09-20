@@ -7972,3 +7972,4 @@ body.dark .vehicle-content .content-title .members {
 .success { background-color: #28a745; }
 .danger { background-color: #dc3545; }
 #headerx .search-bar, .hide{display:none;}
+body{overflow: auto !important;}

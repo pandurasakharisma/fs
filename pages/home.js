@@ -974,14 +974,15 @@ window.showreason = (event,el) =>{
 };
 
 let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
-    let selesaix,cancelx, totaldurasi =  0, totaltitik = 0, totalselesai = 0, totalcancel = 0;
+    let tanggalx, selesaix,cancelx, totaldurasi =  0, totaltitik = 0, totalselesai = 0, totalcancel = 0;
     if (!minggu || !hari) {
         let today = getMingguHari();
         minggu = today.minggu;
         hari = today.hari;
     }
 
-    tanggal = tanggal ?? getMingguHari().tanggal;
+    console.log( getMingguHari());
+    tanggal = tanggal ?? getMingguHari().tanggal, tanggalx =  tanggal ?? getMingguHari().tanggal;
     
     fetch(urlbe + "listjadwal", {
         method: "POST",
@@ -1185,8 +1186,10 @@ let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
         day = String(today.getDate()).padStart(2, '0'),
         formattedDate = `${year}-${month}-${day}`;
 
-        if(tanggal){
-            if(tanggal < formattedDate){ addform.classList.add('hide');  }
+
+        if(tanggalx){
+            if(tanggalx < day){ addform.classList.add('hide');}
+            else if(tanggalx < formattedDate){ addform.classList.add('hide');  }
             else{ addform.classList.remove('hide');  }
         }else{
             addform.classList.remove('hide');  

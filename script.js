@@ -163,6 +163,11 @@ let getMingguHari = (date = new Date()) => {
     hari = hari === 0 ? 7 : hari;
     let minggu = Math.ceil(tanggal / 7);
     tanggal = String(date.getDate()).padStart(2, '0');
+    let tanggalBulan = date.getDate();
+    let tahun = date.getFullYear();
+    let bulan = String(date.getMonth() + 1).padStart(2, '0'),
+    tanggalx = String(tanggalBulan).padStart(2, '0');
+    tanggal = `${tahun}-${bulan}-${tanggalx}`;
     return { minggu, hari, tanggal};
 };
 
