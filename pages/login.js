@@ -62,6 +62,9 @@ export let renderLogin = () => {
   document.querySelector("#app").innerHTML = `
         <style>
             .auth-bg-image-box .auth-bg-image {
+                background-size: cover;
+                height: 240px;
+                padding: 15vh 0 0;
                 animation:unset;
                 background:unset;
             }
@@ -196,7 +199,7 @@ export let renderLogin = () => {
             getCodeBoxElement(index - 1).focus();
         }
     };
-    
+
     let five1 = document.getElementById("five1");
     if(five1){ five1.focus(); }
 
