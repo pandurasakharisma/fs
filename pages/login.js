@@ -103,7 +103,7 @@ export let renderLogin = () => {
         <header id="header" class="auth-header" style="background:unset;">
             <div class="custom-container">
                 <div class="header-panel pb-0">
-                    <img class="img-fluid mx-auto logo user-logo" src="./assets/images/logo/user/logo-utama.svg" alt="logo">
+                    <img class="img-fluid mx-auto logo user-logo"  style="margin-top:25px;" src="./assets/images/logo/user/logo-utama.svg" alt="logo">
                 </div>
             </div>
         </header>

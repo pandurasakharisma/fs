@@ -884,7 +884,7 @@ let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
         if(totaltitik < 1){
             document.querySelector('.total-ride-list').classList.add('hide');
             list.innerHTML = `<div class="nodata">
-                <img class="nodata" src='./assets/images/nodata.svg'/>
+                <img class="nodata" style="margin:0 -35px;" src='./assets/images/nodata.svg'/>
                 <h5>Tidak Ada Jadwal Kunjungan Untuk Hari Ini</h5>
             </div>
             `;
