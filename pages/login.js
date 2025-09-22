@@ -61,27 +61,19 @@ let pin = "", handleotp = (e,pin) => {
 export let renderLogin = () => {
   document.querySelector("#app").innerHTML = `
         <style>
+            .auth-bg-image-box .auth-bg-image {
+                animation:unset;
+                background:unset;
+            }
             .auth-bg-image-box, .auth-content-bg {
                 position: relative;
+                background: #f5f5f5;
                 z-index: 10;
             }
             .auth-bg-image-box .auth-bg-image {
                 background-size: cover;
                 height: calc(100vh - 360px);
             }
-            .bg {
-                animation:slidebg 3s ease-in-out infinite alternate;
-                background-image:linear-gradient(-60deg, #6d2a25 50%, #c53f3f 50%);
-                bottom:0;
-                left:-50%;
-                opacity:.5;
-                position:fixed;
-                right:-50%;
-                top:0;
-                z-index:-1;
-            }
-            .bg2 {animation-direction:alternate-reverse;animation-duration:4s;}
-            .bg3 {animation-duration:5s;}
             .auth-bg-image-box, .auth-content-bg{z-index:0;}
             .auth-content-bg.auth-content-bg-bottom {
                 width: 100%;
@@ -106,15 +98,13 @@ export let renderLogin = () => {
         <header id="header" class="auth-header" style="background:unset;">
             <div class="custom-container">
                 <div class="header-panel pb-0">
-                    <img class="img-fluid mx-auto logo user-logo" src="./assets/images/logo/user/logo-white.svg" alt="logo">
+                    <img class="img-fluid mx-auto logo user-logo" src="./assets/images/logo/user/logo-utama.svg" alt="logo">
                 </div>
             </div>
         </header>
         <div class="auth-bg-image-box">
             <div class="auth-bg-image">
-                <div class="bg"></div>
-                <div class="bg bg2"></div>
-                <div class="bg bg3"></div>
+                <img src="./assets/images/bg-otp.svg"/>
             </div>
             <div class="auth-content-bg auth-content-bg-bottom">
                 <div class="custom-container white-background pb-2" style="margin:0 10px;">

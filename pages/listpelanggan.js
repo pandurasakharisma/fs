@@ -6,7 +6,7 @@ export let renderlistpelanggan = () => {
     let urlParams = new URLSearchParams(queryString);    
 
 
-    let usercode = urlParams.get('usercode') || null;  
+    let usercode = urlParams.get('usercode') || document.querySelector('#usercode').value;  
     let mingguUrl = urlParams.get('minggu') || null;
     let hariUrl = urlParams.get('hari') || null;
     let tanggalurl = urlParams.get('tanggal') || null;
@@ -313,7 +313,7 @@ export let renderlistpelanggan = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
-            
+
             if (response.ok) {
                 // showToast(`${store.CardName} ditambahkan ke jadwal.`, "success");
             } else {
@@ -364,12 +364,11 @@ export let renderlistpelanggan = () => {
                     selectedStores = selectedStores.filter(s => s.CardCode !== storeData.CardCode);
                 }
 
+
                 if(reff_id){
                     let now = new Date();
                     let minggu = mingguUrl || String(getMingguKe(now)),
                     hari = hariUrl || String(getHariMon1(now));
-                    
-                    
                     let store = selectedStores[0];
                     await addToJadwal(store);
                     

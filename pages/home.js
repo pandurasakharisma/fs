@@ -95,7 +95,7 @@ export let renderHome = () => {
         <section class="seclist">
             <div class="custom-container" style="padding:0 15px;">
                 <ul class="total-ride-list mt-0 p-0 hide" style="white-space: nowrap;margin: 10px 0 20px; gap:10px;overflow-x: scroll;max-width: 100%;"></ul>
-                <a onclick="hrefs('listpelanggan')" class="iconsax addcust" data-icon="add" id="addform"></a>
+                <a onclick="hrefs('listpelanggan?tanggal=${today.tanggal}')" class="iconsax addcust" data-icon="add" id="addform"></a>
                 <ul class="my-ride-list" style="margin-top: 0;padding-bottom: 40px;"></ul>
                 <div class="offcanvas element-offcanvas offcanvas-bottom" id="offcanvasBottom" style="max-height: 95vh;height: fit-content;">
                     <div class="offcanvas-body"></div>
