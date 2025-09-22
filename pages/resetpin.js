@@ -1,29 +1,4 @@
-let handleLogin = (e) => {
-  if (e) e.preventDefault();
-  let username = document.getElementById("Inputemail").value;
-  let password = document.getElementById("Inputpassword").value;
-
-  fetch(urlbe + "ceklogin", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.status === "success") {
-        localStorage.setItem("user_data", JSON.stringify(data.data));
-        localStorage.setItem("user_absen", JSON.stringify(data.absensi));
-        localStorage.setItem("user_token", data.token);
-        showToast("Kamu Berhasil Login", "success");
-        window.location.hash = "home";
-      } else {
-        showToast(data.message, "error");
-      }
-    })
-    .catch((e) => {
-      showToast(e.message, "error");
-    });
-};
+let usercode =  document.getElementById("usercode").value;
 let resetpinbox = ()=>{
     document.querySelectorAll('.pinx input').forEach(el=>{
         el.value= '';
@@ -32,30 +7,43 @@ let resetpinbox = ()=>{
 
     document.querySelector('#five1').focus();
 }
-let pin = "", handleotp = (e,pin) => {
+
+let pin = "", pin1, pin2, handleotp = (e,pin,trial = null) => {
     if (e) e.preventDefault();
-    fetch(urlbe + "cekpin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pin }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success") {
-          localStorage.setItem("user_data", JSON.stringify(data.data));
-          localStorage.setItem("user_absen", JSON.stringify(data.absensi));
-          localStorage.setItem("user_token", data.token);
-          showToast("Kamu Berhasil Login", "success");
-          window.location.hash = "home";
-        } else {
-            resetpinbox();
-            showToast(data.message, "error");
+
+    if(pin1){
+        pin2 = pin;
+        if(pin1 != pin2){
+            showToast("Pin Tidak Match", "error");
+            resetpinbox(); 
+            pin =null; pin1 = null, pin2 = null;
         }
-      })
-      .catch((e) => {
-        resetpinbox();
-        showToast(e.message, "error");
-      });
+    }else{
+        pin1 = pin;resetpinbox(); 
+        document.querySelector('.auth-title h2').innerHTML = 'Konfirmasi Pin';
+    }
+
+    if(pin2 && pin1 == pin2){
+        
+        if(usercode){
+            fetch(urlbe + "ubahpin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ pin2,usercode }),
+            }).then((res) => res.json()).then((data) => {
+                if (data.status === "success") {
+                    showToast("Pin Berhasil Dirubah", "success");
+                    window.location.hash = "home";
+                } else {
+                    resetpinbox();
+                    showToast(data.message, "error");
+                }
+            }).catch((e) => {
+                resetpinbox();
+                showToast(e.message, "error");
+            });
+        }
+    }
   };
 
 export let renderLogin = () => {
@@ -85,10 +73,11 @@ export let renderLogin = () => {
                 padding-top: 25px;
                 background-color: rgba(var(--white), 1);
                 border-radius: 20px 20px 0 0;
-                position: absolute;
+                position: fixed;
                 bottom: 0;
                 height: 100%;
                 max-height: 260px;
+                box-shadow: 0px 4px 22px 0px rgba(23, 28, 38, 0.12);
             }
 
             @keyframes slidebg {
@@ -100,10 +89,11 @@ export let renderLogin = () => {
             }
             .hide{display:none!important;}
         </style>
-        <header id="header" class="auth-header" style="background:unset;">
+        <header id="header" class="main-header inner-page-header position-absolute bg-transparent" style="position: fixed!important;z-index: +9;width:100%;">
             <div class="custom-container">
-                <div class="header-panel pb-0">
-                    <img class="img-fluid mx-auto logo user-logo"  style="margin-top:25px;" src="./assets/images/logo/user/logo-utama.svg" alt="logo">
+                <div class="header-panel p-0">
+                    <a id="backbtn"><i class="iconsax icon-btn" data-icon="chevron-left"></i></a>
+                    <h3 class="p-0">Reset PIN</h3>
                 </div>
             </div>
         </header>
@@ -115,8 +105,8 @@ export let renderLogin = () => {
                 <div class="custom-container white-background pb-2" style="margin:0 10px;">
                     <div class="auth-title pt-3">
                         <div class="loader-line"></div>
-                        <h2>Pin verification</h2>
-                        <h6>Masukkan kode PIN untuk Login</h6>
+                        <h2>Ganti Pin</h2>
+                        <h6>Masukkan kode PIN baru</h6>
                     </div>
                     <div class="auth-form mt-0">
                         <div class="otp-form mt-3 pinx">
@@ -159,12 +149,7 @@ export let renderLogin = () => {
                             </div>
                         </div>
 
-                        <button id="cekl" type="submit" class="btn theme-btn w-100 auth-btn mt-4">Login</button>
-                    
-                        <h6 class="title-color fw-semibold mt-3 text-center"> 
-                            <span class="content-color fw-medium">Lupa kode pin ??</span> 
-                            <a onclick="hrefs('login-pass')" class="title-color fw-medium">Dengan Password</a> 
-                        </h6>
+                        <button id="cekl" type="submit" class="btn theme-btn w-100 auth-btn mt-4">Reset PIN</button>
                     </div>
                 </div>
             </div>
@@ -205,33 +190,15 @@ export let renderLogin = () => {
     let five1 = document.getElementById("five1");
     if(five1){ five1.focus(); }
 
+    const backButton = document.getElementById("backbtn");
+    if (backButton) {
+        backButton.onclick=() => window.history.back();
+    }
 
-    var passwords = document.querySelectorAll('[type="password"]');
-    var togglers = document.querySelectorAll(".toggler");
-    let showHidePassword = (index) => () => {
-        var password = passwords[index];
-        var toggler = togglers[index];
-        if (password.type === "password") {
-        password.setAttribute("type", "text");
-        toggler.classList.add("show");
-        } else {
-        toggler.classList.remove("show");
-        password.setAttribute("type", "password");
-        }
-  };
-  togglers.forEach((toggler, index) => {
-    toggler.addEventListener("click", showHidePassword(index));
-  });
 
   document.getElementById("cekl").onclick = (event) => handleotp(event,pin);;
   document.body.onkeypress = (e) => (e.key === "Enter" ? handleotp(e,pin) : null);
 
-  // Jika user sudah login
-  let userToken = localStorage.getItem("user_token");
-  if (userToken) {
-    showToast("Kamu Berhasil Login", "success");
-    window.location.hash = "home";
-  }
 };
 
 export default renderLogin;

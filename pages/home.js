@@ -399,7 +399,7 @@ let renderHeader = () => {
             </div>
             <div class="dropdown-menu-custom" id="dropdownMenu">
                 <a href="#">History Input</a>
-                <a href="#">Schedule</a>
+                <a onclick="hrefs('resetpin')">Reset PIN</a>
                 <a onclick="logout()">Logout</a>
             </div>
         </div>

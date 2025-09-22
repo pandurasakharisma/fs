@@ -15,7 +15,7 @@ let handleLogin = e => {
             localStorage.setItem('user_absen', JSON.stringify(data.absensi));
             localStorage.setItem('user_token', data.token);
             showToast('Kamu Berhasil Login', 'success');
-            window.location.hash = '/home';
+            window.location.hash = 'home';
         } else {
             showToast(data.message, 'error');
         }
