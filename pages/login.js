@@ -165,7 +165,20 @@ export let renderLogin = () => {
             </div>
         </div>
     `;
-    document.getElementById("five1").focus();
+
+    
+    window.onFocusEvent = (index) => {
+        const currentElement = getCodeBoxElement(index);
+        currentElement.value = "";
+        for (let i = 1; i < index; i++) {
+            if (!getCodeBoxElement(i).value) {
+                getCodeBoxElement(i).focus();
+                break;
+            }
+        }
+    };
+
+    
     let getCodeBoxElement = (index) => document.getElementById("five" + index);
     window.onKeyUpEvent = (index, event) => {
         const eventCode = event.which || event.keyCode;
@@ -183,37 +196,28 @@ export let renderLogin = () => {
             getCodeBoxElement(index - 1).focus();
         }
     };
+    
+    let five1 = document.getElementById("five1");
+    if(five1){ five1.focus(); }
 
-    window.onFocusEvent = (index) => {
-        const currentElement = getCodeBoxElement(index);
-        currentElement.value = "";
-        for (let i = 1; i < index; i++) {
-            if (!getCodeBoxElement(i).value) {
-                getCodeBoxElement(i).focus();
-                break;
-            }
+
+    var passwords = document.querySelectorAll('[type="password"]');
+    var togglers = document.querySelectorAll(".toggler");
+    let showHidePassword = (index) => () => {
+        var password = passwords[index];
+        var toggler = togglers[index];
+        if (password.type === "password") {
+        password.setAttribute("type", "text");
+        toggler.classList.add("show");
+        } else {
+        toggler.classList.remove("show");
+        password.setAttribute("type", "password");
         }
-    };
-
-  // Toggle show/hide password
-  var passwords = document.querySelectorAll('[type="password"]');
-  var togglers = document.querySelectorAll(".toggler");
-  let showHidePassword = (index) => () => {
-    var password = passwords[index];
-    var toggler = togglers[index];
-    if (password.type === "password") {
-      password.setAttribute("type", "text");
-      toggler.classList.add("show");
-    } else {
-      toggler.classList.remove("show");
-      password.setAttribute("type", "password");
-    }
   };
   togglers.forEach((toggler, index) => {
     toggler.addEventListener("click", showHidePassword(index));
   });
 
-  // Handle login
   document.getElementById("cekl").onclick = (event) => handleotp(event,pin);;
   document.body.onkeypress = (e) => (e.key === "Enter" ? handleotp(e,pin) : null);
 
