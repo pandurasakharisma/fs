@@ -2,6 +2,7 @@ let hash = window.location.hash.substring(1);
 let [route, queryString] = hash.split('?');
 window.params = new URLSearchParams(queryString);
 
+let today = getMingguHari();
 let panelkeluar = () => {
     showSkeleton(document.querySelector('#app'), 5);
     let createDashboardUI = () => {
@@ -81,309 +82,8 @@ let panelkeluar = () => {
 
 export let renderHome = () => {
     document.querySelector('#app').innerHTML = `
-        <style>
-            .addcust svg {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                width: 48px;
-                height: 48px;
-                cursor: pointer;
-                z-index: +2;
-                border-radius: 50%;
-                background: #c53f3f;
-                padding: 10px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                animation: pulse 1.5s infinite;
-                transition: transform 0.2s ease-in-out;
-            }
-
-            .addcust svg path {
-                stroke: #fff !important;
-            }
-
-            .addcust svg:hover {
-                transform: scale(1.15);
-            }
-
-            @keyframes pulse {
-                0% {
-                    transform: scale(1);
-                    box-shadow: 0 0 0 0 rgba(197, 63, 63, 0.4);
-                }
-
-                70% {
-                    transform: scale(1.1);
-                    box-shadow: 0 0 0 20px rgba(197, 63, 63, 0);
-                }
-
-                100% {
-                    transform: scale(1);
-                    box-shadow: 0 0 0 0 rgba(197, 63, 63, 0);
-                }
-            }
-
-            #headerx .header,
-            #headerx .search-bar {
-                padding: 8px 0;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                position: relative;
-            }
-
-            #headerx svg {
-                stroke: #c53f3f;
-            }
-
-            .header-title img {
-                height: 30px;
-            }
-
-            .header-icons {
-                display: flex;
-                align-items: center;
-                gap: 15px;
-            }
-
-            #headerx .search-bar {
-                display: none;
-                align-items: center;
-                width: 100%;
-                position: relative;
-                padding: 3px 0;
-            }
-
-            .search-input-wrapper {
-                position: relative;
-                width: 100%;
-                display: flex;
-                margin: 0 8px;
-                background: #f5f5f5;
-                border-radius: 8px;
-            }
-
-            .search-input-wrapper input {
-                width: 100%;
-                padding: 8px 35px 5px 40px;
-                border: none;
-                outline: none;
-                background: none;
-                color: #c53f3f;
-                text-transform: capitalize;
-            }
-
-            .search-input-wrapper input::placeholder {
-                color: #c53f3f;
-                opacity: 0.7;
-            }
-
-            .search-input-wrapper .search-icon {
-                position: absolute;
-                top: 5px;
-                left: 8px;
-            }
-
-            .dropdown-menu-custom {
-                position: absolute;
-                top: 40px;
-                right: 0px;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-                display: none;
-                min-width: 150px;
-                z-index: +3;
-                overflow: hidden;
-            }
-
-            .dropdown-menu-custom a {
-                display: block;
-                padding: 10px;
-                color: black;
-                text-decoration: none;
-            }
-
-            .dropdown-menu-custom a:hover {
-                background-color: #f1f1f1;
-            }
-
-            .my-ride-details .icon {
-                height: 30px;
-                width: 30px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: rgba(var(--box-bg), 1);
-                --Iconsax-Color: rgba(var(--title-color), 1);
-                --Iconsax-Size: 16px;
-                border-radius: 100%;
-            }
-
-            .my-ride-details .icon.error-icon {
-                background-color: rgba(var(--error-color), 0.1);
-                --Iconsax-Color: rgba(var(--error-color), 1);
-                --Iconsax-Size: 16px;
-            }
-
-            #absenkeluar>div:first-child {
-                background: #c53f3f;
-                padding: 60px 20px 60px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-                position: relative;
-                overflow: hidden;
-            }
-
-            .welc{    
-                z-index: +2;
-                position: absolute;
-                top: 30px;
-                padding-left: 18px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: 300px;
-                color: #fff;
-            }
-            .seclist {
-                background: #f5f5f5;
-                border-radius: 16px 16px 0 0;
-                overflow: hidden;
-                margin-top: -20px;
-                z-index: +1;
-                position: absolute;
-                border: none;
-                width: 100%;
-                min-height: calc(100vh - 240px);
-            }
-
-            #absenkeluar>div:first-child:before {
-                content: " ";
-                width: calc(100% + 15rem);
-                height: 100%;
-                position: absolute;
-                left: 0;
-                top: 0;
-                background-image: url(./assets/images/bgbca.svg);
-                background-position: -10rem -14rem;
-                background-repeat: no-repeat;
-                background-size: cover;
-            }
-
-            .bg-pattern .card::before {
-                background: linear-gradient(135deg, #f8f9fa 25%, #e8f5e9 100%);
-                background-image: url(./assets/images/bg2.svg);
-                background-size: cover;
-                border: none;
-                content: "";
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-            }
-
-            .card-absen {
-                background: #fff;
-                border-radius:8px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            }
-
-            .clock-time {
-                font-size: 2.5rem;
-                font-weight: bold;
-                color: #212529;
-                margin: 0;
-                line-height: 1;
-            }
-
-            .btn-clock {
-                padding: 10px 25px;
-                font-size: 1rem;
-                border-radius: 10px;
-                width: 100%;
-            }
-
-            .status-dot {
-                height: 10px;
-                width: 10px;
-                background-color: #28a745;
-                border-radius: 50%;
-                display: inline-block;
-                margin-right: 5px;
-            }
-
-            .user-info h5 {
-                margin: 0;
-                font-weight: 600;
-            }
-
-            .location {
-                font-size: 0.9rem;
-                color: #6c757d;
-            }
-
-            .location-box svg {stroke: #c53f3f;}
-
-            .left-box {
-                border-right: 1px solid #dee2e6;
-                padding-right: 15px;
-            }
-            .total-ride-list li{min-width:40%;}
-            .hidden-date {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 1px;
-                height: 1px;
-                visibility: hidden; 
-            }
-            #listuserx{padding:20px 0 5px;}
-            .my-ride-list li .my-ride-box {background: #fff;border-radius: 8px;z-index:+1;position: relative;}
-            .contact-list li .contact-box i{ --Iconsax-Color: #c53f3f;}
-            .contact-list li .contact-box .igb svg{width: 25px;height: 25px;}
-            .bg-successx{background: #4caf50;color: #fff;}
-            .bg-waitingx, .bg-gagalx{background: #c53f3f;color: #fff;}
-            .br-successx{border:2px solid #4caf50!important;position: relative;}
-            .br-gagalx{border:2px solid #c53f3f!important;position: relative;}
-            .br-gagalx:before, .br-successx:before{
-                position: absolute;
-                top: -8px;
-                content: "";
-                left: 0;
-                width: 100%;
-                height: 40px;
-                background: #c53f3f;
-                z-index: +1;
-                color: #fff;
-                border-radius: 8px 8px 0 0;
-            }
-            .seclist .total-ride-list{display:inline-flex;}  
-            .br-successx:before{background:#4caf50;}
-            .status{
-                list-style: none;
-                padding: 5px 10px;
-                border-radius: 8px;
-                position: absolute;
-                right: -8px;
-                top: -5px;
-                font-size:9px;
-            }
-            @media (max-width: 576px) {
-                .left-box {
-                    padding-bottom: 0;
-                }
-            }
-            .nodata h5 {
-                font-size:15px;
-                text-align: center;
-                margin: 15px 0;
-                color: #c53f3f;
-            }
-            .putar {rotate: 180deg;}
-            .hide{display:none!important;}
-        </style>
-
+        
+        <link rel="stylesheet" href="./assets/css/home.css"/>
         <header id="header" class="main-header"
             style="background:#fff;padding:10px 0 0;">
             <div class="custom-container">
@@ -651,7 +351,6 @@ let renderpiltanggal = () => {
             document.querySelector('#addform').setAttribute('onclick',`hrefs('listpelanggan?${urlParams}')`)
         } else {
             let userToUse = selectedUserCode ?? document.getElementById("usercode").value;
-            let today = getMingguHari();
             loadJadwal(userToUse, today.minggu, today.hari,  today.tanggal);
         }
     }else{
@@ -974,14 +673,13 @@ window.showreason = (event,el) =>{
 };
 
 let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
-    let tanggalx, selesaix,cancelx, totaldurasi =  0, totaltitik = 0, totalselesai = 0, totalcancel = 0;
+    let tanggalx, selesaix,cancelx, totaldurasi =  0, totaltitik = 0, totalselesai = 0, totalcancel = 0, 
+    today = getMingguHari();
+
     if (!minggu || !hari) {
-        let today = getMingguHari();
-        minggu = today.minggu;
+        let minggu = today.minggu;
         hari = today.hari;
     }
-
-    console.log( getMingguHari());
     tanggal = tanggal ?? getMingguHari().tanggal, tanggalx =  tanggal ?? getMingguHari().tanggal;
     
     fetch(urlbe + "listjadwal", {
@@ -997,13 +695,13 @@ let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
 
         data.forEach(d => {
             selesaix = (d.statusx) ? ((d.statusx == 2) ? 1 : 0) : 0;
-            cancelx = (d.statusx) ? ((d.statusx == 1) ? 1 : 0) : 0;
+            cancelx = (d.statusx < 1) ? 1 : 0;
             totalselesai += selesaix;
             totalcancel += cancelx;
             totaldurasi += d.durasi;
             totaltitik ++;
             let key = d.cust_name || '-';
-            if (!mapCust[key] || new Date(d.created_at) > new Date(mapCust[key].created_at)) {
+            if (!mapCust[key] || new Date(d.tanggal) > new Date(mapCust[key].tanggal)) {
                 mapCust[key] = d;
             }
         });
@@ -1023,7 +721,7 @@ let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
                 }
             }
 
-            let tanggal = d.created_at ? formatDateIndo(d.created_at.split('T')[0]) : '',
+            let tanggal = d.tanggal ? formatDateIndo(d.tanggal.split('T')[0]) : '',
             start = formatTime(d.start_kunjungan),
             end = formatTime(d.end_kunjungan),
             jam = (start && end) ? `${start} - ${end}` : '',
@@ -1124,23 +822,37 @@ let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
                     });
                     item.querySelector('.showreason').click();
                 }else{
-                    if (itemData) {
-                        let hrefTarget = '';
-                        if((itemData.on_active != itemData.id)&&(statusx != 2)){
-                            let nitemData = data.find(x => x.id == itemData.on_active);
-                            sedangon(itemData.id, this,nitemData);
-                            item.querySelectorAll('a').forEach((ea)=>{
-                                ea.removeAttribute('onclick');
-                            });
-                        }else{
-                            let hrefParams = `id=${itemData.id}&cardname=${encodeURIComponent(itemData.cardname || '')}&cust_code=${encodeURIComponent(itemData.cust_code || '')}&cust_name=${encodeURIComponent(itemData.cust_name || '')}&Address=${encodeURIComponent(itemData.Address || '')}&City=${encodeURIComponent(itemData.City || '')}&Province=${encodeURIComponent(itemData.Province || '')}&Full_Name=${encodeURIComponent(itemData.Full_Name || '')}&Job_Position=${encodeURIComponent(itemData.Job_Position || '')}&minggu=${itemData.minggu}&hari=${itemData.hari}`;
-                            if (!itemData.start_kunjungan) {
-                                hrefTarget = `kamera?${hrefParams}`;
-                            } else if (itemData.start_kunjungan && itemData.foto) {
-                                hrefParams += `&foto=${encodeURIComponent(itemData.foto || '')}&start_kunjungan=${encodeURIComponent(itemData.start_kunjungan || '')}&usercode=${encodeURIComponent(itemData.usercode || '')}`;
-                                hrefTarget = `listitem?${hrefParams}`;
+
+                    let today = new Date(),
+                    today_year = today.getFullYear(),
+                    today_month = String(today.getMonth() + 1).padStart(2, '0'),
+                    today_day = String(today.getDate()).padStart(2, '0'),
+                    today_formattedDate = `${today_year}-${today_month}-${today_day}`;
+
+                    if(tanggal > today_formattedDate){
+                        item.querySelectorAll('a').forEach((ea)=>{
+                            ea.removeAttribute('onclick');
+                        });
+                        showToast('Tidak Bisa melakukan Kunjungan','error');
+                    }else{
+                        if (itemData) {
+                            let hrefTarget = '';
+                            if((itemData.on_active != itemData.id)&&(statusx != 2)){
+                                let nitemData = data.find(x => x.id == itemData.on_active);
+                                sedangon(itemData.id, this,nitemData);
+                                item.querySelectorAll('a').forEach((ea)=>{
+                                    ea.removeAttribute('onclick');
+                                });
+                            }else{
+                                let hrefParams = `id=${itemData.id}&cardname=${encodeURIComponent(itemData.cardname || '')}&cust_code=${encodeURIComponent(itemData.cust_code || '')}&cust_name=${encodeURIComponent(itemData.cust_name || '')}&Address=${encodeURIComponent(itemData.Address || '')}&City=${encodeURIComponent(itemData.City || '')}&Province=${encodeURIComponent(itemData.Province || '')}&Full_Name=${encodeURIComponent(itemData.Full_Name || '')}&Job_Position=${encodeURIComponent(itemData.Job_Position || '')}&minggu=${itemData.minggu}&hari=${itemData.hari}`;
+                                if (!itemData.start_kunjungan) {
+                                    hrefTarget = `kamera?${hrefParams}`;
+                                } else if (itemData.start_kunjungan && itemData.foto) {
+                                    hrefParams += `&foto=${encodeURIComponent(itemData.foto || '')}&start_kunjungan=${encodeURIComponent(itemData.start_kunjungan || '')}&usercode=${encodeURIComponent(itemData.usercode || '')}`;
+                                    hrefTarget = `listitem?${hrefParams}`;
+                                }
+                                window.location.hash = hrefTarget;
                             }
-                            window.location.hash = hrefTarget;
                         }
                     }
                 }
@@ -1186,9 +898,8 @@ let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
         day = String(today.getDate()).padStart(2, '0'),
         formattedDate = `${year}-${month}-${day}`;
 
-
         if(tanggalx){
-            if(tanggalx < day){ addform.classList.add('hide');}
+            if(tanggalx < today.tanggal){ addform.classList.add('hide');}
             else if(tanggalx < formattedDate){ addform.classList.add('hide');  }
             else{ addform.classList.remove('hide');  }
         }else{
