@@ -64,7 +64,6 @@ export let renderLogin = () => {
             .auth-bg-image-box .auth-bg-image {
                 background-size: cover;
                 height: 240px;
-                padding: 15vh 0 0;
                 animation:unset;
                 background:unset;
             }
@@ -95,6 +94,9 @@ export let renderLogin = () => {
             @keyframes slidebg {
                 0% {transform:translateX(-25%);}
                 100% {transform:translateX(25%);}
+            }
+            @media (max-width: 600px) {
+                .auth-bg-image-box .auth-bg-image {padding:10vh 0 0;}
             }
             .hide{display:none!important;}
         </style>
