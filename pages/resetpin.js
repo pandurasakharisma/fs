@@ -46,7 +46,7 @@ let pin = "", pin1, pin2, handleotp = (e,pin,trial = null) => {
     }
   };
 
-export let renderLogin = () => {
+export let renderresetpin = () => {
   document.querySelector("#app").innerHTML = `
         <style>
             .auth-bg-image-box .auth-bg-image {
@@ -189,16 +189,13 @@ export let renderLogin = () => {
 
     let five1 = document.getElementById("five1");
     if(five1){ five1.focus(); }
+    
+    let backbtn = document.getElementById("backbtn");
+    if (backbtn) { backbtn.onclick=() => window.history.back();}
 
-    const backButton = document.getElementById("backbtn");
-    if (backButton) {
-        backButton.onclick=() => window.history.back();
-    }
-
-
-  document.getElementById("cekl").onclick = (event) => handleotp(event,pin);;
-  document.body.onkeypress = (e) => (e.key === "Enter" ? handleotp(e,pin) : null);
+    document.getElementById("cekl").onclick = (event) => handleotp(event,pin);;
+    document.body.onkeypress = (e) => (e.key === "Enter" ? handleotp(e,pin) : null);
 
 };
 
-export default renderLogin;
+export default renderresetpin;

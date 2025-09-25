@@ -30,12 +30,12 @@ export let renderListItem = () => {
             <section class="bgm theme-content-bg">
                 <i class="iconsax icon-btn" data-icon="chevron-up"></i>
                 <i class="iconsax icon-btn iatas" data-icon="chevron-up"></i>
-                <div class="pntoko">
+                <div class="pnOutlet">
                     <div class="d-flex align-items-center mb-3">
-                        <span class="my-ride-img cekdetailtoko" style="margin-right: 10px;width: 38px;height: 38px;">
+                        <span class="my-ride-img cekdetailOutlet" style="margin-right: 10px;width: 38px;height: 38px;">
                             <img class="place-icon" src="./assets/images/svg/home-fill.svg" alt="home" style="width:70%;">
                         </span>
-                        <div class="cekdetailtoko" style="width: calc(100% - 70px);">
+                        <div class="cekdetailOutlet" style="width: calc(100% - 70px);">
                             <h2 id="cardname" style="font-size: 12px;line-height: .8;margin-bottom: 3px;" class="fw-bold">Jonathan Higgins</h2>
                             <div id="Address" class="text-muted" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 94%;">JL Raya Semarang</div>
                         </div>
@@ -367,7 +367,7 @@ export let renderListItem = () => {
     let infofoto = (imageObj) => {
         clay.innerHTML = `
             <div class="strong">
-                <strong>${imageObj.namatoko}</strong><br>
+                <strong>${imageObj.namaOutlet}</strong><br>
                 ${imageObj.alamat}<br>
                 ${imageObj.nama} (${imageObj.jam_menit})
             </div>
@@ -451,7 +451,7 @@ export let renderListItem = () => {
             src: urlbe2 + 'upload/gambar/' + item.foto,
             alt: `Foto ${i + 1}`,
             nama: item.nama,
-            namatoko: item.namatoko,
+            namaOutlet: item.namaOutlet,
             alamat: item.alamat,
             tanggal: item.tanggal,
             jam_menit: item.jam_menit
@@ -558,12 +558,22 @@ export let renderListItem = () => {
             if (reverseData?.status === 'success') {
                 document.querySelector('#alamat2').innerText = reverseData.data.display_name;
             }
-    
             loadLeaflet().then(L => {
-                if (lat && lon) {
-                    let map = L.map('map').setView([lat, lon], 15);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '' }).addTo(map);
-    
+                if (lat && lon && firstLat && firstLon) {
+                    let point1 = L.latLng(lat, lon);
+                    let point2 = L.latLng(firstLat, firstLon);
+            
+                    let bounds = L.latLngBounds(point1, point2);
+            
+                    let map = L.map('map');
+                    map.fitBounds(bounds, {
+                        padding: [50, 50]
+                    });
+            
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: ''
+                    }).addTo(map);
+            
                     let iconHtml = '<img class="icon" src="./assets/images/svg/location-fill.svg" width="40" height="40" alt="location">';
                     let customIcon = L.divIcon({
                         html: iconHtml,
@@ -572,14 +582,38 @@ export let renderListItem = () => {
                         iconAnchor: [15, 30],
                         popupAnchor: [0, -30]
                     });
-    
-                    let marker = L.marker([lat, lon], { icon: customIcon }).addTo(map);
+            
+                    let marker1 = L.marker(point1, {
+                        icon: customIcon
+                    }).addTo(map);
+                    marker1.bindPopup(`<strong>${full_name} ${Job_Position}</strong><p>${reverseData.data.display_name}</p>`).openPopup();
+            
+                    let marker2 = L.marker(point2, {
+                        icon: customIcon
+                    }).addTo(map);
+                    marker2.bindPopup(`<strong>${cust_name}</strong><p>${address} ${city}</p>`);
+                    map.zoomOut(2.5);
+                    map.panBy([0, 200]);
+            
+                } else if (lat && lon) {
+                    let map = L.map('map').setView([lat, lon], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: ''
+                    }).addTo(map);
+            
+                    let iconHtml = '<img class="icon" src="./assets/images/svg/location-fill.svg" width="40" height="40" alt="location">';
+                    let customIcon = L.divIcon({
+                        html: iconHtml,
+                        className: 'custom-icon',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 30],
+                        popupAnchor: [0, -30]
+                    });
+            
+                    let marker = L.marker([lat, lon], {
+                        icon: customIcon
+                    }).addTo(map);
                     marker.bindPopup(`<strong>${full_name} ${Job_Position}</strong><p>${reverseData.data.display_name}</p>`).openPopup();
-    
-                    if (firstLat && firstLon) {
-                        let marker2 = L.marker([firstLat, firstLon], { icon: customIcon }).addTo(map);
-                        marker2.bindPopup(`<strong>${cust_name}</strong><p>${address} ${city}</p>`);
-                    }
                 }
             });
         }

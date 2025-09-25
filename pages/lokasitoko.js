@@ -1,4 +1,4 @@
-export let renderlokasitoko = () => {
+export let renderlokasiOutlet = () => {
     removeSpinner();
 
     let hash = window.location.hash.split('?')[1] || '';
@@ -181,4 +181,4 @@ export let renderlokasitoko = () => {
     }).catch(() => { });
 };
 
-export default renderlokasitoko;
+export default renderlokasiOutlet;

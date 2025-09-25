@@ -103,6 +103,7 @@ export let renderHome = () => {
             </div>
         </section>
         <section class="panel-space"></section>
+
     `
 
     
@@ -398,9 +399,9 @@ let renderHeader = () => {
                 <i id="menuIcon" style="transform: rotate(90deg);" class="iconsax icon-btn" data-icon="menu-meatballs"></i>
             </div>
             <div class="dropdown-menu-custom" id="dropdownMenu">
-                <a href="#">History Input</a>
+                <a onclick="hrefs('profile')">Manage Profile</a>
                 <a onclick="hrefs('resetpin')">Reset PIN</a>
-                <a onclick="logout()">Logout</a>
+                <a onclick="keluar()">Logout</a>
             </div>
         </div>
 
@@ -489,8 +490,8 @@ window.tukarjd = (event, id, el) => {
                     <div class="modal-body text-center" style="padding:0 20px 0;">
                         <div class="jotheme-form" style="margin-top: 15px;">
                             <div class="form-group hide">
-                                <input type="text" class="form-controljo" id="tokox" name="tokox" placeholder=" " required="">
-                                <label class="form-labeljo" for="tokox">Toko Pengganti</label>
+                                <input type="text" class="form-controljo" id="Outletx" name="Outletx" placeholder=" " required="">
+                                <label class="form-labeljo" for="Outletx">Outlet Pengganti</label>
                             </div>
                             <div class="form-group" style="margin-bottom:0!important;">
                                 <textarea class="form-controljo reasonx" id="reasonx" placeholder="Masukkan Reason..." style="width: 100%; height:60px;border:none!important;" required></textarea>
@@ -500,7 +501,7 @@ window.tukarjd = (event, id, el) => {
                     </div>
                     <div class="modal-footer" style="gap: 10px;display: flex;flex-wrap: nowrap;white-space: nowrap;">
                         <button type="button" class="btn gray-btn w-50 m-0" data-bs-dismiss="modal">Tutup</button>
-                        <button type="button" class="btn theme-btn w-50 m-0" id="canceltoko">Cancel Jadwal</button>
+                        <button type="button" class="btn theme-btn w-50 m-0" id="cancelOutlet">Cancel Jadwal</button>
                     </div>
                 </div>
             </div>
@@ -513,10 +514,10 @@ window.tukarjd = (event, id, el) => {
     modalt.show();
     document.querySelector("#reasonx").focus();
 
-    let tukartoko = document.getElementById('canceltoko');
-    if (tukartoko) {
-        tukartoko.onclick = null;
-        tukartoko.onclick = () => {
+    let tukarOutlet = document.getElementById('cancelOutlet');
+    if (tukarOutlet) {
+        tukarOutlet.onclick = null;
+        tukarOutlet.onclick = () => {
             let reason = document.getElementById('reasonx').value;
             if (!reason) {
                 showToast('Reason tidak boleh kosong', 'error');
@@ -564,12 +565,12 @@ window.sedangon = (id, el,itemData) => {
                 <div class="modal-content">
                     <div class="modal-body text-center">
                         <img class="img-fluid icon" src="./assets/images/svg/alert.svg" style="stroke: #c53f3f;width: 100px!important;margin-bottom: 10px;" alt="alert">
-                        <h4>Toko Lain Sedang Active</h4>
-                        <p>Wajin Menyelesaikan Kunjungan Toko yang Active !!</p>
+                        <h4>Outlet Lain Sedang Active</h4>
+                        <p>Wajin Menyelesaikan Kunjungan Outlet yang Active !!</p>
                     </div>
                     <div class="modal-footer" style="gap: 10px;display: flex;flex-wrap: nowrap;white-space: nowrap;">
                         <button type="button" class="btn gray-btn w-50 m-0" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn theme-btn w-50 m-0" id="konfirmasitoko">Selesaikan</button>
+                        <button type="button" class="btn theme-btn w-50 m-0" id="konfirmasiOutlet">Selesaikan</button>
                     </div>
                 </div>
             </div>
@@ -580,7 +581,7 @@ window.sedangon = (id, el,itemData) => {
     let modalElement = document.getElementById('dynamicsedangon');
     let hrefTarget, modal = new bootstrap.Modal(modalElement);
     modal.show();
-    document.getElementById('konfirmasitoko').onclick = (e) => {
+    document.getElementById('konfirmasiOutlet').onclick = (e) => {
         e.target.blur();
         if (itemData) {
             let hrefParams = `id=${itemData.on_active}&cardname=${encodeURIComponent(itemData.cardname || '')}&cust_code=${encodeURIComponent(itemData.cust_code || '')}&cust_name=${encodeURIComponent(itemData.cust_name || '')}&Address=${encodeURIComponent(itemData.Address || '')}&City=${encodeURIComponent(itemData.City || '')}&Province=${encodeURIComponent(itemData.Province || '')}&Full_Name=${encodeURIComponent(itemData.Full_Name || '')}&Job_Position=${encodeURIComponent(itemData.Job_Position || '')}&minggu=${itemData.minggu}&hari=${itemData.hari}`;
@@ -866,17 +867,17 @@ let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
         },
         {
             href: 'my-rides.html',
-            value: totaltitik+' Toko',
+            value: totaltitik+' Outlet',
             icon: 'smart-car',
             text: 'Total Kunjungan'
         },
         {
-            value: totalselesai+' Toko',
+            value: totalselesai+' Outlet',
             icon: 'car',
             text: 'Kunjungan Selesai'
         },
         {
-            value: totalcancel+' Toko',
+            value: totalcancel+' Outlet',
             icon: 'driving',
             text: 'Batal Kunjungan'
         }];

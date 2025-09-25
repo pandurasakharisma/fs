@@ -44,13 +44,6 @@ let checkAuth = () => {
 }
 
 
-let logout = (url = null) => {
-    localStorage.removeItem("user_token")
-    localStorage.removeItem("user_data")
-    localStorage.removeItem("user_absen")
-    showToast('Kamu Berhasil Logout', 'success');
-    window.location.hash = 'login'
-}
 
 let loadScript = src => new Promise((resolve, reject) => {
     let script = document.createElement('script')
@@ -276,6 +269,50 @@ let router = async () => {
         removeSpinner();
     }
 };
+
+
+window.keluar = () => {
+    let modalEl = document.getElementById('logout');
+
+    if (!modalEl) {
+        const modalHtml = `
+            <div class="modal delete-modal fade" id="logout" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <img class="img-fluid icon mx-auto" src="./assets/images/svg/logout.svg" alt="alert">
+                            <h4>Come Back Soon</h4>
+                            <p>Are you sure You want to Logout?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn gray-btn w-50 m-0" id="close-logoutbtn" data-bs-dismiss="modal">Stay, logged in</a>
+                            <a onclick="logout()" class="btn theme-btn w-50 m-0">Yes, Logout </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        modalEl = document.getElementById('logout');
+    }
+
+    let modalInstance = new bootstrap.Modal(modalEl);
+    modalInstance.show();
+};
+
+
+let logout = (url = null) => {
+    let logoutdiv = document.querySelector("#close-logoutbtn");
+    if(logoutdiv){ logoutdiv.click();}
+    localStorage.removeItem("user_token")
+    localStorage.removeItem("user_data")
+    localStorage.removeItem("user_absen")
+    showToast('Kamu Berhasil Logout', 'success');
+    window.location.hash = 'login'
+}
+
+let backbtn = document.getElementById("backbtn");
+if (backbtn) { backbtn.onclick=() => window.history.back();}
 
 
 window.onload = async () => {

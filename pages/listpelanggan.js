@@ -262,7 +262,7 @@ export let renderlistpelanggan = () => {
         let nurl = `home?tanggal=${tanggal}&minggu=${minggu}&hari=${hari}&usercode=${usercode}`;
         backcp.setAttribute('onclick',`hrefs('${nurl}')`);
     }
-    
+
     let openPopup = () => document.getElementById('modpop').classList.add('show');
     let closePopup = () => document.getElementById('modpop').classList.remove('show');
 
@@ -271,6 +271,20 @@ export let renderlistpelanggan = () => {
             el.onclick = ()=>document.getElementById('modpop').classList.remove('show')
         }
     })
+
+    let waitUsercode = () => {
+        let el = document.getElementById("usercode");
+        if (el && el.value) {
+            clearInterval(waitUsercode);
+            usercode = usercode ?? el.value;
+            setTimeout(() => {
+                hasMore = true;
+                fetchAndRenderStores();
+            }, 60);
+        }
+    };
+
+    waitUsercode();
 
     let currentPage = 1;
     let isLoading = false;
@@ -407,6 +421,7 @@ export let renderlistpelanggan = () => {
     };
 
     document.querySelector(".simpancust").onclick = async ()=> {
+
         let now = new Date();
         let minggu = mingguUrl || String(getMingguKe(now));
         let hari = hariUrl || String(getHariMon1(now));
@@ -418,7 +433,8 @@ export let renderlistpelanggan = () => {
             data[key] = value.trim();
             if (!value.trim()) kosong = true;
         });
-        data["usercode"] = userCode;
+
+        data["usercode"] = usercode;
         closePopup();
         if (kosong) {
             showToast("Semua field harus diisi.", "danger");
@@ -547,17 +563,7 @@ export let renderlistpelanggan = () => {
         }
     };
 
-    let waitUsercode = setInterval(() => {
-        let el = document.getElementById("usercode");
-        if (el && el.value) {
-            clearInterval(waitUsercode);
-            usercode = usercode ?? el.value;
-            setTimeout(() => {
-                hasMore = true;
-                fetchAndRenderStores();
-            }, 60);
-        }
-    }, 60);
+ 
 }
 
 

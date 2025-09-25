@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencarian Kompetitor Coklat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .card-header {
+            background-color: #6a1b9a;
+            color: #fff;
+            font-weight: bold;
+        }
+        .loading-spinner {
+            display: none;
+        }
+        .product-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .product-list li {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <main class="container py-5 flex-grow-1">
+        <div class="card shadow p-4 mb-4 bg-white">
+            <h1 class="text-center mb-4 text-primary">Riset Pasar Kompetitor Coklat 🍫</h1>
+            <p class="text-center text-muted">Masukkan nama merek coklat (contoh: "Lindt") untuk mencari pesaingnya. Tekan Enter atau klik Cari.</p>
+            <div class="input-group mb-3">
+                <input type="text" id="brandInput" class="form-control form-control-lg" placeholder="Masukkan merek coklat...">
+                <button class="btn btn-primary" type="button" onclick="fetchAndDisplay()">Cari</button>
+            </div>
+        </div>
+
+        <div id="loadingSpinner" class="text-center my-5 loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Memproses data...</p>
+        </div>
+
+        <div id="results" class="row"></div>
+    </main>
+
+    <footer class="bg-light text-center text-muted py-3">
+        <p>&copy; 2025 Riset Pasar Coklat</p>
+    </footer>
+
+    <script>
+        let brandInput = document.getElementById('brandInput');
+        let resultsDiv = document.getElementById('results');
+        let loadingSpinner = document.getElementById('loadingSpinner');
+
+        let showLoading = (show) => {
+            loadingSpinner.style.display = show ? 'block' : 'none';
+        };
+
+        let createCard = (competitor) => {
+            let productsHtml = competitor.products.map(product => {
+                let topSalesStatus = product.topSales ? 'Top Penjualan ✅' : 'Reguler 📈';
+                let priceRange = `$${product.priceRange.min} - $${product.priceRange.max}`;
+                let sentimentEmoji = product.sentiment > 0.8 ? '😁' : (product.sentiment > 0.7 ? '😊' : '😐');
+                
+                return `
+                    <li class="mb-2 p-2 border rounded">
+                        <strong>${product.name}</strong><br>
+                        <small>Status: ${topSalesStatus} | Pangsa Pasar: ${product.marketShare * 100}% | Harga: ${priceRange} | Sentimen: ${sentimentEmoji} (${product.sentiment})</small>
+                    </li>
+                `;
+            }).join('');
+            
+            let strengths = competitor.marketAnalysis.keyStrengths.join(', ');
+            let weaknesses = competitor.marketAnalysis.keyWeaknesses.join(', ');
+
+            return `
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header">
+                            <h5 class="mb-0">${competitor.brand} <span class="badge bg-secondary ms-2">Ranking Global #${competitor.globalRank}</span></h5>
+                        </div>
+                        <div class="card-body">
+                            <h6>Daftar Produk:</h6>
+                            <ul class="product-list">
+                                ${productsHtml}
+                            </ul>
+                            <hr>
+                            <h6>Analisis Pasar:</h6>
+                            <p class="card-text mb-1"><small>Tingkat Pertumbuhan: ${competitor.marketAnalysis.growthRate * 100}%</small></p>
+                            <p class="card-text mb-1"><small>Target Audiens: ${competitor.marketAnalysis.targetAudience}</small></p>
+                            <p class="card-text mb-1"><small>Kekuatan: ${strengths}</small></p>
+                            <p class="card-text"><small>Kelemahan: ${weaknesses}</small></p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        let fetchAndDisplay = async () => {
+            let brand = brandInput.value;
+            if (!brand.trim()) {
+                alert('Silakan masukkan nama merek.');
+                return;
+            }
+
+            let prompt = `Buatkan JSON riset pasar detail pesaing coklat selain ${brand}. Data meliputi 5+ merek, 30+ produk, peringkat global, analisis sentimen, pangsa pasar, rentang harga, dan deskripsi pasar. Format JSON murni.`;
+            let encodedPrompt = encodeURIComponent(prompt);
+            let url = `https://rightly-composed-marlin.ngrok-free.app/tanya?tanya=${encodedPrompt}`;
+
+            showLoading(true);
+            resultsDiv.innerHTML = '';
+
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+                
+                let jsonString = data.data.replace(/```json\n|```/g, '').trim();
+                let competitorData = JSON.parse(jsonString);
+
+                competitorData.competitors.forEach(competitor => {
+                    resultsDiv.innerHTML += createCard(competitor);
+                });
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="alert alert-danger" role="alert">
+                    Maaf, terjadi kesalahan saat mengambil data. Silakan coba lagi nanti.
+                </div>`;
+                console.error('Error fetching data:', error);
+            } finally {
+                showLoading(false);
+            }
+        };
+
+        brandInput.onkeydown = (event) => {
+            event.key === 'Enter' && fetchAndDisplay();
+        };
+
+    </script>
+</body>
+</html>

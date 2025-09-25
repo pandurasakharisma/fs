@@ -2644,7 +2644,7 @@ body.dark .auth-header .logo {
   top: 0;
   padding-top: 25px;
   background-color: rgba(var(--theme-color), 1);
-  z-index: +2;
+  z-index: +1;
 }
 @media (max-width: 600px) {
   .main-header {
@@ -4279,6 +4279,7 @@ body.dark .auth-bg-image-box .auth-bg-image {
 }
 .total-ride-list li .ride-box h4 {
   font-weight: 700;
+  font-size: 13px;
   color: rgba(var(--theme-color), 1);
 }
 .total-ride-list li .ride-box h6 {
@@ -5244,7 +5245,7 @@ body.dark .onboarding-section .driver-main-slider .poster-image .image-dark {
 }
 
 .profile-list {
-  padding: 15px;
+  padding:10px;
   background-color: rgba(var(--white), 1);
   border-radius: 12px;
 }
