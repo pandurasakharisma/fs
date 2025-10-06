@@ -84,7 +84,7 @@ export let renderprofile = () => {
                 background: #fff;
                 max-width: 450px;
             }
-            .profile-image #file{
+            #changepic #file{
                 position: absolute;
                 bottom: 0;
                 right: 0;
@@ -93,43 +93,6 @@ export let renderprofile = () => {
                 z-index: 2;
                 opacity: 0;
                 cursor: pointer;
-            }
-            .profile-imagex{
-                width: 140px;
-                height: 140px;
-                position: absolute;
-                top: -200px;
-                left: 32vw;
-            }
-            .profile-image{
-                position:relative;
-                width: 140px;
-                height: 140px;
-            }
-            .profile-image img{
-                width: 140px;
-                height: 140px;
-                overflow: hidden;
-                border-radius: 50%;
-                border: 3px solid #c53f3f;
-            }
-            .profile-image svg{
-                overflow: hidden;
-                border-radius: 50%;
-            }
-            .profile-imagex .upload-icon {
-                position: absolute;
-                bottom: 10px;
-                right: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 5px;
-                --Iconsax-Color: rgba(var(--title-color), 1);
-                --Iconsax-Size: 16px;
-                background-color: rgba(var(--white), 1);
-                border-radius: 100%;
-                z-index: 1;
             }
             .location-map{
                 z-index: 0;
@@ -146,20 +109,12 @@ export let renderprofile = () => {
             <div class="custom-container">
                 <div class="header-panel p-0">
                     <a id="backbtn"><i class="iconsax icon-btn" data-icon="chevron-left"></i></a>
-                    <h3 class="p-0">Profile</h3>
                 </div>
             </div>
         </header>
         <main>
-            <div class="location-map position-relative w-100 h-100" id="map" style="z-index: 0;background:url('./assets/images/bgbuah.webp');background-size: 270px;"></div>
+            <div class="location-map position-relative" id="output" style="background-image:url('./assets/images/bgbuah.webp');"></div>
             <section class="bgm theme-content-bg setting-section" style="background: #f9f9f9;padding: 20px 0 220px;">
-                <div class="profile-imagex m-0">
-                    <div class="profile-image">
-                        <img id="output" class="img-fluid profile-pic" src="./assets/images/profile/p8.png" alt="p8">
-                        <input id="file" type="file">
-                        <i class="iconsax upload-icon" data-icon="edit-2"></i>
-                    </div>
-                </div>
                 <div class="custom-container" style="margin-top: -55px;">
                     <div class="profile-section white-background p-3" style="border-radius: 12px;">
                         <div class="flex-align-center gap-2" style="position:relative;">
@@ -167,7 +122,9 @@ export let renderprofile = () => {
                                 <h3 class="profile-name Full_Name">Jonathan Joestar</h3>
                                 <h6 class="fw-normal content-color mt-1 Phone">0857 8155 0337</h6>
                             </div>
-                            <span class="status fw-normal bg-gagalx nik Card_ID">20013</span>
+                            <span id="changepic" class="status fw-normal bg-gagalx ">
+                                <input id="file" class="hide" type="file"> Change Picture
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -271,7 +228,7 @@ export let renderprofile = () => {
                 currentData.display_picture = result.display_picture; 
                 localStorage.setItem('user_data', JSON.stringify(currentData));
                 showToast("Foto profil berhasil diunggah!", "success");
-                document.querySelector("#output").setAttribute('src', urlbe2 + result.display_picture); 
+                document.querySelector("#output").setAttribute('style','background-image:url(' +urlbe2 + result.display_picture+')'); 
     
             } else {
                 showToast(result.message || "Gagal mengunggah foto profil.", "danger");
@@ -279,9 +236,8 @@ export let renderprofile = () => {
         } catch (error) {}
     };
     
-    document.querySelector('#file').onchange = (event) => {
-        loadFile(event);
-    };
+    document.querySelector('#changepic').onclick = ()=> document.querySelector('#file').click();
+    document.querySelector('#file').onchange = (event) => loadFile(event);
 
     let infouser = () => {
         let data = localStorage.getItem('user_data'),
@@ -293,8 +249,7 @@ export let renderprofile = () => {
             'Card_ID': obj.Card_ID,
             'Email': obj.Email
         };
-    
-        document.querySelector("#output").setAttribute('src', urlbe2 + obj.display_picture); 
+        document.querySelector("#output").setAttribute('style','background-image:url(' +urlbe2 + obj.display_picture+')'); 
     
 
         let updateElement = (selector, value) => {
