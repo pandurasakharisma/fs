@@ -154,7 +154,7 @@ export let renderlistpelanggan = () => {
                 animation: shimmer 1.5s infinite;
                 margin: 6px 0;
             }
-
+            .location-box svg {stroke: #c53f3f;width: 20px;}
             @keyframes shimmer {
                 0% { background-position: -200% 0; }
                 100% { background-position: 200% 0; }
@@ -169,9 +169,9 @@ export let renderlistpelanggan = () => {
                         <i class="iconsax icon-btn" data-icon="chevron-left" height="40" width="40" style="border: none;margin-left: -10px;"></i>
                     </a>
                     <div class="location-box flex-grow-1" style="background-color: rgba(var(--box-bg), 1);display: flex;align-items: center;border-radius: 6px;padding: 8px;">
-                        <img class="icon" src="./assets/images/svg/gps.svg" alt="location" style="width:18px; margin-right:6px;">
+                        <i class="iconsax" data-icon="search-normal-2" style="margin-right:10px;"></i>
                         <input type="text" id="searchInput" class="form-control border-0 p-0" placeholder="Cari Lokasi" style="background: none;flex:1; box-shadow:none;">
-                        <img id="clearBtn" class="clear-btn" width="12" style="display:none; cursor:pointer;margin-right:6px;" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e" alt="clear">
+                        <i id="clearBtn" class="clear-btn iconsax" data-icon="add" style="display:none; transform: rotate(45deg); cursor:pointer;margin-right:6px;"></i>
                     </div>
                 </div>
                 </div>

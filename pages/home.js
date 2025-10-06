@@ -860,7 +860,16 @@ let loadJadwal = (usercode, minggu = null, hari = null, tanggal = null) => {
             };
         });
 
+        let userDatax = localStorage.getItem('user_data');
+        let datax = JSON.parse(userDatax),
+        Full_Name = datax.Full_Name,
+        Job_Position = datax.Job_Position;
         let ridesData = [{
+            value: Full_Name,
+            icon: 'user-1',
+            text: Job_Position
+        },
+        {
             value: hitungdurasi(totaldurasi),
             icon: 'stopwatch-play',
             text: 'Total Durasi'
