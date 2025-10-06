@@ -294,9 +294,9 @@ export let renderprofile = () => {
             'Email': obj.Email
         };
     
-        document.querySelector("#output").setAttribute('src', urlbe2 + result.display_picture); 
+        document.querySelector("#output").setAttribute('src', urlbe2 + obj.display_picture); 
     
-        
+
         let updateElement = (selector, value) => {
             document.querySelectorAll(selector).forEach((el) => {
                 let tagName = el.tagName.toLowerCase();
