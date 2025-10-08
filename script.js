@@ -1,4 +1,4 @@
-let urlbe = "http://dev.pkserve.com/api/",
+let urlbe = "https://dev.pkserve.com/api/",
 urlbe2 = "https://app2.pkserve.com/fs/";
 
 
